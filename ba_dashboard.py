@@ -126,24 +126,17 @@ def gradio_dashboard():
         report_output = gr.Markdown(label="Generated Report")
         image_gallery = gr.Gallery(label="Generated Diagrams (PNG)")
 
-        def run_and_update(bp):
-            if not bp.strip():
-                return "Please enter a business problem first.", "Ready to generate report...", "", []
-            
-            status_msg = "Generating report... (this may take a moment)"
-            return "", status_msg, "", []
-        
         def generate_report(bp):
             if not bp.strip():
-                return "Please enter a business problem first.", "Ready to generate report...", "", []
+                return "Please enter a business problem first.", "Ready to generate report...", []
             
+            status_msg = "Generating report... (this may take a moment)"
             report, images = generate_report_and_images(bp)
-            status_msg = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-            return report, status_msg, images
+            final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
+            return report, final_status, images
 
-        run_btn.click(run_and_update, inputs=[business_problem], outputs=[report_output, status, image_gallery])
         run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status, image_gallery])
     return demo
 
 if __name__ == "__main__":
-    gradio_dashboard().launch() 
+    gradio_dashboard().launch(share=True, server_name="0.0.0.0", server_port=7860) 
