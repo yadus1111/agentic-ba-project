@@ -1,0 +1,13 @@
+graph TD
+    A[Customer] -- Views --> UC1((View Personalized Loan Offers))
+
+    subgraph Mobile Banking App & Personalization Engine
+        UC1 --> UC2(Receive Personalized Loan Offers)
+        UC2 --> UC3(Apply Recommendation Logic)
+        UC3 --> UC4(Retrieve Customer Data)
+        UC3 -- includes --> UC5(Generate Personalized Offers)
+        UC4 --> DB[Customer Data Store]
+        UC3 -- extends --> UC6(A/B Test Recommendation Algorithm)
+    end
+
+    A --> UC1

@@ -1,0 +1,12 @@
+graph TD
+    A[Customer] -- Receives --> UC1((Receive Pre-Approved Personal Loan Offer Alert))
+
+    subgraph Mobile Banking App & Personalization Engine
+        UC1 --> UC2(Display Pre-Approval Notification)
+        UC2 --> UC3(Check Customer Eligibility for Pre-Approval)
+        UC3 --> UC4(Monitor Salary Inflow)
+        UC3 --> UC5(Assess Credit Score - internal/external)
+        UC3 -- includes --> UC6(Generate Pre-Approval Offer)
+    end
+
+    A --> UC1

@@ -1,0 +1,4 @@
+pyautogen
+python-dotenv
+google-generativeai
+gradio 
