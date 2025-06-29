@@ -7,9 +7,6 @@ import os
 import time
 import random
 import copy
-import requests
-import base64
-import json
 
 # Set up Gemini client using environment variable
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -256,6 +253,9 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
     error_blocks = []
     fixed_blocks = []
     
+    # Ensure output directory exists
+    os.makedirs(output_dir, exist_ok=True)
+    
     for idx, code in enumerate(mermaid_blocks, 1):
         code = sanitize_mermaid_code(code)
         section_type = get_section_type(code)
@@ -267,68 +267,22 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
             elif section_type == 'stakeholder':
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
         
+        # For Hugging Face Spaces, we'll just save the Mermaid code and provide instructions
+        # The diagrams will be rendered by the browser when viewing the report
         mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
-        png_path = os.path.join(output_dir, f"diagram_{idx}.png")
         
-        # Save the Mermaid code
-        with open(mmd_path, "w", encoding="utf-8") as f:
-            f.write(code)
-        
-        # Try web-based rendering first
-        success, message = render_mermaid_web(code, png_path)
-        if success:
-            image_paths.append(png_path.replace('.png', '.html'))
-            continue
-        
-        # Fallback to CLI rendering with multiple possible paths
-        cli_success = False
-        last_cli_error = ""
-        
-        # List of possible Mermaid CLI paths
-        possible_paths = [
-            "mmdc",  # If installed globally
-            "npx", "mmdc",  # Using npx
-            "/usr/local/bin/mmdc",  # Linux global install
-            "/usr/bin/mmdc",  # Linux system install
-            "C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd",  # Windows npm
-            "C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc",  # Windows npm
-        ]
-        
-        for attempt in range(2):
-            for path_idx in range(0, len(possible_paths), 2):
-                try:
-                    if path_idx + 1 < len(possible_paths):
-                        cmd = [possible_paths[path_idx], possible_paths[path_idx + 1], "-i", mmd_path, "-o", png_path]
-                    else:
-                        cmd = [possible_paths[path_idx], "-i", mmd_path, "-o", png_path]
-                    
-                    result = subprocess.run(cmd, check=True, capture_output=True, text=True, timeout=30)
-                    if os.path.exists(png_path):
-                        image_paths.append(png_path)
-                        cli_success = True
-                        break
-                except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired) as e:
-                    last_cli_error = str(e)
-                    continue
-                except Exception as e:
-                    last_cli_error = str(e)
-                    continue
+        try:
+            # Save the Mermaid code
+            with open(mmd_path, "w", encoding="utf-8") as f:
+                f.write(code)
             
-            if cli_success:
-                break
-            time.sleep(0.5)
-        
-        if cli_success:
-            continue
-        
-        # If both web and CLI fail, save the Mermaid code and create HTML
-        print(f"Creating HTML renderer for diagram {idx}")
-        success, message = render_mermaid_web(code, png_path)
-        if success:
-            image_paths.append(png_path.replace('.png', '.html'))
-            error_blocks.append((idx, code, f"HTML renderer created: {message}"))
-        else:
-            error_blocks.append((idx, code, f"Failed to create renderer: {message}"))
+            # Mark as successful - the diagram will be rendered by the browser
+            image_paths.append(f"diagram_{idx}.mmd")
+            fixed_blocks.append((idx, code))
+            
+        except Exception as e:
+            # If file saving fails, just continue with the code
+            error_blocks.append((idx, code, f"Could not save file: {str(e)}"))
     
     return image_paths, error_blocks, fixed_blocks
 
@@ -415,13 +369,10 @@ def generate_report_and_images(business_problem):
             # Append info about fixed/fallback diagrams
             if fixed_blocks:
                 for idx, code in fixed_blocks:
-                    report_text += f"\n\n**Note:** Mermaid diagram {idx} was generated using strict AI prompt.\n```mermaid\n{code}\n```\n"
+                    report_text += f"\n\n**✅ Success:** Mermaid diagram {idx} generated successfully.\n```mermaid\n{code}\n```\n"
             if error_blocks:
                 for idx, code, err in error_blocks:
-                    if "HTML renderer created" in err:
-                        report_text += f"\n\n**Success:** Mermaid diagram {idx} rendered as HTML file.\n```mermaid\n{code}\n```\n"
-                    else:
-                        report_text += f"\n\n**Note:** Mermaid diagram {idx} code is available but rendering failed.\n```mermaid\n{code}\n```\n"
+                    report_text += f"\n\n**⚠️ Note:** Mermaid diagram {idx} code is available but file saving failed.\n```mermaid\n{code}\n```\n"
             return report_text, image_paths
         except Exception as e:
             error_msg = str(e)
@@ -455,46 +406,6 @@ def ensure_mermaid_diagrams(report):
                 insert_pos = section_start
                 report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
     return report
-
-def render_mermaid_web(mermaid_code, output_path):
-    """
-    Render Mermaid diagram using web-based service
-    """
-    try:
-        # Use Mermaid Live Editor API or similar service
-        # For now, we'll use a simple approach that saves the code
-        # and provides instructions for manual rendering
-        
-        # Save the Mermaid code
-        with open(output_path.replace('.png', '.mmd'), 'w', encoding='utf-8') as f:
-            f.write(mermaid_code)
-        
-        # Create a simple HTML file that can render the diagram
-        html_content = f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mermaid Diagram</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <script>
-        mermaid.initialize({{startOnLoad: true}});
-    </script>
-</head>
-<body>
-    <div class="mermaid">
-{mermaid_code}
-    </div>
-</body>
-</html>
-"""
-        
-        html_path = output_path.replace('.png', '.html')
-        with open(html_path, 'w', encoding='utf-8') as f:
-            f.write(html_content)
-        
-        return True, f"Diagram saved as {html_path}"
-    except Exception as e:
-        return False, str(e)
 
 def gradio_dashboard():
     with gr.Blocks(css="""
