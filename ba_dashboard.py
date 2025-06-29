@@ -7,6 +7,8 @@ import os
 import time
 import random
 import copy
+from datetime import datetime
+import json
 
 # Set up Gemini client using environment variable
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -520,6 +522,7 @@ def gradio_dashboard():
     /* Hide Gradio footer */
     footer, .svelte-1ipelgc, .gradio-container .footer, .gr-footer { display: none !important; }
     """) as demo:
+        
         with gr.Row():
             gr.HTML('<div class="logo"><span class="logo-emoji">💡</span><span class="logo-title">Agentic BA Dashboard</span></div>')
         gr.Markdown("""
@@ -542,6 +545,7 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
             return report, final_status
 
         run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status])
+        
     return demo
 
 if __name__ == "__main__":
