@@ -521,12 +521,23 @@ def gradio_dashboard():
     }
     /* Hide Gradio footer */
     footer, .svelte-1ipelgc, .gradio-container .footer, .gr-footer { display: none !important; }
+    /* Mermaid diagram styling */
+    .mermaid {
+        text-align: center;
+        margin: 20px 0;
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 10px;
+        border: 2px solid #e0e7ff;
+    }
     """) as demo:
         
         with gr.Row():
             gr.HTML('<div class="logo"><span class="logo-emoji">💡</span><span class="logo-title">Agentic BA Dashboard</span></div>')
         gr.Markdown("""
 Welcome to your AI-powered business analysis system! Generate comprehensive business analysis deliverables with a single click.
+
+**📊 Diagrams**: Copy the Mermaid code from your report and use the viewer below!
         """)
         gr.Markdown("⚠️ **Note:** If you encounter API overload errors, the system will automatically retry up to 3 times with increasing delays.")
         
@@ -534,6 +545,58 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
         report_output = gr.Markdown(label="Generated Report")
+        
+        # Add Mermaid viewer component
+        gr.HTML("""
+        <div style="margin: 30px 0; padding: 20px; background: #f8fafc; border-radius: 15px; border: 2px solid #e0e7ff;">
+            <h3 style="color: #3730a3; margin-bottom: 15px;">🔍 Mermaid Diagram Viewer</h3>
+            <p style="margin-bottom: 15px;">Copy Mermaid code from your report and paste it below to see visual diagrams:</p>
+            <textarea id="mermaid-input" rows="6" cols="80" placeholder="Paste your Mermaid code here..." style="width: 100%; padding: 10px; border: 1px solid #a5b4fc; border-radius: 8px; font-family: monospace;"></textarea>
+            <br><br>
+            <button onclick="renderMermaid()" style="background: linear-gradient(90deg, #6366f1 0%, #06b6d4 50%, #f472b6 100%); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Render Diagram</button>
+            <div id="mermaid-output" style="margin-top: 20px; text-align: center;"></div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+        <script>
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true
+                }
+            });
+            
+            function renderMermaid() {
+                const input = document.getElementById('mermaid-input');
+                const output = document.getElementById('mermaid-output');
+                const code = input.value.trim();
+                
+                if (!code) {
+                    alert('Please paste some Mermaid code first!');
+                    return;
+                }
+                
+                output.innerHTML = '';
+                
+                try {
+                    const container = document.createElement('div');
+                    container.className = 'mermaid';
+                    container.id = 'mermaid-' + Date.now();
+                    output.appendChild(container);
+                    
+                    mermaid.render(container.id, code).then(({svg}) => {
+                        container.innerHTML = svg;
+                    }).catch(error => {
+                        output.innerHTML = '<div style="color: red; padding: 15px; border: 2px solid red; border-radius: 8px; background: #fef2f2;"><strong>Error rendering diagram:</strong><br>' + error.message + '</div>';
+                    });
+                } catch (error) {
+                    output.innerHTML = '<div style="color: red; padding: 15px; border: 2px solid red; border-radius: 8px; background: #fef2f2;"><strong>Error:</strong> ' + error.message + '</div>';
+                }
+            }
+        </script>
+        """)
 
         def generate_report(bp):
             if not bp.strip():
