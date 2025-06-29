@@ -16,7 +16,7 @@ An AI-powered dashboard for generating comprehensive business analysis reports u
 ## Features
 
 - 🤖 **Multi-Agent AI System**: 7 specialized AI agents working together
-- 📊 **Visual Diagrams**: Server-side Mermaid diagram rendering as SVG images
+- 📊 **Visual Diagrams**: Server-side Mermaid diagram rendering via Mermaid Live Editor API
 - 📋 **Complete Reports**: BRD, FRS, use cases, data mapping, and KPIs
 - 🎨 **Modern UI**: Beautiful Gradio interface with animations
 - 🔄 **Error Resilience**: Automatic retries and fallback mechanisms
@@ -37,9 +37,8 @@ An AI-powered dashboard for generating comprehensive business analysis reports u
 
 - **Frontend**: Gradio
 - **AI Model**: Google Gemini 2.5 Flash
-- **Diagrams**: Mermaid.js (server-side rendering via mermaid-cli)
+- **Diagrams**: Mermaid.js (server-side rendering via Mermaid Live Editor API)
 - **Architecture**: Multi-Agent System
-- **Container**: Docker with Node.js and mermaid-cli
 
 ## Setup Required
 
@@ -49,7 +48,7 @@ Add your Gemini API key as a secret in Hugging Face Spaces:
 
 ## How It Works
 
-The system uses mermaid-cli to render Mermaid diagrams as SVG images on the server side, then embeds them directly in the HTML output. This approach works reliably in Hugging Face Spaces without requiring client-side JavaScript execution.
+The system uses the Mermaid Live Editor API to render Mermaid diagrams as SVG images on the server side, then embeds them directly in the HTML output. This approach works reliably in Hugging Face Spaces without requiring Docker or additional system dependencies.
 
 ## Example Diagrams
 

@@ -250,7 +250,7 @@ def validate_mermaid_code(code):
     return True
 
 def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
-    """Extract Mermaid code blocks and render them as SVG images using mermaid-cli"""
+    """Extract Mermaid code blocks and render them using Mermaid Live Editor API"""
     mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
     image_paths = []
     error_blocks = []
@@ -270,54 +270,48 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
             elif section_type == 'stakeholder':
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
         
-        # Create temporary .mmd file
-        mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
-        svg_path = os.path.join(output_dir, f"diagram_{idx}.svg")
-        
         try:
-            # Save the Mermaid code to .mmd file
-            with open(mmd_path, "w", encoding="utf-8") as f:
-                f.write(code)
+            # Use Mermaid Live Editor API to render the diagram
+            import requests
+            import urllib.parse
             
-            # Use mermaid-cli to render SVG
+            # Prepare the request to Mermaid Live Editor API
+            api_url = "https://mermaid.ink/svg/"
+            
+            # Encode the Mermaid code for URL
+            encoded_code = urllib.parse.quote(code)
+            
+            # Create the full URL for the SVG
+            svg_url = f"{api_url}{encoded_code}"
+            
+            # Try to fetch the SVG
             try:
-                # Try using mmdc command (mermaid-cli)
-                result = subprocess.run([
-                    'mmdc', 
-                    '-i', mmd_path, 
-                    '-o', svg_path,
-                    '-b', 'transparent'
-                ], capture_output=True, text=True, timeout=30)
-                
-                if result.returncode == 0 and os.path.exists(svg_path):
-                    # Read the SVG content
-                    with open(svg_path, 'r', encoding='utf-8') as f:
-                        svg_content = f.read()
-                    
-                    # Create data URI for embedding
+                response = requests.get(svg_url, timeout=10)
+                if response.status_code == 200:
+                    # Create a data URI for the SVG
+                    svg_content = response.text
                     import base64
                     svg_encoded = base64.b64encode(svg_content.encode('utf-8')).decode('utf-8')
                     data_uri = f"data:image/svg+xml;base64,{svg_encoded}"
                     
                     image_paths.append(data_uri)
                     fixed_blocks.append((idx, code, data_uri))
-                    
-                    # Clean up temporary files
-                    os.remove(mmd_path)
-                    os.remove(svg_path)
                 else:
-                    # Fallback: save as .mmd file and provide instructions
-                    image_paths.append(f"diagram_{idx}.mmd")
-                    fixed_blocks.append((idx, code))
+                    # Fallback: use the URL directly
+                    image_paths.append(svg_url)
+                    fixed_blocks.append((idx, code, svg_url))
                     
-            except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
+            except requests.RequestException:
                 # Fallback: save as .mmd file and provide instructions
+                mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
+                with open(mmd_path, "w", encoding="utf-8") as f:
+                    f.write(code)
                 image_paths.append(f"diagram_{idx}.mmd")
                 fixed_blocks.append((idx, code))
                 
         except Exception as e:
-            # If file saving fails, just continue with the code
-            error_blocks.append((idx, code, f"Could not save file: {str(e)}"))
+            # If everything fails, just continue with the code
+            error_blocks.append((idx, code, f"Could not render diagram: {str(e)}"))
     
     return image_paths, error_blocks, fixed_blocks
 
@@ -406,10 +400,14 @@ def generate_report_and_images(business_problem):
             mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
             mermaid_blocks = re.findall(mermaid_pattern, report_text, re.DOTALL)
             
-            for i, (code, data_uri) in enumerate(zip(mermaid_blocks, image_paths)):
-                if data_uri.startswith('data:image/svg+xml'):
+            for i, (code, image_path) in enumerate(zip(mermaid_blocks, image_paths)):
+                if image_path.startswith('data:image/svg+xml'):
                     # Replace with embedded SVG image
-                    replacement = f'<div style="text-align: center; margin: 20px 0;"><img src="{data_uri}" style="max-width: 100%; height: auto;" alt="Diagram {i+1}"></div>'
+                    replacement = f'<div style="text-align: center; margin: 20px 0;"><img src="{image_path}" style="max-width: 100%; height: auto;" alt="Diagram {i+1}"></div>'
+                    report_text = re.sub(mermaid_pattern, replacement, report_text, count=1)
+                elif image_path.startswith('https://'):
+                    # Replace with external SVG URL
+                    replacement = f'<div style="text-align: center; margin: 20px 0;"><img src="{image_path}" style="max-width: 100%; height: auto;" alt="Diagram {i+1}"></div>'
                     report_text = re.sub(mermaid_pattern, replacement, report_text, count=1)
                 else:
                     # Fallback: keep the code block
@@ -417,7 +415,7 @@ def generate_report_and_images(business_problem):
             
             if error_blocks:
                 for idx, code, err in error_blocks:
-                    report_text += f"\n\n**⚠️ Note:** Mermaid diagram {idx} code is available but file saving failed.\n```mermaid\n{code}\n```\n"
+                    report_text += f"\n\n**⚠️ Note:** Mermaid diagram {idx} code is available but rendering failed.\n```mermaid\n{code}\n```\n"
             return report_text, image_paths
         except Exception as e:
             error_msg = str(e)
