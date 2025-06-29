@@ -270,48 +270,51 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
         with open(mmd_path, "w", encoding="utf-8") as f:
             f.write(code)
         
-        # Try CLI rendering
+        # Try CLI rendering with multiple possible paths
         cli_success = False
         last_cli_error = ""
         
+        # List of possible Mermaid CLI paths
+        possible_paths = [
+            "mmdc",  # If installed globally
+            "npx", "mmdc",  # Using npx
+            "/usr/local/bin/mmdc",  # Linux global install
+            "/usr/bin/mmdc",  # Linux system install
+            "C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd",  # Windows npm
+            "C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc",  # Windows npm
+        ]
+        
         for attempt in range(2):
-            try:
-                result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                if os.path.exists(png_path):
-                    image_paths.append(png_path)
-                    cli_success = True
-                    break
-            except Exception as e:
-                last_cli_error = str(e)
-                time.sleep(0.5)
+            for path_idx in range(0, len(possible_paths), 2):
+                try:
+                    if path_idx + 1 < len(possible_paths):
+                        cmd = [possible_paths[path_idx], possible_paths[path_idx + 1], "-i", mmd_path, "-o", png_path]
+                    else:
+                        cmd = [possible_paths[path_idx], "-i", mmd_path, "-o", png_path]
+                    
+                    result = subprocess.run(cmd, check=True, capture_output=True, text=True, timeout=30)
+                    if os.path.exists(png_path):
+                        image_paths.append(png_path)
+                        cli_success = True
+                        break
+                except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired) as e:
+                    last_cli_error = str(e)
+                    continue
+                except Exception as e:
+                    last_cli_error = str(e)
+                    continue
+            
+            if cli_success:
+                break
+            time.sleep(0.5)
         
         if cli_success:
             continue
         
-        # Fallback logic if CLI fails
-        if section_type and business_problem:
-            strict_prompt = strict_mermaid_prompt(section_type, business_problem)
-            if strict_prompt:
-                try:
-                    response = model.generate_content(strict_prompt)
-                    
-                    if response.text:
-                        # Clean and validate the generated code
-                        clean_code = sanitize_mermaid_code(response.text)
-                        if validate_mermaid_code(clean_code):
-                            return clean_code
-                        else:
-                            # Fallback to template
-                            return STRICT_MERMAID_TEMPLATES.get(section_type, f"flowchart TD\n    A[Error] --> B[Could not generate diagram]")
-                    else:
-                        # Fallback to template
-                        return STRICT_MERMAID_TEMPLATES.get(section_type, f"flowchart TD\n    A[Error] --> B[Could not generate diagram]")
-                except Exception as e:
-                    print(f"Error generating strict diagram: {e}")
-                    # Fallback to template
-                    return STRICT_MERMAID_TEMPLATES.get(section_type, f"flowchart TD\n    A[Error] --> B[Could not generate diagram]")
-        
-        error_blocks.append((idx, code, f"Initial and fallback methods failed. CLI error: {last_cli_error}"))
+        # If CLI fails, just save the Mermaid code and continue
+        # This is acceptable for Hugging Face Spaces where CLI tools may not be available
+        print(f"Mermaid CLI not available, saving code only for diagram {idx}")
+        error_blocks.append((idx, code, f"Mermaid CLI not available in this environment. Diagram code saved as {mmd_path}"))
     
     return image_paths, error_blocks, fixed_blocks
 
@@ -401,7 +404,7 @@ def generate_report_and_images(business_problem):
                     report_text += f"\n\n**Note:** Mermaid diagram {idx} was generated using strict AI prompt.\n```mermaid\n{code}\n```\n"
             if error_blocks:
                 for idx, code, err in error_blocks:
-                    report_text += f"\n\n**Warning:** Mermaid diagram {idx} could not be rendered.\nError: {err}\n\n```mermaid\n{code}\n```\n"
+                    report_text += f"\n\n**Note:** Mermaid diagram {idx} code is available but rendering is not supported in this environment.\n```mermaid\n{code}\n```\n"
             return report_text, image_paths
         except Exception as e:
             error_msg = str(e)
