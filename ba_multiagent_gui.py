@@ -26,6 +26,59 @@ DELIVERABLES = [
     ("README.md", AGENTS["technical_writer"].system_message + "\n\nTask: Write a README explaining the generated files.")
 ]
 
+REPORT_PROMPT_TEMPLATE = '''
+You are an expert Business Analyst specializing in banking and fintech. Given the following business problem/objective, generate a complete business analysis report in Markdown format. The report must include:
+
+1. Stakeholder Map (as a Mermaid diagram in a code block)
+2. Process Flow of the new loan uptake journey (as a Mermaid diagram in a code block)
+3. Business Requirement Document (BRD)
+4. Functional Requirement Specification (FRS), including Non-Functional Requirements
+5. Use Case Diagrams and detailed Scenarios for three specific cases
+6. Data Mapping Sheet and Data Requirements Analysis (as a Markdown table)
+7. Functional Scope Summary (In/Out of Scope)
+8. Suggested KPIs for success measurement
+
+IMPORTANT: For the Stakeholder Map and Process Flow, ALWAYS use the following exact Mermaid code blocks, only changing the section title to match the business case. Do NOT generate any other Mermaid code or syntax. This ensures compatibility with Mermaid version 11.5.0.
+
+Stakeholder Map:
+```mermaid
+flowchart TD
+    A[Sponsor] --> B[Project Steering Committee]
+    B --> C[Business Owners]
+    B --> D[IT Leadership]
+    C --> E[Product Management]
+    C --> F[Marketing Department]
+    D --> G[Mobile App Development Team]
+    D --> H[Data Engineering Team]
+    D --> I[Cybersecurity Team]
+    E --> J[Sales Team]
+    F --> K[Customer Service]
+    L[End Users] --> M[External Regulators]
+```
+
+Process Flow:
+```mermaid
+flowchart TD
+    A[Customer Opens App] --> B[Login Authentication]
+    B --> C[View Dashboard]
+    C --> D[Check Recommendations]
+    D --> E[Select Product]
+    E --> F[Complete Application]
+    F --> G[Submit for Approval]
+    G --> H[Receive Decision]
+    H --> I[Product/Service Delivered]
+```
+
+- DO NOT use any advanced features like styling, colors, or complex formatting
+- Keep diagrams simple with basic rectangles and arrows only
+- Test your syntax before outputting
+
+Format each section with a clear Markdown header (e.g., ## 01. Stakeholder Map) and use code blocks for Mermaid diagrams. Make the report clear, structured, and actionable.
+
+Business Problem:
+{business_problem}
+'''
+
 def call_agent(prompt):
     try:
         response = client.models.generate_content(
@@ -65,14 +118,28 @@ def read_file_content(file_path):
     except Exception as e:
         return f"Error reading file: {str(e)}"
 
+def generate_full_report(business_problem):
+    prompt = REPORT_PROMPT_TEMPLATE.format(business_problem=business_problem)
+    try:
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt
+        )
+        report_text = response.text if response.text else "No content generated."
+        return report_text
+    except Exception as e:
+        return f"Error generating report: {str(e)}"
+
 def gradio_interface():
     with gr.Blocks() as demo:
         gr.Markdown("# Agentic BA Multi-Agent System (Gemini)")
         business_problem = gr.Textbox(label="Business Problem / Objective", value=DEFAULT_BUSINESS_PROBLEM, lines=8)
         run_btn = gr.Button("Generate All Deliverables")
+        full_report_btn = gr.Button("Generate Full Report")
         status = gr.Textbox(label="Status / Progress", interactive=False, lines=8)
         file_list = gr.Dropdown(choices=list_output_files(), label="Select Output File", interactive=True, allow_custom_value=True)
         file_content = gr.Textbox(label="File Content", lines=20, interactive=False)
+        full_report_output = gr.Markdown(label="Full Report Output")
         download_btn = gr.File(label="Download Selected File", interactive=False)
 
         def run_and_update(bp):
@@ -85,8 +152,13 @@ def gradio_interface():
                 return content, selected
             return "", None
 
+        def run_full_report(bp):
+            report = generate_full_report(bp)
+            return report
+
         run_btn.click(run_and_update, inputs=[business_problem], outputs=[status, file_list, file_content, download_btn])
         file_list.change(show_file_content, inputs=file_list, outputs=[file_content, download_btn])
+        full_report_btn.click(run_full_report, inputs=[business_problem], outputs=[full_report_output])
     return demo
 
 if __name__ == "__main__":
