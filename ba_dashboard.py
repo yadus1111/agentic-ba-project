@@ -390,71 +390,21 @@ def generate_report_and_images(business_problem):
                 return f"Error generating report: {error_msg}", []
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
-def render_mermaid_diagram(mermaid_code, diagram_id=None):
-    """Render Mermaid code to HTML with proper script loading"""
-    if not diagram_id:
-        diagram_id = f"mermaid-{int(time.time())}"
-    
-    return f"""
-    <div class="mermaid" id="{diagram_id}">
-    {mermaid_code}
-    </div>
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({{
-            startOnLoad: true,
-            theme: 'default',
-            flowchart: {{
-                useMaxWidth: true,
-                htmlLabels: true,
-                curve: 'basis'
-            }},
-            securityLevel: 'loose'
-        }});
-    </script>
-    """
-
-def ensure_mermaid_diagrams(report):
-    """Convert Mermaid code blocks to visual diagrams using proper Gradio HTML approach"""
-    import re
-    
-    # Find all Mermaid code blocks
-    mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
-    mermaid_blocks = re.findall(mermaid_pattern, report, re.DOTALL)
-    
-    if not mermaid_blocks:
-        return report
-    
-    # Create HTML for each diagram using proper Gradio + Mermaid approach
-    diagram_html = ""
-    for i, code in enumerate(mermaid_blocks):
-        # Clean the code
-        code = code.strip()
-        if not code or 'flowchart' not in code:
-            continue
-            
-        # Create unique ID
-        diagram_id = f"mermaid-diagram-{i}-{int(time.time())}"
-        
-        # Create HTML container for the diagram using proper Mermaid approach
-        diagram_html += f"""
-        <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
-            {render_mermaid_diagram(code, diagram_id)}
-        </div>
-        """
-    
-    # Replace Mermaid code blocks with visual diagrams
-    if diagram_html:
-        # Replace the first Mermaid code block with first diagram
-        report = re.sub(mermaid_pattern, diagram_html, report, count=1)
-        
-        # Replace remaining Mermaid code blocks with just diagrams
-        remaining_diagrams = diagram_html.split('<div style="margin: 20px 0;')[1:]  # Skip the first one
-        for diagram in remaining_diagrams:
-            diagram_html_full = '<div style="margin: 20px 0;' + diagram
-            report = re.sub(mermaid_pattern, diagram_html_full, report, count=1)
-    
-    return report
+def mermaid_blocks_to_html(report):
+    """Replace all ```mermaid code blocks with Mermaid HTML+JS for Gradio rendering."""
+    pattern = r"```mermaid\s*\n(.*?)\n```"
+    def repl(match):
+        code = match.group(1)
+        return f'''
+<div class="mermaid">
+{code}
+</div>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({{ startOnLoad:true }});
+</script>
+'''
+    return re.sub(pattern, repl, report, flags=re.DOTALL)
 
 def gradio_dashboard():
     with gr.Blocks(css="""
@@ -655,60 +605,14 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
                 return "Please enter a business problem first.", "Ready to generate report..."
             status_msg = "Generating report... (this may take a moment)"
             report, _ = generate_report_and_images(bp)
-            
-            # Convert markdown to HTML first
-            import markdown
-            html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
-            
-            # NOW convert any remaining Mermaid code blocks to HTML
-            # Find all Mermaid code blocks in the HTML
-            import re
-            mermaid_pattern = r'<pre><code class="language-mermaid">(.*?)</code></pre>'
-            mermaid_blocks = re.findall(mermaid_pattern, html_report, re.DOTALL)
-            
-            if mermaid_blocks:
-                for i, code in enumerate(mermaid_blocks):
-                    # Clean the code
-                    code = code.strip()
-                    if not code or 'flowchart' not in code:
-                        continue
-                        
-                    # Create unique ID
-                    diagram_id = f"mermaid-diagram-{i}-{int(time.time())}"
-                    
-                    # Create Mermaid HTML with script
-                    mermaid_html = f"""
-                    <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
-                        <div class="mermaid" id="{diagram_id}">
-                        {code}
-                        </div>
-                        <script type="module">
-                            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.esm.min.mjs';
-                            mermaid.initialize({{
-                                startOnLoad: true,
-                                theme: 'default',
-                                flowchart: {{
-                                    useMaxWidth: true,
-                                    htmlLabels: true,
-                                    curve: 'basis'
-                                }},
-                                securityLevel: 'loose'
-                            }});
-                        </script>
-                    </div>
-                    """
-                    
-                    # Replace the code block with Mermaid HTML
-                    old_code_block = f'<pre><code class="language-mermaid">{code}</code></pre>'
-                    html_report = html_report.replace(old_code_block, mermaid_html)
-            
+            # Replace mermaid code blocks with HTML+JS
+            html_report = mermaid_blocks_to_html(report)
             # Wrap in a container with proper styling
             html_report = f"""
             <div class="html-report">
                 {html_report}
             </div>
             """
-            
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
             return html_report, final_status
 
