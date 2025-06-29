@@ -391,22 +391,70 @@ def generate_report_and_images(business_problem):
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
 def ensure_mermaid_diagrams(report):
-    # Only insert diagrams after section headers that match keywords
-    keywords = [
-        (r"stakeholder.*map", '''```mermaid\nflowchart TD\n    A[Sponsor] --> B[Project Steering Committee]\n    B --> C[Business Owners]\n    B --> D[IT Leadership]\n    C --> E[Product Management]\n    C --> F[Marketing Department]\n    D --> G[Mobile App Development Team]\n    D --> H[Data Engineering Team]\n    D --> I[Cybersecurity Team]\n    E --> J[Sales Team]\n    F --> K[Customer Service]\n    L[End Users] --> M[External Regulators]\n```'''),
-        (r"process.*flow|flow\s*chart|workflow", '''```mermaid\nflowchart TD\n    A[Customer Opens App] --> B[Login Authentication]\n    B --> C[View Dashboard]\n    C --> D[Check Recommendations]\n    D --> E[Select Product]\n    E --> F[Complete Application]\n    F --> G[Submit for Approval]\n    G --> H[Receive Decision]\n    H --> I[Product/Service Delivered]\n```'''),
-        (r"use case.*diagram|use case.*chart|use case.*graph|use case", '''```mermaid\nflowchart TD\n    Actor1[Customer] -->|Interacts with| System[Mobile Banking App]\n    System -->|Recommends| Offer[Personalized Loan Offer]\n```'''),
-        (r"data.*mapping|data.*diagram|data.*chart|data.*flow", '''```mermaid\nflowchart TD\n    DataSource[Customer Data] --> Engine[Data Analytics Engine]\n    Engine --> Offers[Personalized Loan Offers]\n    Offers --> App[Mobile Banking App]\n```'''),
-    ]
-    for pattern, template in keywords:
-        # Only match section headers (lines starting with # or ##)
-        matches = list(re.finditer(rf"^#+\s*(.*{pattern}.*)$", report, re.IGNORECASE | re.MULTILINE))
-        for match in matches:
-            section_start = match.end()
-            next_300 = report[section_start:section_start+300]
-            if '```mermaid' not in next_300:
-                insert_pos = section_start
-                report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
+    """Convert Mermaid code blocks to visual diagrams in the report"""
+    import re
+    
+    # Find all Mermaid code blocks
+    mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
+    mermaid_blocks = re.findall(mermaid_pattern, report, re.DOTALL)
+    
+    if not mermaid_blocks:
+        return report
+    
+    # Create HTML for each diagram
+    diagram_html = ""
+    for i, code in enumerate(mermaid_blocks):
+        # Clean the code
+        code = code.strip()
+        if not code or 'flowchart' not in code:
+            continue
+            
+        # Create unique ID
+        diagram_id = f"mermaid-diagram-{i}"
+        
+        # Create HTML container for the diagram
+        diagram_html += f"""
+        <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
+            <div class="mermaid" id="{diagram_id}">
+{code}
+            </div>
+        </div>
+        """
+    
+    # Replace Mermaid code blocks with visual diagrams
+    if diagram_html:
+        # Add Mermaid.js script at the beginning
+        mermaid_script = """
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+        <script>
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true
+                }
+            });
+            
+            // Render all diagrams when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    mermaid.init();
+                }, 1000);
+            });
+        </script>
+        """
+        
+        # Replace the first Mermaid code block with script + first diagram
+        first_replacement = mermaid_script + diagram_html
+        report = re.sub(mermaid_pattern, first_replacement, report, count=1)
+        
+        # Replace remaining Mermaid code blocks with just diagrams
+        remaining_diagrams = diagram_html.split('<div style="margin: 20px 0;')[1:]  # Skip the first one
+        for diagram in remaining_diagrams:
+            diagram_html_full = '<div style="margin: 20px 0;' + diagram
+            report = re.sub(mermaid_pattern, diagram_html_full, report, count=1)
+    
     return report
 
 def gradio_dashboard():
@@ -530,6 +578,63 @@ def gradio_dashboard():
         border-radius: 10px;
         border: 2px solid #e0e7ff;
     }
+    /* HTML report styling */
+    .html-report {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', Arial, sans-serif;
+        line-height: 1.6;
+    }
+    .html-report h1 {
+        color: #6366f1;
+        font-size: 2.5em;
+        margin-bottom: 0.5em;
+        border-bottom: 3px solid #e0e7ff;
+        padding-bottom: 10px;
+    }
+    .html-report h2 {
+        color: #06b6d4;
+        font-size: 2em;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+    .html-report h3 {
+        color: #3730a3;
+        font-size: 1.5em;
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
+    .html-report p {
+        margin-bottom: 15px;
+        font-size: 1.1em;
+    }
+    .html-report table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .html-report th, .html-report td {
+        border: 1px solid #e0e7ff;
+        padding: 12px 15px;
+        text-align: left;
+    }
+    .html-report th {
+        background: #6366f1;
+        color: white;
+        font-weight: bold;
+    }
+    .html-report tr:nth-child(even) {
+        background: #f8fafc;
+    }
+    .html-report tr:hover {
+        background: #f0f9ff;
+    }
     """) as demo:
         
         with gr.Row():
@@ -537,66 +642,14 @@ def gradio_dashboard():
         gr.Markdown("""
 Welcome to your AI-powered business analysis system! Generate comprehensive business analysis deliverables with a single click.
 
-**📊 Diagrams**: Copy the Mermaid code from your report and use the viewer below!
+**🎯 Diagrams will render automatically in the report!**
         """)
         gr.Markdown("⚠️ **Note:** If you encounter API overload errors, the system will automatically retry up to 3 times with increasing delays.")
         
         business_problem = gr.Textbox(label="Business Problem / Objective", value="", lines=8, placeholder="Paste your business case or objective here...")
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
-        report_output = gr.Markdown(label="Generated Report")
-        
-        # Add Mermaid viewer component
-        gr.HTML("""
-        <div style="margin: 30px 0; padding: 20px; background: #f8fafc; border-radius: 15px; border: 2px solid #e0e7ff;">
-            <h3 style="color: #3730a3; margin-bottom: 15px;">🔍 Mermaid Diagram Viewer</h3>
-            <p style="margin-bottom: 15px;">Copy Mermaid code from your report and paste it below to see visual diagrams:</p>
-            <textarea id="mermaid-input" rows="6" cols="80" placeholder="Paste your Mermaid code here..." style="width: 100%; padding: 10px; border: 1px solid #a5b4fc; border-radius: 8px; font-family: monospace;"></textarea>
-            <br><br>
-            <button onclick="renderMermaid()" style="background: linear-gradient(90deg, #6366f1 0%, #06b6d4 50%, #f472b6 100%); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Render Diagram</button>
-            <div id="mermaid-output" style="margin-top: 20px; text-align: center;"></div>
-        </div>
-        
-        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-        <script>
-            mermaid.initialize({
-                startOnLoad: true,
-                theme: 'default',
-                flowchart: {
-                    useMaxWidth: true,
-                    htmlLabels: true
-                }
-            });
-            
-            function renderMermaid() {
-                const input = document.getElementById('mermaid-input');
-                const output = document.getElementById('mermaid-output');
-                const code = input.value.trim();
-                
-                if (!code) {
-                    alert('Please paste some Mermaid code first!');
-                    return;
-                }
-                
-                output.innerHTML = '';
-                
-                try {
-                    const container = document.createElement('div');
-                    container.className = 'mermaid';
-                    container.id = 'mermaid-' + Date.now();
-                    output.appendChild(container);
-                    
-                    mermaid.render(container.id, code).then(({svg}) => {
-                        container.innerHTML = svg;
-                    }).catch(error => {
-                        output.innerHTML = '<div style="color: red; padding: 15px; border: 2px solid red; border-radius: 8px; background: #fef2f2;"><strong>Error rendering diagram:</strong><br>' + error.message + '</div>';
-                    });
-                } catch (error) {
-                    output.innerHTML = '<div style="color: red; padding: 15px; border: 2px solid red; border-radius: 8px; background: #fef2f2;"><strong>Error:</strong> ' + error.message + '</div>';
-                }
-            }
-        </script>
-        """)
+        report_output = gr.HTML(label="Generated Report")
 
         def generate_report(bp):
             if not bp.strip():
@@ -604,8 +657,14 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
             status_msg = "Generating report... (this may take a moment)"
             report, _ = generate_report_and_images(bp)
             report = ensure_mermaid_diagrams(report)
+            
+            # Convert markdown to HTML for better rendering
+            import markdown
+            html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
+            html_report = f'<div class="html-report">{html_report}</div>'
+            
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-            return report, final_status
+            return html_report, final_status
 
         run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status])
         
