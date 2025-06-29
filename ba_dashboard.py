@@ -9,7 +9,7 @@ import random
 import copy
 
 # Set up Gemini client using environment variable
-client = genai.Client()
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -20,12 +20,31 @@ You are an expert Business Analyst specializing in banking and fintech. Given th
 
 1. Stakeholder Map (as a Mermaid diagram in a code block)
    - Use the business problem and list all unique stakeholders relevant to this scenario. Do not use a generic template.
+   - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
+   - NO special characters, NO advanced formatting, NO styling
+   - Example format:
+   ```mermaid
+   flowchart TD
+       A[Stakeholder 1] --> B[Stakeholder 2]
+       B --> C[Stakeholder 3]
+   ```
+
 2. Process Flow of the new loan uptake journey (as a Mermaid diagram in a code block)
    - Use the business problem and describe the unique steps for this specific journey. Do not use a generic template.
+   - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
+   - NO special characters, NO advanced formatting, NO styling
+   - Example format:
+   ```mermaid
+   flowchart TD
+       A[Step 1] --> B[Step 2]
+       B --> C[Step 3]
+   ```
+
 3. Business Requirement Document (BRD)
 4. Functional Requirement Specification (FRS), including Non-Functional Requirements
 5. Use Case Diagrams and detailed Scenarios for three specific cases
    - For each use case, generate a unique, scenario-specific diagram and description. Each diagram must visualize the specific actors, steps, and interactions for that use case, not a generic flow. Use the business problem and the use case scenario details.
+   - IMPORTANT: Use ONLY simple Mermaid syntax for use case diagrams
 6. Data Mapping Sheet and Data Requirements Analysis (as a Markdown table)
     - For the Data Mapping Sheet, use the following columns:
         | Data Element | Source System(s) | Data Type | Frequency/Freshness | Purpose for Personalization | Availability (Y/N) | PII/Sensitivity (PII, Sensitive, Public) | Data Owner | Transformation/Processing | Remarks/Privacy Concerns |
@@ -33,7 +52,13 @@ You are an expert Business Analyst specializing in banking and fintech. Given th
 7. Functional Scope Summary (In/Out of Scope)
 8. Suggested KPIs for success measurement
 
-IMPORTANT: For all diagrams, use only simple rectangles and arrows, no special characters or advanced formatting. Each diagram must be unique and tailored to the scenario, not generic. Test your syntax for Mermaid version 11.5.0.
+IMPORTANT MERMAID RULES:
+- Use ONLY: flowchart TD
+- Use ONLY: basic rectangles [text] and arrows -->
+- NO special characters: (), &, /, commas in node labels
+- NO advanced features: styling, subgraphs, classDef, etc.
+- Keep node labels simple and short
+- Test your syntax for Mermaid version 11.5.0
 
 Format each section with a clear Markdown header (e.g., ## 01. Stakeholder Map) and use code blocks for Mermaid diagrams. Make the report clear, structured, and actionable.
 
@@ -89,8 +114,33 @@ AGENTS = {
 }
 
 STRICT_MERMAID_TEMPLATES = {
-    'stakeholder': '''flowchart TD\n    A[Sponsor] --> B[Project Steering Committee]\n    B --> C[Business Owners]\n    B --> D[IT Leadership]\n    C --> E[Product Management]\n    C --> F[Marketing Department]\n    D --> G[Mobile App Development Team]\n    D --> H[Data Engineering Team]\n    D --> I[Cybersecurity Team]\n    E --> J[Sales Team]\n    F --> K[Customer Service]\n    L[End Users] --> M[External Regulators]\n''',
-    'process': '''flowchart TD\n    A[Customer Opens App] --> B[Login Authentication]\n    B --> C[View Dashboard]\n    C --> D[Check Recommendations]\n    D --> E[Select Product]\n    E --> F[Complete Application]\n    F --> G[Submit for Approval]\n    G --> H[Receive Decision]\n    H --> I[Product/Service Delivered]\n''',
+    'stakeholder': '''flowchart TD
+    A[Bank Customer] --> B[Mobile App]
+    B --> C[Personalization Engine]
+    C --> D[Data Sources]
+    D --> E[Core Banking System]
+    D --> F[Transaction System]
+    D --> G[KYC System]
+    B --> H[Loan Products]
+    H --> I[Home Loan]
+    H --> J[Personal Loan]
+    H --> K[Auto Loan]
+    H --> L[Education Loan]
+    B --> M[Bank Staff]
+    M --> N[Product Managers]
+    M --> O[IT Team]
+    M --> P[Compliance Team]
+''',
+    'process': '''flowchart TD
+    A[Customer Login] --> B[View Dashboard]
+    B --> C[Check Recommendations]
+    C --> D[View Loan Offers]
+    D --> E[Select Product]
+    E --> F[View Details]
+    F --> G[Apply for Loan]
+    G --> H[Submit Application]
+    H --> I[Receive Decision]
+''',
 }
 
 # Helper to identify section type from code or context
@@ -115,35 +165,85 @@ def strict_mermaid_prompt(section_type, business_problem, use_case_details=None,
 def sanitize_mermaid_code(code):
     # Remove or replace problematic characters in node labels
     def clean_label(label):
-        # Remove parentheses, ampersands, slashes, commas, and extra spaces
-        label = re.sub(r'[()&/,]', '', label)
+        # Remove parentheses, ampersands, slashes, commas, quotes, and extra spaces
+        label = re.sub(r'[()&/,"\']', '', label)
         label = re.sub(r'\s+', ' ', label)
+        # Remove any remaining special characters that might cause issues
+        label = re.sub(r'[^\w\s\-]', '', label)
         return label.strip()
-    # Replace node labels in brackets
-    code = re.sub(r'\[(.*?)\]', lambda m: f"[{clean_label(m.group(1))}]", code)
-    # Ensure only one edge per line
+    
+    # Clean the code
     lines = code.splitlines()
     clean_lines = []
+    
     for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+            
+        # Handle flowchart declaration
+        if line.startswith('flowchart') or line.startswith('graph'):
+            clean_lines.append(line)
+            continue
+            
+        # Handle node definitions with arrows
         if '-->' in line:
             parts = line.split('-->')
             left = parts[0].strip()
             for right in parts[1:]:
                 right = right.strip()
                 if right:
-                    clean_lines.append(f"{left} --> {right}")
+                    # Clean node labels in brackets
+                    left_clean = re.sub(r'\[(.*?)\]', lambda m: f"[{clean_label(m.group(1))}]", left)
+                    right_clean = re.sub(r'\[(.*?)\]', lambda m: f"[{clean_label(m.group(1))}]", right)
+                    clean_lines.append(f"{left_clean} --> {right_clean}")
                     left = right
         else:
-            clean_lines.append(line)
+            # Handle standalone node definitions
+            line_clean = re.sub(r'\[(.*?)\]', lambda m: f"[{clean_label(m.group(1))}]", line)
+            clean_lines.append(line_clean)
+    
     return '\n'.join(clean_lines)
 
 def validate_mermaid_code(code):
-    # Only allow flowchart TD or graph TD/LR, no style, subgraph, or advanced features
-    allowed = re.compile(r'^(flowchart TD|graph TD|graph LR)', re.MULTILINE)
-    if not allowed.search(code):
+    # Only allow flowchart TD, no other graph types
+    if not re.search(r'^flowchart TD', code, re.MULTILINE):
         return False
-    if re.search(r'style |subgraph |classDef |click |linkStyle |end', code):
+    
+    # Check for forbidden features
+    forbidden_patterns = [
+        r'style\s+',
+        r'subgraph\s+',
+        r'classDef\s+',
+        r'click\s+',
+        r'linkStyle\s+',
+        r'end\s+',
+        r'class\s+',
+        r'%%',
+        r'-->|',
+        r'---|',
+        r'==>',
+        r'-.->',
+        r'==>',
+        r':::',
+        r'{{',
+        r'}}',
+        r'\(\(',
+        r'\)\)',
+        r'\[\(',
+        r'\)\]',
+        r'\(\[',
+        r'\]\)'
+    ]
+    
+    for pattern in forbidden_patterns:
+        if re.search(pattern, code):
+            return False
+    
+    # Check for problematic characters in node labels
+    if re.search(r'\[[^\]]*[()&/,"\'\{\}\[\]][^\]]*\]', code):
         return False
+    
     return True
 
 def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
@@ -204,57 +304,21 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
                                 strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
                             elif section_type == 'stakeholder':
                                 strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
-                    else:
-                        raise Exception('No response from strict AI prompt')
                     
-                    with open(mmd_path, "w", encoding="utf-8") as f:
-                        f.write(strict_code)
-                    
-                    # Try CLI with strict code
-                    for attempt in range(2):
-                        try:
-                            result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                            if os.path.exists(png_path):
-                                image_paths.append(png_path)
-                                fixed_blocks.append((idx, strict_code, 'strict AI prompt'))
-                                cli_success = True
-                                break
-                        except Exception as e2:
-                            last_cli_error = str(e2)
-                            time.sleep(0.5)
-                    
-                    if cli_success:
-                        continue
-                    
-                    # Template fallback
-                    if section_type == 'process':
-                        template_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
-                    elif section_type == 'stakeholder':
-                        template_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
-                    else:
-                        template_code = code
-                    
-                    with open(mmd_path, "w", encoding="utf-8") as f:
-                        f.write(template_code)
-                    
-                    for attempt in range(2):
-                        try:
-                            result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                            if os.path.exists(png_path):
-                                image_paths.append(png_path)
-                                fixed_blocks.append((idx, template_code, 'template fallback'))
-                                cli_success = True
-                                break
-                        except Exception as e3:
-                            last_cli_error = str(e3)
-                            time.sleep(0.5)
-                    
-                    if cli_success:
-                        continue
+                        with open(mmd_path, "w", encoding="utf-8") as f:
+                            f.write(strict_code)
                         
-                except Exception as e4:
-                    error_blocks.append((idx, code, f"Strict AI prompt and template failed: {e4}\nCLI error: {last_cli_error}"))
-                    continue
+                        try:
+                            result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                            if os.path.exists(png_path):
+                                image_paths.append(png_path)
+                                fixed_blocks.append((idx, strict_code))
+                                cli_success = True
+                                break
+                        except Exception as e:
+                            pass
+                except Exception as e:
+                    pass
         
         error_blocks.append((idx, code, f"Initial and fallback methods failed. CLI error: {last_cli_error}"))
     
@@ -354,8 +418,8 @@ def generate_report_and_images(business_problem):
             image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
             # Append info about fixed/fallback diagrams
             if fixed_blocks:
-                for idx, code, method in fixed_blocks:
-                    report_text += f"\n\n**Note:** Mermaid diagram {idx} was generated using {method}.\n```mermaid\n{code}\n```\n"
+                for idx, code in fixed_blocks:
+                    report_text += f"\n\n**Note:** Mermaid diagram {idx} was generated using strict AI prompt.\n```mermaid\n{code}\n```\n"
             if error_blocks:
                 for idx, code, err in error_blocks:
                     report_text += f"\n\n**Warning:** Mermaid diagram {idx} could not be rendered.\nError: {err}\n\n```mermaid\n{code}\n```\n"
@@ -517,7 +581,6 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
         report_output = gr.Markdown(label="Generated Report")
-        copy_btn = gr.Button("Copy Report to Clipboard")
 
         def generate_report(bp):
             if not bp.strip():
@@ -528,14 +591,8 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
             return report, final_status
 
-        def copy_report(report):
-            import pyperclip
-            pyperclip.copy(report)
-            return "Copied to clipboard!"
-
         run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status])
-        copy_btn.click(copy_report, inputs=[report_output], outputs=[])
     return demo
 
 if __name__ == "__main__":
-    gradio_dashboard().launch(share=True, server_name="0.0.0.0", server_port=7880) 
+    gradio_dashboard().launch(share=True, server_name="0.0.0.0", server_port=7881) 

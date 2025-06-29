@@ -1,14 +1,3 @@
----
-title: Agentic Business Analysis Dashboard
-emoji: 🤖
-colorFrom: blue
-colorTo: purple
-sdk: gradio
-sdk_version: 4.44.0
-app_file: app.py
-pinned: false
----
-
 # Agentic Business Analysis Dashboard
 
 An AI-powered dashboard for generating comprehensive business analysis reports using specialized AI agents.
@@ -48,4 +37,4 @@ Add your Gemini API key as a secret in Hugging Face Spaces:
 
 ---
 
-*Built with ❤️ using Agentic AI principles*
+*Built with ❤️ using Agentic AI principles* 

@@ -1,15 +1,12 @@
 flowchart TD
-    A[Head of Digital Banking - Sponsor] --> B[Project Steering Committee]
-    B --> C[Retail Lending Business Owners]
-    B --> D[Chief Technology Officer (CTO)]
-    C --> E[Mobile App Product Management]
-    C --> F[Marketing Department]
-    C --> G[Sales Team]
-    D --> H[Mobile App Development Team]
-    D --> I[Data Engineering Team]
-    D --> J[Cybersecurity Team]
-    D --> K[IT Operations]
-    E --> L[Customer Service]
-    M[End Users (Customers)] --> N[Legal & Compliance]
-    M --> O[Credit Risk Department]
-    N --> P[External Regulators]
+A[Fraud Risk Mgmt Team] --> B[Cybersecurity Team]
+A --> C[Data Science ML Unit]
+B --> C
+A --> D[Compliance Legal]
+B --> D
+E[Mobile Banking Prod Team] --> A
+E --> B
+E --> F[DevOps Infra]
+G[End Users Customers] --> E
+E --> A
+C --> F

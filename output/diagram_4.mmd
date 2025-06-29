@@ -1,13 +1,5 @@
-graph TD
-    A[Customer] -- Initiates --> UC1((View Personalized Education Loan Offer))
-
-    subgraph Mobile Banking App & Personalization Engine
-        UC1 --> UC2(Receive Targeted Offer)
-        UC2 --> UC3(Identify Education Expense Indicators)
-        UC3 --> UC4(Check Eligibility for Education Loan)
-        UC3 -- includes --> UC5(Retrieve Customer Transaction Data)
-        UC3 -- includes --> UC6(Retrieve Customer Family Data - if available and consented)
-        UC3 -- includes --> UC7(Generate Education Loan Offer)
-    end
-
-    A --> UC1
+flowchart TD
+A[Customer OR Attacker] --> B[Multiple Login Attempts]
+B --> C[AI Fraud System]
+C --> D[Temporarily Lock Account]
+D --> E[Customer Notification SMS Email]

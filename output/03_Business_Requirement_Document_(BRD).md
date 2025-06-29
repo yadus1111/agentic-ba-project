@@ -1,2 +1,0 @@
-# Business Requirement Document (BRD)
-

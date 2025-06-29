@@ -19,14 +19,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
-
-# Virtual environments
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
 
 # Environment variables
 .env
@@ -51,6 +43,14 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
+# Gradio
+.gradio/
+
+# Output files
+output/
+*.png
+*.mmd
+
 # Logs
 *.log
 logs/
@@ -58,9 +58,3 @@ logs/
 # Temporary files
 *.tmp
 *.temp
-
-# API Keys (remove if you want to include them)
-# config.py
-
-# Output files (optional - remove if you want to include generated reports)
-# output/ 

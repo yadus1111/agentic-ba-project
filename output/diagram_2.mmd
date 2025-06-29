@@ -1,21 +1,5 @@
-graph TD
-    A[Customer Opens Mobile Banking App] --> B{App Authenticates User};
-    B --> C[App Loads Personalized Dashboard/Homepage];
-    C --> D[Data Analytics Engine (DAE) Processes Customer Data];
-    D --> E[DAE Identifies Relevant Loan Products & Offers];
-    E --> F{Personalized Loan Offers Displayed on Dashboard/Dedicated Section};
-    F --> G{Customer Sees Relevant Offer?};
-    G -- Yes --> H[Customer Taps on Offer for Details];
-    H --> I[Detailed Loan Information & Eligibility Criteria Displayed];
-    I --> J{Customer Interested?};
-    J -- Yes --> K[Customer Initiates Loan Application];
-    K --> L[Application Guided Process (e.g., Pre-filled Forms, Document Upload)];
-    L --> M[Application Submitted to Core Banking/Loan Origination System];
-    M --> N{Application Decision (Automated/Manual)};
-    N -- Approved --> O[Customer Notified of Approval & Disbursement Options];
-    O --> P[Loan Disbursed];
-    P --> Q[End: Loan Account Activated];
-    J -- No --> C;
-    G -- No --> R[Generic Loan Product Discovery (Fallback)];
-    R --> S[End: Customer Browses General Offers];
-    B --> Z[End: Authentication Failed];
+flowchart TD
+A[Customer Logs In] --> B[Transaction Initiated]
+B --> C[Real Time AI Anomaly Scoring]
+C --> D[Action Triggered eg Flag OTP Alert Block]
+D --> E[Customer Notification OR Internal Escalation]
