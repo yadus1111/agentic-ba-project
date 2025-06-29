@@ -9,6 +9,7 @@ import random
 import copy
 from datetime import datetime
 import json
+import markdown
 
 # Set up Gemini client using environment variable
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -390,6 +391,24 @@ def generate_report_and_images(business_problem):
                 return f"Error generating report: {error_msg}", []
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
+def extract_and_render_mermaid_images(md_text, output_dir=OUTPUT_DIR):
+    """Extract Mermaid code blocks, render as PNG images, and return image paths."""
+    mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
+    mermaid_blocks = re.findall(mermaid_pattern, md_text, re.DOTALL)
+    image_paths = []
+    for idx, code in enumerate(mermaid_blocks, 1):
+        mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
+        png_path = os.path.join(output_dir, f"diagram_{idx}.png")
+        with open(mmd_path, "w", encoding="utf-8") as f:
+            f.write(code)
+        try:
+            subprocess.run(["mmdc", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, timeout=30)
+            if os.path.exists(png_path):
+                image_paths.append(png_path)
+        except Exception as e:
+            print(f"Failed to render Mermaid diagram {idx}: {e}")
+    return image_paths
+
 def mermaid_blocks_to_html(report):
     """Replace all ```mermaid code blocks with Mermaid HTML+JS for Gradio rendering."""
     pattern = r"```mermaid\s*\n(.*?)\n```"
@@ -599,24 +618,26 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
         report_output = gr.HTML(label="Generated Report")
+        image_gallery = gr.Gallery(label="Generated Diagrams (PNG)")
 
         def generate_report(bp):
             if not bp.strip():
-                return "Please enter a business problem first.", "Ready to generate report..."
+                return "Please enter a business problem first.", "Ready to generate report...", []
             status_msg = "Generating report... (this may take a moment)"
             report, _ = generate_report_and_images(bp)
-            # Replace mermaid code blocks with HTML+JS
-            html_report = mermaid_blocks_to_html(report)
-            # Wrap in a container with proper styling
+            # Render Mermaid diagrams as images
+            image_paths = extract_and_render_mermaid_images(report)
+            # Convert markdown to HTML for better rendering
+            html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
             html_report = f"""
             <div class="html-report">
                 {html_report}
             </div>
             """
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-            return html_report, final_status
+            return html_report, final_status, image_paths
 
-        run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status])
+        run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status, image_gallery])
         
     return demo
 
