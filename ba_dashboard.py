@@ -1,6 +1,6 @@
 import gradio as gr
 from config import MODEL_NAME
-from google import genai
+import google.generativeai as genai
 import re
 import subprocess
 import os
@@ -9,7 +9,8 @@ import random
 import copy
 
 # Set up Gemini client using environment variable
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel(MODEL_NAME)
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -292,33 +293,23 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
             strict_prompt = strict_mermaid_prompt(section_type, business_problem)
             if strict_prompt:
                 try:
-                    response = client.models.generate_content(
-                        model=MODEL_NAME,
-                        contents=strict_prompt
-                    )
+                    response = model.generate_content(strict_prompt)
                     
                     if response.text:
-                        strict_code = sanitize_mermaid_code(response.text.strip().replace('```mermaid','').replace('```','').strip())
-                        if not validate_mermaid_code(strict_code):
-                            if section_type == 'process':
-                                strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
-                            elif section_type == 'stakeholder':
-                                strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
-                    
-                        with open(mmd_path, "w", encoding="utf-8") as f:
-                            f.write(strict_code)
-                        
-                        try:
-                            result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                            if os.path.exists(png_path):
-                                image_paths.append(png_path)
-                                fixed_blocks.append((idx, strict_code))
-                                cli_success = True
-                                break
-                        except Exception as e:
-                            pass
+                        # Clean and validate the generated code
+                        clean_code = sanitize_mermaid_code(response.text)
+                        if validate_mermaid_code(clean_code):
+                            return clean_code
+                        else:
+                            # Fallback to template
+                            return STRICT_MERMAID_TEMPLATES.get(section_type, f"flowchart TD\n    A[Error] --> B[Could not generate diagram]")
+                    else:
+                        # Fallback to template
+                        return STRICT_MERMAID_TEMPLATES.get(section_type, f"flowchart TD\n    A[Error] --> B[Could not generate diagram]")
                 except Exception as e:
-                    pass
+                    print(f"Error generating strict diagram: {e}")
+                    # Fallback to template
+                    return STRICT_MERMAID_TEMPLATES.get(section_type, f"flowchart TD\n    A[Error] --> B[Could not generate diagram]")
         
         error_blocks.append((idx, code, f"Initial and fallback methods failed. CLI error: {last_cli_error}"))
     
@@ -350,18 +341,13 @@ Main Flow: {use_case['main_flow']}
 Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific actors, steps, and interactions for this use case. Use only rectangles and arrows. No generic diagrams. No advanced formatting. Output only the Mermaid code, no extra text.
 """
     try:
-        response = client.models.generate_content(
-            model=MODEL_NAME,
-            contents=prompt
-        )
+        response = model.generate_content(prompt)
         if response.text:
-            code = response.text.strip().replace('```mermaid','').replace('```','').strip()
-            code = sanitize_mermaid_code(code)
-            return code
+            return response.text
         else:
-            return None
+            return "No content generated."
     except Exception as e:
-        return None
+        return f"Error generating use case diagram: {str(e)}"
 
 def insert_use_case_diagrams(report_text, business_problem):
     use_cases = extract_use_case_details(report_text)
@@ -374,17 +360,13 @@ def insert_use_case_diagrams(report_text, business_problem):
             # fallback: use strict prompt with scenario details
             strict_prompt = f"Given the following business problem: {business_problem}\nAnd this use case: {uc['title']}\nActors: {uc['actors']}\nMain Flow: {uc['main_flow']}\nGenerate a simple Mermaid flowchart TD diagram. Use only rectangles and arrows. No advanced formatting."
             try:
-                response = client.models.generate_content(
-                    model=MODEL_NAME,
-                    contents=strict_prompt
-                )
+                response = model.generate_content(strict_prompt)
                 if response.text:
-                    diagram_code = response.text.strip().replace('```mermaid','').replace('```','').strip()
-                    diagram_code = sanitize_mermaid_code(diagram_code)
+                    return response.text
                 else:
-                    diagram_code = sanitize_mermaid_code(f"flowchart TD\n    A[Actor] --> B[System]")  # last-resort fallback
-            except Exception:
-                diagram_code = sanitize_mermaid_code(f"flowchart TD\n    A[Actor] --> B[System]")  # last-resort fallback
+                    return "No content generated."
+            except Exception as e:
+                return f"Error generating use case diagram: {str(e)}"
         # Insert or replace diagram in the report
         uc_pattern = re.compile(rf"(\*\*Use Case {uc['idx']}:\*\*.*?\*\*Main Flow:\*\*.*?)(\n\n|\Z)", re.DOTALL)
         match = uc_pattern.search(new_report)
@@ -408,10 +390,7 @@ def generate_report_and_images(business_problem):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            response = client.models.generate_content(
-                model=MODEL_NAME,
-                contents=prompt
-            )
+            response = model.generate_content(prompt)
             report_text = response.text if response.text else "No content generated."
             # --- Insert unique use case diagrams ---
             report_text = insert_use_case_diagrams(report_text, business_problem)
