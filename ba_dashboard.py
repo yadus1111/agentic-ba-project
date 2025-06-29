@@ -655,11 +655,52 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
                 return "Please enter a business problem first.", "Ready to generate report..."
             status_msg = "Generating report... (this may take a moment)"
             report, _ = generate_report_and_images(bp)
-            report = ensure_mermaid_diagrams(report)
             
-            # Convert markdown to HTML for better rendering
+            # Convert markdown to HTML first
             import markdown
             html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
+            
+            # NOW convert any remaining Mermaid code blocks to HTML
+            # Find all Mermaid code blocks in the HTML
+            import re
+            mermaid_pattern = r'<pre><code class="language-mermaid">(.*?)</code></pre>'
+            mermaid_blocks = re.findall(mermaid_pattern, html_report, re.DOTALL)
+            
+            if mermaid_blocks:
+                for i, code in enumerate(mermaid_blocks):
+                    # Clean the code
+                    code = code.strip()
+                    if not code or 'flowchart' not in code:
+                        continue
+                        
+                    # Create unique ID
+                    diagram_id = f"mermaid-diagram-{i}-{int(time.time())}"
+                    
+                    # Create Mermaid HTML with script
+                    mermaid_html = f"""
+                    <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
+                        <div class="mermaid" id="{diagram_id}">
+                        {code}
+                        </div>
+                        <script type="module">
+                            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.esm.min.mjs';
+                            mermaid.initialize({{
+                                startOnLoad: true,
+                                theme: 'default',
+                                flowchart: {{
+                                    useMaxWidth: true,
+                                    htmlLabels: true,
+                                    curve: 'basis'
+                                }},
+                                securityLevel: 'loose'
+                            }});
+                        </script>
+                    </div>
+                    """
+                    
+                    # Replace the code block with Mermaid HTML
+                    old_code_block = f'<pre><code class="language-mermaid">{code}</code></pre>'
+                    html_report = html_report.replace(old_code_block, mermaid_html)
             
             # Wrap in a container with proper styling
             html_report = f"""
