@@ -390,6 +390,30 @@ def generate_report_and_images(business_problem):
                 return f"Error generating report: {error_msg}", []
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
+def render_mermaid_diagram(mermaid_code, diagram_id=None):
+    """Render Mermaid code to HTML with proper script loading"""
+    if not diagram_id:
+        diagram_id = f"mermaid-{int(time.time())}"
+    
+    return f"""
+    <div class="mermaid" id="{diagram_id}">
+    {mermaid_code}
+    </div>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({{
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {{
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }},
+            securityLevel: 'loose'
+        }});
+    </script>
+    """
+
 def ensure_mermaid_diagrams(report):
     """Convert Mermaid code blocks to visual diagrams using proper Gradio HTML approach"""
     import re
@@ -415,34 +439,14 @@ def ensure_mermaid_diagrams(report):
         # Create HTML container for the diagram using proper Mermaid approach
         diagram_html += f"""
         <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
-            <div class="mermaid" id="{diagram_id}">
-{code}
-            </div>
+            {render_mermaid_diagram(code, diagram_id)}
         </div>
         """
     
     # Replace Mermaid code blocks with visual diagrams
     if diagram_html:
-        # Add Mermaid.js script using ES modules (proper Gradio approach)
-        mermaid_script = """
-        <script type="module">
-            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.esm.min.mjs';
-            mermaid.initialize({ 
-                startOnLoad: true,
-                theme: 'default',
-                flowchart: {
-                    useMaxWidth: true,
-                    htmlLabels: true,
-                    curve: 'basis'
-                },
-                securityLevel: 'loose'
-            });
-        </script>
-        """
-        
-        # Replace the first Mermaid code block with script + first diagram
-        first_replacement = mermaid_script + diagram_html
-        report = re.sub(mermaid_pattern, first_replacement, report, count=1)
+        # Replace the first Mermaid code block with first diagram
+        report = re.sub(mermaid_pattern, diagram_html, report, count=1)
         
         # Replace remaining Mermaid code blocks with just diagrams
         remaining_diagrams = diagram_html.split('<div style="margin: 20px 0;')[1:]  # Skip the first one
