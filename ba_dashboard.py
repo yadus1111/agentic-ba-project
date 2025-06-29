@@ -7,6 +7,9 @@ import os
 import time
 import random
 import copy
+import requests
+import base64
+import json
 
 # Set up Gemini client using environment variable
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -267,10 +270,17 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
         mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
         png_path = os.path.join(output_dir, f"diagram_{idx}.png")
         
+        # Save the Mermaid code
         with open(mmd_path, "w", encoding="utf-8") as f:
             f.write(code)
         
-        # Try CLI rendering with multiple possible paths
+        # Try web-based rendering first
+        success, message = render_mermaid_web(code, png_path)
+        if success:
+            image_paths.append(png_path.replace('.png', '.html'))
+            continue
+        
+        # Fallback to CLI rendering with multiple possible paths
         cli_success = False
         last_cli_error = ""
         
@@ -311,10 +321,14 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
         if cli_success:
             continue
         
-        # If CLI fails, just save the Mermaid code and continue
-        # This is acceptable for Hugging Face Spaces where CLI tools may not be available
-        print(f"Mermaid CLI not available, saving code only for diagram {idx}")
-        error_blocks.append((idx, code, f"Mermaid CLI not available in this environment. Diagram code saved as {mmd_path}"))
+        # If both web and CLI fail, save the Mermaid code and create HTML
+        print(f"Creating HTML renderer for diagram {idx}")
+        success, message = render_mermaid_web(code, png_path)
+        if success:
+            image_paths.append(png_path.replace('.png', '.html'))
+            error_blocks.append((idx, code, f"HTML renderer created: {message}"))
+        else:
+            error_blocks.append((idx, code, f"Failed to create renderer: {message}"))
     
     return image_paths, error_blocks, fixed_blocks
 
@@ -404,7 +418,10 @@ def generate_report_and_images(business_problem):
                     report_text += f"\n\n**Note:** Mermaid diagram {idx} was generated using strict AI prompt.\n```mermaid\n{code}\n```\n"
             if error_blocks:
                 for idx, code, err in error_blocks:
-                    report_text += f"\n\n**Note:** Mermaid diagram {idx} code is available but rendering is not supported in this environment.\n```mermaid\n{code}\n```\n"
+                    if "HTML renderer created" in err:
+                        report_text += f"\n\n**Success:** Mermaid diagram {idx} rendered as HTML file.\n```mermaid\n{code}\n```\n"
+                    else:
+                        report_text += f"\n\n**Note:** Mermaid diagram {idx} code is available but rendering failed.\n```mermaid\n{code}\n```\n"
             return report_text, image_paths
         except Exception as e:
             error_msg = str(e)
@@ -438,6 +455,46 @@ def ensure_mermaid_diagrams(report):
                 insert_pos = section_start
                 report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
     return report
+
+def render_mermaid_web(mermaid_code, output_path):
+    """
+    Render Mermaid diagram using web-based service
+    """
+    try:
+        # Use Mermaid Live Editor API or similar service
+        # For now, we'll use a simple approach that saves the code
+        # and provides instructions for manual rendering
+        
+        # Save the Mermaid code
+        with open(output_path.replace('.png', '.mmd'), 'w', encoding='utf-8') as f:
+            f.write(mermaid_code)
+        
+        # Create a simple HTML file that can render the diagram
+        html_content = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mermaid Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({{startOnLoad: true}});
+    </script>
+</head>
+<body>
+    <div class="mermaid">
+{mermaid_code}
+    </div>
+</body>
+</html>
+"""
+        
+        html_path = output_path.replace('.png', '.html')
+        with open(html_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        return True, f"Diagram saved as {html_path}"
+    except Exception as e:
+        return False, str(e)
 
 def gradio_dashboard():
     with gr.Blocks(css="""
