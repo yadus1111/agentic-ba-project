@@ -412,7 +412,7 @@ def ensure_mermaid_diagrams(report):
         # Create unique ID
         diagram_id = f"mermaid-diagram-{i}"
         
-        # Create HTML container for the diagram
+        # Create HTML container for the diagram (similar to test file)
         diagram_html += f"""
         <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
             <div class="mermaid" id="{diagram_id}">
@@ -423,11 +423,11 @@ def ensure_mermaid_diagrams(report):
     
     # Replace Mermaid code blocks with visual diagrams
     if diagram_html:
-        # Add Mermaid.js script at the beginning
+        # Add Mermaid.js script and initialization (based on working test file)
         mermaid_script = """
         <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
         <script>
-            // Initialize Mermaid
+            // Initialize Mermaid (same as working test file)
             mermaid.initialize({
                 startOnLoad: true,
                 theme: 'default',
@@ -437,10 +437,15 @@ def ensure_mermaid_diagrams(report):
                 }
             });
             
-            // Function to render diagrams
+            console.log('Mermaid.js loaded successfully!');
+            
+            // Function to render diagrams (based on working test file approach)
             function renderMermaidDiagrams() {
                 const diagrams = document.querySelectorAll('.mermaid');
+                console.log('Found', diagrams.length, 'diagrams to render');
+                
                 diagrams.forEach((diagram, index) => {
+                    console.log('Rendering diagram', index + 1);
                     const code = diagram.textContent.trim();
                     if (code) {
                         const id = diagram.id || 'mermaid-' + Date.now() + '-' + index;
@@ -448,22 +453,19 @@ def ensure_mermaid_diagrams(report):
                         
                         mermaid.render(id, code).then(({svg}) => {
                             diagram.innerHTML = svg;
+                            console.log('Diagram', index + 1, 'rendered successfully');
                         }).catch(error => {
-                            console.error('Mermaid render error:', error);
+                            console.error('Mermaid render error for diagram', index + 1, ':', error);
                             diagram.innerHTML = '<div style="color: red; padding: 10px; border: 1px solid red; border-radius: 5px;">Error rendering diagram: ' + error.message + '</div>';
                         });
                     }
                 });
             }
             
-            // Render diagrams when page loads
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(renderMermaidDiagrams, 1000);
-                });
-            } else {
-                setTimeout(renderMermaidDiagrams, 1000);
-            }
+            // Render diagrams when page loads (same timing as test file)
+            setTimeout(function() {
+                renderMermaidDiagrams();
+            }, 1000);
         </script>
         """
         
@@ -684,67 +686,11 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
             import markdown
             html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
             
-            # Wrap in a container with proper styling and ensure Mermaid.js loads
+            # Wrap in a container with proper styling (simplified approach)
             html_report = f"""
             <div class="html-report">
                 {html_report}
             </div>
-            <script>
-                // Ensure Mermaid.js is loaded
-                if (typeof mermaid === 'undefined') {{
-                    const script = document.createElement('script');
-                    script.src = 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js';
-                    script.onload = function() {{
-                        mermaid.initialize({{
-                            startOnLoad: true,
-                            theme: 'default',
-                            flowchart: {{
-                                useMaxWidth: true,
-                                htmlLabels: true
-                            }}
-                        }});
-                        
-                        // Render diagrams after Mermaid loads
-                        setTimeout(function() {{
-                            const diagrams = document.querySelectorAll('.mermaid');
-                            diagrams.forEach((diagram, index) => {{
-                                const code = diagram.textContent.trim();
-                                if (code) {{
-                                    const id = diagram.id || 'mermaid-' + Date.now() + '-' + index;
-                                    diagram.id = id;
-                                    
-                                    mermaid.render(id, code).then(({{svg}}) => {{
-                                        diagram.innerHTML = svg;
-                                    }}).catch(error => {{
-                                        console.error('Mermaid render error:', error);
-                                        diagram.innerHTML = '<div style="color: red; padding: 10px; border: 1px solid red; border-radius: 5px;">Error rendering diagram: ' + error.message + '</div>';
-                                    }});
-                                }}
-                            }});
-                        }}, 500);
-                    }};
-                    document.head.appendChild(script);
-                }} else {{
-                    // Mermaid already loaded, render diagrams
-                    setTimeout(function() {{
-                        const diagrams = document.querySelectorAll('.mermaid');
-                        diagrams.forEach((diagram, index) => {{
-                            const code = diagram.textContent.trim();
-                            if (code) {{
-                                const id = diagram.id || 'mermaid-' + Date.now() + '-' + index;
-                                diagram.id = id;
-                                
-                                mermaid.render(id, code).then(({{svg}}) => {{
-                                    diagram.innerHTML = svg;
-                                }}).catch(error => {{
-                                    console.error('Mermaid render error:', error);
-                                    diagram.innerHTML = '<div style="color: red; padding: 10px; border: 1px solid red; border-radius: 5px;">Error rendering diagram: ' + error.message + '</div>';
-                                }});
-                            }}
-                        }});
-                    }}, 500);
-                }}
-            </script>
             """
             
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
