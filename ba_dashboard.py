@@ -250,6 +250,7 @@ def validate_mermaid_code(code):
     return True
 
 def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
+    """Extract Mermaid code blocks and render them as SVG images using mermaid-cli"""
     mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
     image_paths = []
     error_blocks = []
@@ -269,19 +270,51 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
             elif section_type == 'stakeholder':
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
         
-        # For Hugging Face Spaces, we'll just save the Mermaid code and provide instructions
-        # The diagrams will be rendered by the browser when viewing the report
+        # Create temporary .mmd file
         mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
+        svg_path = os.path.join(output_dir, f"diagram_{idx}.svg")
         
         try:
-            # Save the Mermaid code
+            # Save the Mermaid code to .mmd file
             with open(mmd_path, "w", encoding="utf-8") as f:
                 f.write(code)
             
-            # Mark as successful - the diagram will be rendered by the browser
-            image_paths.append(f"diagram_{idx}.mmd")
-            fixed_blocks.append((idx, code))
-            
+            # Use mermaid-cli to render SVG
+            try:
+                # Try using mmdc command (mermaid-cli)
+                result = subprocess.run([
+                    'mmdc', 
+                    '-i', mmd_path, 
+                    '-o', svg_path,
+                    '-b', 'transparent'
+                ], capture_output=True, text=True, timeout=30)
+                
+                if result.returncode == 0 and os.path.exists(svg_path):
+                    # Read the SVG content
+                    with open(svg_path, 'r', encoding='utf-8') as f:
+                        svg_content = f.read()
+                    
+                    # Create data URI for embedding
+                    import base64
+                    svg_encoded = base64.b64encode(svg_content.encode('utf-8')).decode('utf-8')
+                    data_uri = f"data:image/svg+xml;base64,{svg_encoded}"
+                    
+                    image_paths.append(data_uri)
+                    fixed_blocks.append((idx, code, data_uri))
+                    
+                    # Clean up temporary files
+                    os.remove(mmd_path)
+                    os.remove(svg_path)
+                else:
+                    # Fallback: save as .mmd file and provide instructions
+                    image_paths.append(f"diagram_{idx}.mmd")
+                    fixed_blocks.append((idx, code))
+                    
+            except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
+                # Fallback: save as .mmd file and provide instructions
+                image_paths.append(f"diagram_{idx}.mmd")
+                fixed_blocks.append((idx, code))
+                
         except Exception as e:
             # If file saving fails, just continue with the code
             error_blocks.append((idx, code, f"Could not save file: {str(e)}"))
@@ -368,10 +401,20 @@ def generate_report_and_images(business_problem):
             # --- Insert unique use case diagrams ---
             report_text = insert_use_case_diagrams(report_text, business_problem)
             image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
-            # Append info about fixed/fallback diagrams
-            if fixed_blocks:
-                for idx, code in fixed_blocks:
-                    report_text += f"\n\n**✅ Success:** Mermaid diagram {idx} generated successfully.\n```mermaid\n{code}\n```\n"
+            
+            # Replace Mermaid code blocks with rendered images
+            mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
+            mermaid_blocks = re.findall(mermaid_pattern, report_text, re.DOTALL)
+            
+            for i, (code, data_uri) in enumerate(zip(mermaid_blocks, image_paths)):
+                if data_uri.startswith('data:image/svg+xml'):
+                    # Replace with embedded SVG image
+                    replacement = f'<div style="text-align: center; margin: 20px 0;"><img src="{data_uri}" style="max-width: 100%; height: auto;" alt="Diagram {i+1}"></div>'
+                    report_text = re.sub(mermaid_pattern, replacement, report_text, count=1)
+                else:
+                    # Fallback: keep the code block
+                    report_text += f"\n\n**✅ Success:** Mermaid diagram {i+1} generated successfully.\n```mermaid\n{code}\n```\n"
+            
             if error_blocks:
                 for idx, code, err in error_blocks:
                     report_text += f"\n\n**⚠️ Note:** Mermaid diagram {idx} code is available but file saving failed.\n```mermaid\n{code}\n```\n"
@@ -391,70 +434,9 @@ def generate_report_and_images(business_problem):
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
 def ensure_mermaid_diagrams(report):
-    """Convert Mermaid code blocks to visual diagrams in the report"""
-    import re
-    
-    # Find all Mermaid code blocks
-    mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
-    mermaid_blocks = re.findall(mermaid_pattern, report, re.DOTALL)
-    
-    if not mermaid_blocks:
-        return report
-    
-    # Create HTML for each diagram
-    diagram_html = ""
-    for i, code in enumerate(mermaid_blocks):
-        # Clean the code
-        code = code.strip()
-        if not code or 'flowchart' not in code:
-            continue
-            
-        # Create unique ID
-        diagram_id = f"mermaid-diagram-{i}"
-        
-        # Create HTML container for the diagram
-        diagram_html += f"""
-        <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
-            <div class="mermaid" id="{diagram_id}">
-{code}
-            </div>
-        </div>
-        """
-    
-    # Replace Mermaid code blocks with visual diagrams
-    if diagram_html:
-        # Add Mermaid.js script at the beginning
-        mermaid_script = """
-        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-        <script>
-            mermaid.initialize({
-                startOnLoad: true,
-                theme: 'default',
-                flowchart: {
-                    useMaxWidth: true,
-                    htmlLabels: true
-                }
-            });
-            
-            // Render all diagrams when page loads
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    mermaid.init();
-                }, 1000);
-            });
-        </script>
-        """
-        
-        # Replace the first Mermaid code block with script + first diagram
-        first_replacement = mermaid_script + diagram_html
-        report = re.sub(mermaid_pattern, first_replacement, report, count=1)
-        
-        # Replace remaining Mermaid code blocks with just diagrams
-        remaining_diagrams = diagram_html.split('<div style="margin: 20px 0;')[1:]  # Skip the first one
-        for diagram in remaining_diagrams:
-            diagram_html_full = '<div style="margin: 20px 0;' + diagram
-            report = re.sub(mermaid_pattern, diagram_html_full, report, count=1)
-    
+    """Replace Mermaid code blocks with rendered SVG images"""
+    # This function is now handled in generate_report_and_images
+    # The diagrams are rendered as SVG images and embedded directly
     return report
 
 def gradio_dashboard():
@@ -656,7 +638,6 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
                 return "Please enter a business problem first.", "Ready to generate report..."
             status_msg = "Generating report... (this may take a moment)"
             report, _ = generate_report_and_images(bp)
-            report = ensure_mermaid_diagrams(report)
             
             # Convert markdown to HTML for better rendering
             import markdown

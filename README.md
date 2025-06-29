@@ -11,12 +11,12 @@ pinned: false
 
 # Agentic Business Analysis Dashboard
 
-An AI-powered dashboard for generating comprehensive business analysis reports using specialized AI agents.
+An AI-powered dashboard for generating comprehensive business analysis reports using specialized AI agents with server-side Mermaid diagram rendering.
 
 ## Features
 
 - 🤖 **Multi-Agent AI System**: 7 specialized AI agents working together
-- 📊 **Visual Diagrams**: Automatic Mermaid diagram generation
+- 📊 **Visual Diagrams**: Server-side Mermaid diagram rendering as SVG images
 - 📋 **Complete Reports**: BRD, FRS, use cases, data mapping, and KPIs
 - 🎨 **Modern UI**: Beautiful Gradio interface with animations
 - 🔄 **Error Resilience**: Automatic retries and fallback mechanisms
@@ -26,44 +26,30 @@ An AI-powered dashboard for generating comprehensive business analysis reports u
 1. Enter your business problem in the text area
 2. Click "Generate Report" 
 3. Get a comprehensive business analysis with:
-   - Stakeholder maps
-   - Process flows
+   - Stakeholder maps (rendered as SVG images)
+   - Process flows (rendered as SVG images)
    - Business requirements
-   - Use case diagrams
+   - Use case diagrams (rendered as SVG images)
    - Data mapping sheets
    - KPIs and metrics
-
-## Viewing Mermaid Diagrams
-
-The application generates Mermaid code for diagrams. To view them visually:
-
-### Option 1: Use the Mermaid Viewer (Recommended)
-1. Open `mermaid_viewer.html` in your web browser
-2. Copy the Mermaid code from your generated report
-3. Paste it into the text area and click "Render Diagram"
-4. View the beautiful visual diagrams!
-
-### Option 2: Online Mermaid Editor
-1. Go to [Mermaid Live Editor](https://mermaid.live/)
-2. Copy the Mermaid code from your report
-3. Paste it into the editor to see the diagram
-
-### Option 3: GitHub/GitLab
-- Mermaid diagrams render automatically in GitHub and GitLab markdown files
-- Save your report as a `.md` file and view it on these platforms
 
 ## Technical Stack
 
 - **Frontend**: Gradio
 - **AI Model**: Google Gemini 2.5 Flash
-- **Diagrams**: Mermaid.js
+- **Diagrams**: Mermaid.js (server-side rendering via mermaid-cli)
 - **Architecture**: Multi-Agent System
+- **Container**: Docker with Node.js and mermaid-cli
 
 ## Setup Required
 
 Add your Gemini API key as a secret in Hugging Face Spaces:
 - Go to Settings → Secrets
 - Add: `GEMINI_API_KEY` = your_api_key_here
+
+## How It Works
+
+The system uses mermaid-cli to render Mermaid diagrams as SVG images on the server side, then embeds them directly in the HTML output. This approach works reliably in Hugging Face Spaces without requiring client-side JavaScript execution.
 
 ## Example Diagrams
 
