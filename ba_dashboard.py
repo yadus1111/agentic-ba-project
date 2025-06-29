@@ -390,21 +390,72 @@ def generate_report_and_images(business_problem):
                 return f"Error generating report: {error_msg}", []
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
-def mermaid_blocks_to_html(report):
-    """Replace all ```mermaid code blocks with Mermaid HTML+JS for Gradio rendering."""
-    pattern = r"```mermaid\s*\n(.*?)\n```"
-    def repl(match):
-        code = match.group(1)
-        return f'''
-<div class="mermaid">
+def ensure_mermaid_diagrams(report):
+    """Convert Mermaid code blocks to visual diagrams in the report"""
+    import re
+    
+    # Find all Mermaid code blocks
+    mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
+    mermaid_blocks = re.findall(mermaid_pattern, report, re.DOTALL)
+    
+    if not mermaid_blocks:
+        return report
+    
+    # Create HTML for each diagram
+    diagram_html = ""
+    for i, code in enumerate(mermaid_blocks):
+        # Clean the code
+        code = code.strip()
+        if not code or 'flowchart' not in code:
+            continue
+            
+        # Create unique ID
+        diagram_id = f"mermaid-diagram-{i}"
+        
+        # Create HTML container for the diagram
+        diagram_html += f"""
+        <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
+            <div class="mermaid" id="{diagram_id}">
 {code}
-</div>
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({{ startOnLoad:true }});
-</script>
-'''
-    return re.sub(pattern, repl, report, flags=re.DOTALL)
+            </div>
+        </div>
+        """
+    
+    # Replace Mermaid code blocks with visual diagrams
+    if diagram_html:
+        # Add Mermaid.js script at the beginning
+        mermaid_script = """
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+        <script>
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true
+                }
+            });
+            
+            // Render all diagrams when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    mermaid.init();
+                }, 1000);
+            });
+        </script>
+        """
+        
+        # Replace the first Mermaid code block with script + first diagram
+        first_replacement = mermaid_script + diagram_html
+        report = re.sub(mermaid_pattern, first_replacement, report, count=1)
+        
+        # Replace remaining Mermaid code blocks with just diagrams
+        remaining_diagrams = diagram_html.split('<div style="margin: 20px 0;')[1:]  # Skip the first one
+        for diagram in remaining_diagrams:
+            diagram_html_full = '<div style="margin: 20px 0;' + diagram
+            report = re.sub(mermaid_pattern, diagram_html_full, report, count=1)
+    
+    return report
 
 def gradio_dashboard():
     with gr.Blocks(css="""
@@ -605,14 +656,13 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
                 return "Please enter a business problem first.", "Ready to generate report..."
             status_msg = "Generating report... (this may take a moment)"
             report, _ = generate_report_and_images(bp)
-            # Replace mermaid code blocks with HTML+JS
-            html_report = mermaid_blocks_to_html(report)
-            # Wrap in a container with proper styling
-            html_report = f"""
-            <div class="html-report">
-                {html_report}
-            </div>
-            """
+            report = ensure_mermaid_diagrams(report)
+            
+            # Convert markdown to HTML for better rendering
+            import markdown
+            html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
+            html_report = f'<div class="html-report">{html_report}</div>'
+            
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
             return html_report, final_status
 
