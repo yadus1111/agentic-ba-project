@@ -410,9 +410,9 @@ def ensure_mermaid_diagrams(report):
             continue
             
         # Create unique ID
-        diagram_id = f"mermaid-diagram-{i}"
+        diagram_id = f"mermaid-diagram-{i}-{int(time.time())}"
         
-        # Create HTML container for the diagram (similar to test file)
+        # Create HTML container for the diagram
         diagram_html += f"""
         <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
             <div class="mermaid" id="{diagram_id}">
@@ -423,49 +423,56 @@ def ensure_mermaid_diagrams(report):
     
     # Replace Mermaid code blocks with visual diagrams
     if diagram_html:
-        # Add Mermaid.js script and initialization (based on working test file)
-        mermaid_script = """
-        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+        # Add Mermaid.js script and initialization
+        mermaid_script = f"""
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.min.js"></script>
         <script>
-            // Initialize Mermaid (same as working test file)
-            mermaid.initialize({
-                startOnLoad: true,
+            // Initialize Mermaid
+            mermaid.initialize({{
+                startOnLoad: false,
                 theme: 'default',
-                flowchart: {
+                flowchart: {{
                     useMaxWidth: true,
-                    htmlLabels: true
-                }
-            });
+                    htmlLabels: true,
+                    curve: 'basis'
+                }},
+                securityLevel: 'loose'
+            }});
             
-            console.log('Mermaid.js loaded successfully!');
-            
-            // Function to render diagrams (based on working test file approach)
-            function renderMermaidDiagrams() {
+            // Function to render diagrams
+            function renderMermaidDiagrams() {{
                 const diagrams = document.querySelectorAll('.mermaid');
                 console.log('Found', diagrams.length, 'diagrams to render');
                 
-                diagrams.forEach((diagram, index) => {
+                diagrams.forEach((diagram, index) => {{
                     console.log('Rendering diagram', index + 1);
                     const code = diagram.textContent.trim();
-                    if (code) {
+                    if (code) {{
                         const id = diagram.id || 'mermaid-' + Date.now() + '-' + index;
                         diagram.id = id;
                         
-                        mermaid.render(id, code).then(({svg}) => {
+                        mermaid.render(id, code).then(({{svg}}) => {{
                             diagram.innerHTML = svg;
                             console.log('Diagram', index + 1, 'rendered successfully');
-                        }).catch(error => {
+                        }}).catch(error => {{
                             console.error('Mermaid render error for diagram', index + 1, ':', error);
                             diagram.innerHTML = '<div style="color: red; padding: 10px; border: 1px solid red; border-radius: 5px;">Error rendering diagram: ' + error.message + '</div>';
-                        });
-                    }
-                });
-            }
+                        }});
+                    }}
+                }});
+            }}
             
-            // Render diagrams when page loads (same timing as test file)
-            setTimeout(function() {
-                renderMermaidDiagrams();
-            }, 1000);
+            // Render diagrams when page loads
+            if (document.readyState === 'loading') {{
+                document.addEventListener('DOMContentLoaded', function() {{
+                    setTimeout(renderMermaidDiagrams, 500);
+                }});
+            }} else {{
+                setTimeout(renderMermaidDiagrams, 500);
+            }}
+            
+            // Also try rendering after a longer delay to ensure everything is loaded
+            setTimeout(renderMermaidDiagrams, 2000);
         </script>
         """
         
@@ -661,6 +668,65 @@ def gradio_dashboard():
     }
     """) as demo:
         
+        # Add Mermaid.js script to the page head
+        gr.HTML("""
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.min.js"></script>
+        <script>
+            // Initialize Mermaid globally
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                securityLevel: 'loose'
+            });
+            
+            // Global function to render Mermaid diagrams
+            window.renderMermaidDiagrams = function() {
+                const diagrams = document.querySelectorAll('.mermaid');
+                console.log('Found', diagrams.length, 'diagrams to render');
+                
+                diagrams.forEach((diagram, index) => {
+                    console.log('Rendering diagram', index + 1);
+                    const code = diagram.textContent.trim();
+                    if (code) {
+                        const id = diagram.id || 'mermaid-' + Date.now() + '-' + index;
+                        diagram.id = id;
+                        
+                        mermaid.render(id, code).then(({svg}) => {
+                            diagram.innerHTML = svg;
+                            console.log('Diagram', index + 1, 'rendered successfully');
+                        }).catch(error => {
+                            console.error('Mermaid render error for diagram', index + 1, ':', error);
+                            diagram.innerHTML = '<div style="color: red; padding: 10px; border: 1px solid red; border-radius: 5px;">Error rendering diagram: ' + error.message + '</div>';
+                        });
+                    }
+                });
+            };
+            
+            // Auto-render diagrams when content changes
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        setTimeout(window.renderMermaidDiagrams, 100);
+                    }
+                });
+            });
+            
+            // Start observing when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    observer.observe(document.body, { childList: true, subtree: true });
+                });
+            } else {
+                observer.observe(document.body, { childList: true, subtree: true });
+            }
+        </script>
+        """)
+        
         with gr.Row():
             gr.HTML('<div class="logo"><span class="logo-emoji">💡</span><span class="logo-title">Agentic BA Dashboard</span></div>')
         gr.Markdown("""
@@ -686,11 +752,19 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
             import markdown
             html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
             
-            # Wrap in a container with proper styling (simplified approach)
+            # Wrap in a container with proper styling and trigger Mermaid rendering
             html_report = f"""
             <div class="html-report">
                 {html_report}
             </div>
+            <script>
+                // Trigger Mermaid rendering after content is loaded
+                setTimeout(function() {{
+                    if (window.renderMermaidDiagrams) {{
+                        window.renderMermaidDiagrams();
+                    }}
+                }}, 500);
+            </script>
             """
             
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
