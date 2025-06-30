@@ -1,6 +1,6 @@
 import gradio as gr
 from config import MODEL_NAME
-from google import genai
+import google.generativeai as genai
 import re
 import subprocess
 import os
@@ -12,7 +12,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Set up Gemini client using environment variable
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel(MODEL_NAME)
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -291,12 +292,11 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
             continue
         
         # Fallback logic if CLI fails
-        if section_type and business_problem and client:
+        if section_type and business_problem and model:
             strict_prompt = strict_mermaid_prompt(section_type, business_problem)
             if strict_prompt:
                 try:
-                    response = client.models.generate_content(
-                        model=MODEL_NAME,
+                    response = model.generate_content(
                         contents=strict_prompt
                     )
                     
@@ -345,7 +345,7 @@ def extract_use_case_details(report_text):
     return use_cases
 
 def generate_use_case_diagram(business_problem, use_case):
-    if not client:
+    if not model:
         return None
     
     prompt = f"""
@@ -356,8 +356,7 @@ Main Flow: {use_case['main_flow']}
 Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific actors, steps, and interactions for this use case. Use only rectangles and arrows. No generic diagrams. No advanced formatting. Output only the Mermaid code, no extra text.
 """
     try:
-        response = client.models.generate_content(
-            model=MODEL_NAME,
+        response = model.generate_content(
             contents=prompt
         )
         if response.text:
@@ -379,10 +378,9 @@ def insert_use_case_diagrams(report_text, business_problem):
         if not diagram_code:
             # fallback: use strict prompt with scenario details
             strict_prompt = f"Given the following business problem: {business_problem}\nAnd this use case: {uc['title']}\nActors: {uc['actors']}\nMain Flow: {uc['main_flow']}\nGenerate a simple Mermaid flowchart TD diagram. Use only rectangles and arrows. No advanced formatting."
-            if client:
+            if model:
                 try:
-                    response = client.models.generate_content(
-                        model=MODEL_NAME,
+                    response = model.generate_content(
                         contents=strict_prompt
                     )
                     if response.text:
@@ -417,8 +415,7 @@ def generate_report_and_images(business_problem):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            response = client.models.generate_content(
-                model=MODEL_NAME,
+            response = model.generate_content(
                 contents=prompt
             )
             report_text = response.text if response.text else "No content generated."
