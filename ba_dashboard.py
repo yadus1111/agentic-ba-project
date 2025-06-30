@@ -277,16 +277,31 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
         cli_success = False
         last_cli_error = ""
         
+        # Cross-platform Mermaid CLI path
+        mermaid_cli_paths = [
+            "mmdc",  # Linux/Unix (installed globally)
+            "npx", "mmdc",  # Using npx
+            r"C:\Users\acer\AppData\Roaming\npm\mmdc.cmd",  # Windows specific
+            "./node_modules/.bin/mmdc",  # Local installation
+        ]
+        
         for attempt in range(2):
-            try:
-                result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                if os.path.exists(png_path):
-                    image_paths.append(png_path)
-                    cli_success = True
-                    break
-            except Exception as e:
-                last_cli_error = str(e)
-                time.sleep(0.5)
+            for cli_path in mermaid_cli_paths:
+                try:
+                    if cli_path == "npx":
+                        result = subprocess.run(["npx", "mmdc", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                    else:
+                        result = subprocess.run([cli_path, "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                    if os.path.exists(png_path):
+                        image_paths.append(png_path)
+                        cli_success = True
+                        break
+                except Exception as e:
+                    last_cli_error = str(e)
+                    continue
+            if cli_success:
+                break
+            time.sleep(0.5)
         
         if cli_success:
             continue
@@ -311,15 +326,22 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
                         with open(mmd_path, "w", encoding="utf-8") as f:
                             f.write(strict_code)
                         
-                        try:
-                            result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                            if os.path.exists(png_path):
-                                image_paths.append(png_path)
-                                fixed_blocks.append((idx, strict_code))
-                                cli_success = True
-                                break
-                        except Exception as e:
-                            pass
+                        # Try CLI rendering with cross-platform paths
+                        for cli_path in mermaid_cli_paths:
+                            try:
+                                if cli_path == "npx":
+                                    result = subprocess.run(["npx", "mmdc", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                                else:
+                                    result = subprocess.run([cli_path, "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                                if os.path.exists(png_path):
+                                    image_paths.append(png_path)
+                                    fixed_blocks.append((idx, strict_code))
+                                    cli_success = True
+                                    break
+                            except Exception as e:
+                                continue
+                        if cli_success:
+                            break
                 except Exception as e:
                     pass
         

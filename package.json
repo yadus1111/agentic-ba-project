@@ -1,0 +1,14 @@
+{
+  "name": "ba-agentic-ai",
+  "version": "1.0.0",
+  "description": "Business Analysis Agentic AI Dashboard",
+  "scripts": {
+    "build": "echo 'Build completed'"
+  },
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "^11.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
