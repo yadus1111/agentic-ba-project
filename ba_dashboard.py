@@ -1,6 +1,6 @@
 import gradio as gr
 from config import MODEL_NAME
-import google.generativeai as genai
+from google import genai
 import re
 import subprocess
 import os
@@ -11,8 +11,7 @@ from datetime import datetime
 import json
 
 # Set up Gemini client using environment variable
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel(MODEL_NAME)
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -250,7 +249,7 @@ def validate_mermaid_code(code):
     return True
 
 def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
-    """Extract Mermaid code blocks and render them using Mermaid Live Editor API"""
+    """Extract Mermaid code blocks and render them using mmdc CLI tool"""
     mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
     image_paths = []
     error_blocks = []
@@ -270,48 +269,64 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
             elif section_type == 'stakeholder':
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
         
-        try:
-            # Use Mermaid Live Editor API to render the diagram
-            import requests
-            import urllib.parse
-            
-            # Prepare the request to Mermaid Live Editor API
-            api_url = "https://mermaid.ink/svg/"
-            
-            # Encode the Mermaid code for URL
-            encoded_code = urllib.parse.quote(code)
-            
-            # Create the full URL for the SVG
-            svg_url = f"{api_url}{encoded_code}"
-            
-            # Try to fetch the SVG
+        mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
+        png_path = os.path.join(output_dir, f"diagram_{idx}.png")
+        
+        with open(mmd_path, "w", encoding="utf-8") as f:
+            f.write(code)
+        
+        # Try CLI rendering
+        cli_success = False
+        last_cli_error = ""
+        
+        for attempt in range(2):
             try:
-                response = requests.get(svg_url, timeout=10)
-                if response.status_code == 200:
-                    # Create a data URI for the SVG
-                    svg_content = response.text
-                    import base64
-                    svg_encoded = base64.b64encode(svg_content.encode('utf-8')).decode('utf-8')
-                    data_uri = f"data:image/svg+xml;base64,{svg_encoded}"
+                result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                if os.path.exists(png_path):
+                    image_paths.append(png_path)
+                    cli_success = True
+                    break
+            except Exception as e:
+                last_cli_error = str(e)
+                time.sleep(0.5)
+        
+        if cli_success:
+            continue
+        
+        # Fallback logic if CLI fails
+        if section_type and business_problem:
+            strict_prompt = strict_mermaid_prompt(section_type, business_problem)
+            if strict_prompt:
+                try:
+                    response = client.models.generate_content(
+                        model=MODEL_NAME,
+                        contents=strict_prompt
+                    )
                     
-                    image_paths.append(data_uri)
-                    fixed_blocks.append((idx, code, data_uri))
-                else:
-                    # Fallback: use the URL directly
-                    image_paths.append(svg_url)
-                    fixed_blocks.append((idx, code, svg_url))
+                    if response.text:
+                        strict_code = sanitize_mermaid_code(response.text.strip().replace('```mermaid','').replace('```','').strip())
+                        if not validate_mermaid_code(strict_code):
+                            if section_type == 'process':
+                                strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
+                            elif section_type == 'stakeholder':
+                                strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
                     
-            except requests.RequestException:
-                # Fallback: save as .mmd file and provide instructions
-                mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
-                with open(mmd_path, "w", encoding="utf-8") as f:
-                    f.write(code)
-                image_paths.append(f"diagram_{idx}.mmd")
-                fixed_blocks.append((idx, code))
-                
-        except Exception as e:
-            # If everything fails, just continue with the code
-            error_blocks.append((idx, code, f"Could not render diagram: {str(e)}"))
+                        with open(mmd_path, "w", encoding="utf-8") as f:
+                            f.write(strict_code)
+                        
+                        try:
+                            result = subprocess.run([r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                            if os.path.exists(png_path):
+                                image_paths.append(png_path)
+                                fixed_blocks.append((idx, strict_code))
+                                cli_success = True
+                                break
+                        except Exception as e:
+                            pass
+                except Exception as e:
+                    pass
+        
+        error_blocks.append((idx, code, f"Initial and fallback methods failed. CLI error: {last_cli_error}"))
     
     return image_paths, error_blocks, fixed_blocks
 
@@ -341,7 +356,10 @@ Main Flow: {use_case['main_flow']}
 Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific actors, steps, and interactions for this use case. Use only rectangles and arrows. No generic diagrams. No advanced formatting. Output only the Mermaid code, no extra text.
 """
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt
+        )
         if response.text:
             return response.text
         else:
@@ -360,7 +378,10 @@ def insert_use_case_diagrams(report_text, business_problem):
             # fallback: use strict prompt with scenario details
             strict_prompt = f"Given the following business problem: {business_problem}\nAnd this use case: {uc['title']}\nActors: {uc['actors']}\nMain Flow: {uc['main_flow']}\nGenerate a simple Mermaid flowchart TD diagram. Use only rectangles and arrows. No advanced formatting."
             try:
-                response = model.generate_content(strict_prompt)
+                response = client.models.generate_content(
+                    model=MODEL_NAME,
+                    contents=strict_prompt
+                )
                 if response.text:
                     return response.text
                 else:
@@ -390,7 +411,10 @@ def generate_report_and_images(business_problem):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            response = model.generate_content(prompt)
+            response = client.models.generate_content(
+                model=MODEL_NAME,
+                contents=prompt
+            )
             report_text = response.text if response.text else "No content generated."
             # --- Insert unique use case diagrams ---
             report_text = insert_use_case_diagrams(report_text, business_problem)
@@ -401,21 +425,21 @@ def generate_report_and_images(business_problem):
             mermaid_blocks = re.findall(mermaid_pattern, report_text, re.DOTALL)
             
             for i, (code, image_path) in enumerate(zip(mermaid_blocks, image_paths)):
-                if image_path.startswith('data:image/svg+xml'):
-                    # Replace with embedded SVG image
-                    replacement = f'<div style="text-align: center; margin: 20px 0;"><img src="{image_path}" style="max-width: 100%; height: auto;" alt="Diagram {i+1}"></div>'
-                    report_text = re.sub(mermaid_pattern, replacement, report_text, count=1)
-                elif image_path.startswith('https://'):
-                    # Replace with external SVG URL
-                    replacement = f'<div style="text-align: center; margin: 20px 0;"><img src="{image_path}" style="max-width: 100%; height: auto;" alt="Diagram {i+1}"></div>'
+                if os.path.exists(image_path) and image_path.endswith('.png'):
+                    # Replace with PNG image
+                    replacement = f'<div style="text-align: center; margin: 20px 0;"><img src="file/{image_path}" style="max-width: 100%; height: auto;" alt="Diagram {i+1}"></div>'
                     report_text = re.sub(mermaid_pattern, replacement, report_text, count=1)
                 else:
                     # Fallback: keep the code block
                     report_text += f"\n\n**✅ Success:** Mermaid diagram {i+1} generated successfully.\n```mermaid\n{code}\n```\n"
             
+            # Append info about fixed/fallback diagrams
+            if fixed_blocks:
+                for idx, code in fixed_blocks:
+                    report_text += f"\n\n**Note:** Mermaid diagram {idx} was generated using strict AI prompt.\n```mermaid\n{code}\n```\n"
             if error_blocks:
                 for idx, code, err in error_blocks:
-                    report_text += f"\n\n**⚠️ Note:** Mermaid diagram {idx} code is available but rendering failed.\n```mermaid\n{code}\n```\n"
+                    report_text += f"\n\n**Warning:** Mermaid diagram {idx} could not be rendered.\nError: {err}\n\n```mermaid\n{code}\n```\n"
             return report_text, image_paths
         except Exception as e:
             error_msg = str(e)
