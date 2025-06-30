@@ -7,8 +7,9 @@ import os
 import time
 import random
 import copy
-from datetime import datetime
-import json
+
+from dotenv import load_dotenv
+load_dotenv()
 
 # Set up Gemini client using environment variable
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -249,14 +250,10 @@ def validate_mermaid_code(code):
     return True
 
 def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
-    """Extract Mermaid code blocks and render them using mmdc CLI tool"""
     mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
     image_paths = []
     error_blocks = []
     fixed_blocks = []
-    
-    # Ensure output directory exists
-    os.makedirs(output_dir, exist_ok=True)
     
     for idx, code in enumerate(mermaid_blocks, 1):
         code = sanitize_mermaid_code(code)
@@ -294,7 +291,7 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
             continue
         
         # Fallback logic if CLI fails
-        if section_type and business_problem:
+        if section_type and business_problem and client:
             strict_prompt = strict_mermaid_prompt(section_type, business_problem)
             if strict_prompt:
                 try:
@@ -348,6 +345,9 @@ def extract_use_case_details(report_text):
     return use_cases
 
 def generate_use_case_diagram(business_problem, use_case):
+    if not client:
+        return None
+    
     prompt = f"""
 Given the following business problem: {business_problem}
 And this use case: {use_case['title']}
@@ -361,11 +361,13 @@ Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific ac
             contents=prompt
         )
         if response.text:
-            return response.text
+            code = response.text.strip().replace('```mermaid','').replace('```','').strip()
+            code = sanitize_mermaid_code(code)
+            return code
         else:
-            return "No content generated."
+            return None
     except Exception as e:
-        return f"Error generating use case diagram: {str(e)}"
+        return None
 
 def insert_use_case_diagrams(report_text, business_problem):
     use_cases = extract_use_case_details(report_text)
@@ -377,17 +379,21 @@ def insert_use_case_diagrams(report_text, business_problem):
         if not diagram_code:
             # fallback: use strict prompt with scenario details
             strict_prompt = f"Given the following business problem: {business_problem}\nAnd this use case: {uc['title']}\nActors: {uc['actors']}\nMain Flow: {uc['main_flow']}\nGenerate a simple Mermaid flowchart TD diagram. Use only rectangles and arrows. No advanced formatting."
-            try:
-                response = client.models.generate_content(
-                    model=MODEL_NAME,
-                    contents=strict_prompt
-                )
-                if response.text:
-                    return response.text
-                else:
-                    return "No content generated."
-            except Exception as e:
-                return f"Error generating use case diagram: {str(e)}"
+            if client:
+                try:
+                    response = client.models.generate_content(
+                        model=MODEL_NAME,
+                        contents=strict_prompt
+                    )
+                    if response.text:
+                        diagram_code = response.text.strip().replace('```mermaid','').replace('```','').strip()
+                        diagram_code = sanitize_mermaid_code(diagram_code)
+                    else:
+                        diagram_code = sanitize_mermaid_code(f"flowchart TD\n    A[Actor] --> B[System]")  # last-resort fallback
+                except Exception:
+                    diagram_code = sanitize_mermaid_code(f"flowchart TD\n    A[Actor] --> B[System]")  # last-resort fallback
+            else:
+                diagram_code = sanitize_mermaid_code(f"flowchart TD\n    A[Actor] --> B[System]")  # last-resort fallback
         # Insert or replace diagram in the report
         uc_pattern = re.compile(rf"(\*\*Use Case {uc['idx']}:\*\*.*?\*\*Main Flow:\*\*.*?)(\n\n|\Z)", re.DOTALL)
         match = uc_pattern.search(new_report)
@@ -419,20 +425,6 @@ def generate_report_and_images(business_problem):
             # --- Insert unique use case diagrams ---
             report_text = insert_use_case_diagrams(report_text, business_problem)
             image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
-            
-            # Replace Mermaid code blocks with rendered images
-            mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
-            mermaid_blocks = re.findall(mermaid_pattern, report_text, re.DOTALL)
-            
-            for i, (code, image_path) in enumerate(zip(mermaid_blocks, image_paths)):
-                if os.path.exists(image_path) and image_path.endswith('.png'):
-                    # Replace with PNG image
-                    replacement = f'<div style="text-align: center; margin: 20px 0;"><img src="file/{image_path}" style="max-width: 100%; height: auto;" alt="Diagram {i+1}"></div>'
-                    report_text = re.sub(mermaid_pattern, replacement, report_text, count=1)
-                else:
-                    # Fallback: keep the code block
-                    report_text += f"\n\n**✅ Success:** Mermaid diagram {i+1} generated successfully.\n```mermaid\n{code}\n```\n"
-            
             # Append info about fixed/fallback diagrams
             if fixed_blocks:
                 for idx, code in fixed_blocks:
@@ -456,9 +448,22 @@ def generate_report_and_images(business_problem):
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
 def ensure_mermaid_diagrams(report):
-    """Replace Mermaid code blocks with rendered SVG images"""
-    # This function is now handled in generate_report_and_images
-    # The diagrams are rendered as SVG images and embedded directly
+    # Only insert diagrams after section headers that match keywords
+    keywords = [
+        (r"stakeholder.*map", '''```mermaid\nflowchart TD\n    A[Sponsor] --> B[Project Steering Committee]\n    B --> C[Business Owners]\n    B --> D[IT Leadership]\n    C --> E[Product Management]\n    C --> F[Marketing Department]\n    D --> G[Mobile App Development Team]\n    D --> H[Data Engineering Team]\n    D --> I[Cybersecurity Team]\n    E --> J[Sales Team]\n    F --> K[Customer Service]\n    L[End Users] --> M[External Regulators]\n```'''),
+        (r"process.*flow|flow\s*chart|workflow", '''```mermaid\nflowchart TD\n    A[Customer Opens App] --> B[Login Authentication]\n    B --> C[View Dashboard]\n    C --> D[Check Recommendations]\n    D --> E[Select Product]\n    E --> F[Complete Application]\n    F --> G[Submit for Approval]\n    G --> H[Receive Decision]\n    H --> I[Product/Service Delivered]\n```'''),
+        (r"use case.*diagram|use case.*chart|use case.*graph|use case", '''```mermaid\nflowchart TD\n    Actor1[Customer] -->|Interacts with| System[Mobile Banking App]\n    System -->|Recommends| Offer[Personalized Loan Offer]\n```'''),
+        (r"data.*mapping|data.*diagram|data.*chart|data.*flow", '''```mermaid\nflowchart TD\n    DataSource[Customer Data] --> Engine[Data Analytics Engine]\n    Engine --> Offers[Personalized Loan Offers]\n    Offers --> App[Mobile Banking App]\n```'''),
+    ]
+    for pattern, template in keywords:
+        # Only match section headers (lines starting with # or ##)
+        matches = list(re.finditer(rf"^#+\s*(.*{pattern}.*)$", report, re.IGNORECASE | re.MULTILINE))
+        for match in matches:
+            section_start = match.end()
+            next_300 = report[section_start:section_start+300]
+            if '```mermaid' not in next_300:
+                insert_pos = section_start
+                report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
     return report
 
 def gradio_dashboard():
@@ -573,104 +578,29 @@ def gradio_dashboard():
     }
     /* Hide Gradio footer */
     footer, .svelte-1ipelgc, .gradio-container .footer, .gr-footer { display: none !important; }
-    /* Mermaid diagram styling */
-    .mermaid {
-        text-align: center;
-        margin: 20px 0;
-        padding: 20px;
-        background: #f8fafc;
-        border-radius: 10px;
-        border: 2px solid #e0e7ff;
-    }
-    /* HTML report styling */
-    .html-report {
-        background: white;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        font-family: 'Segoe UI', Arial, sans-serif;
-        line-height: 1.6;
-    }
-    .html-report h1 {
-        color: #6366f1;
-        font-size: 2.5em;
-        margin-bottom: 0.5em;
-        border-bottom: 3px solid #e0e7ff;
-        padding-bottom: 10px;
-    }
-    .html-report h2 {
-        color: #06b6d4;
-        font-size: 2em;
-        margin-top: 30px;
-        margin-bottom: 15px;
-    }
-    .html-report h3 {
-        color: #3730a3;
-        font-size: 1.5em;
-        margin-top: 25px;
-        margin-bottom: 10px;
-    }
-    .html-report p {
-        margin-bottom: 15px;
-        font-size: 1.1em;
-    }
-    .html-report table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .html-report th, .html-report td {
-        border: 1px solid #e0e7ff;
-        padding: 12px 15px;
-        text-align: left;
-    }
-    .html-report th {
-        background: #6366f1;
-        color: white;
-        font-weight: bold;
-    }
-    .html-report tr:nth-child(even) {
-        background: #f8fafc;
-    }
-    .html-report tr:hover {
-        background: #f0f9ff;
-    }
     """) as demo:
-        
         with gr.Row():
             gr.HTML('<div class="logo"><span class="logo-emoji">💡</span><span class="logo-title">Agentic BA Dashboard</span></div>')
         gr.Markdown("""
 Welcome to your AI-powered business analysis system! Generate comprehensive business analysis deliverables with a single click.
-
-**🎯 Diagrams will render automatically in the report!**
         """)
         gr.Markdown("⚠️ **Note:** If you encounter API overload errors, the system will automatically retry up to 3 times with increasing delays.")
         
         business_problem = gr.Textbox(label="Business Problem / Objective", value="", lines=8, placeholder="Paste your business case or objective here...")
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
-        report_output = gr.HTML(label="Generated Report")
+        report_output = gr.Markdown(label="Generated Report")
 
         def generate_report(bp):
             if not bp.strip():
                 return "Please enter a business problem first.", "Ready to generate report..."
             status_msg = "Generating report... (this may take a moment)"
             report, _ = generate_report_and_images(bp)
-            
-            # Convert markdown to HTML for better rendering
-            import markdown
-            html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
-            html_report = f'<div class="html-report">{html_report}</div>'
-            
+            report = ensure_mermaid_diagrams(report)
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-            return html_report, final_status
+            return report, final_status
 
         run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status])
-        
     return demo
 
 if __name__ == "__main__":
