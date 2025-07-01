@@ -245,7 +245,7 @@ def validate_mermaid_code(code):
 def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
     """
     Extract and validate Mermaid diagrams from markdown text.
-    In Hugging Face Spaces, we rely on Gradio's native Mermaid rendering.
+    Convert to HTML blocks with Mermaid.js for proper rendering.
     """
     mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
     validated_blocks = []
@@ -265,10 +265,64 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
                 # Generic fallback for unknown section types
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
         
-        # Store validated code for display
+        # Store validated code for HTML rendering
         validated_blocks.append((idx, code))
     
     return [], error_blocks, validated_blocks
+
+def create_mermaid_html(mermaid_code, diagram_id="mermaid-diagram"):
+    """
+    Create HTML block with Mermaid.js for rendering diagrams.
+    """
+    html = f"""
+    <div style="margin: 20px 0; padding: 15px; border: 1px solid #e0e7ff; border-radius: 8px; background: #f8fafc;">
+        <script type="module">
+            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+            mermaid.initialize({{ 
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {{
+                    useMaxWidth: true,
+                    htmlLabels: true
+                }}
+            }});
+        </script>
+        <div class="mermaid" id="{diagram_id}">
+{mermaid_code}
+        </div>
+    </div>
+    """
+    return html
+
+def convert_mermaid_to_html(md_text):
+    """
+    Convert Mermaid code blocks in markdown to HTML blocks with Mermaid.js.
+    """
+    # Find all mermaid code blocks
+    mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
+    
+    # Replace each mermaid block with HTML
+    for idx, code in enumerate(mermaid_blocks, 1):
+        code = sanitize_mermaid_code(code)
+        section_type = get_section_type(code)
+        
+        # Validate code, fallback if invalid
+        if not validate_mermaid_code(code):
+            if section_type == 'process':
+                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
+            elif section_type == 'stakeholder':
+                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
+            else:
+                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
+        
+        # Create HTML for this diagram
+        html_block = create_mermaid_html(code, f"diagram-{idx}")
+        
+        # Replace the mermaid code block with HTML
+        original_block = f"```mermaid\n{code}\n```"
+        md_text = md_text.replace(original_block, html_block, 1)
+    
+    return md_text
 
 def extract_use_case_details(report_text):
     """Extract actors and main flow for each use case from the report text."""
@@ -364,16 +418,17 @@ def generate_report_and_images(business_problem):
             report_text = response.text if response.text else "No content generated."
             # --- Insert unique use case diagrams ---
             report_text = insert_use_case_diagrams(report_text, business_problem)
+            
+            # Convert Mermaid code blocks to HTML with Mermaid.js
+            report_text = convert_mermaid_to_html(report_text)
+            
+            # Validate diagrams (for debugging purposes)
             image_paths, error_blocks, validated_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
             
-            # Append info about validated diagrams (for debugging)
-            if validated_blocks:
-                for idx, code in validated_blocks:
-                    report_text += f"\n\n**Note:** Mermaid diagram {idx} has been validated and should render properly.\n```mermaid\n{code}\n```\n"
-            
+            # Add any validation notes
             if error_blocks:
                 for idx, code, err in error_blocks:
-                    report_text += f"\n\n**Warning:** Mermaid diagram {idx} had validation issues.\nError: {err}\n\n```mermaid\n{code}\n```\n"
+                    report_text += f"\n\n**Warning:** Mermaid diagram {idx} had validation issues.\nError: {err}\n"
             
             return report_text, image_paths
         except Exception as e:
@@ -404,7 +459,8 @@ def ensure_mermaid_diagrams(report):
         for match in matches:
             section_start = match.end()
             next_300 = report[section_start:section_start+300]
-            if '```mermaid' not in next_300:
+            # Check for both mermaid code blocks and HTML divs
+            if '```mermaid' not in next_300 and '<div class="mermaid">' not in next_300:
                 insert_pos = section_start
                 report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
     return report
@@ -450,7 +506,7 @@ def gradio_dashboard():
         transform: scale(1.07);
         box-shadow: 0 4px 16px rgba(6,182,212,0.18);
     }
-    .gr-textbox, .gr-markdown {
+    .gr-textbox, .gr-html {
         background: linear-gradient(90deg, #f0fdfa 0%, #e0e7ff 100%);
         border-radius: 12px;
         border: 1.5px solid #a5b4fc;
@@ -462,7 +518,7 @@ def gradio_dashboard():
         box-shadow: 0 0 0 2px #f472b6;
         background: #fff7ed;
     }
-    .gr-markdown h1 {
+    .gr-html h1 {
         color: #6366f1;
         font-size: 3.2em;
         margin-bottom: 0.2em;
@@ -471,14 +527,14 @@ def gradio_dashboard():
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    .gr-markdown h2 {
+    .gr-html h2 {
         color: #06b6d4;
         font-size: 2.5em;
         background: linear-gradient(90deg, #06b6d4 0%, #fcd34d 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    .gr-textbox label, .gr-markdown label {
+    .gr-textbox label, .gr-html label {
         color: #0ea5e9;
         font-weight: bold;
         font-size: 1.6em;
@@ -499,8 +555,8 @@ def gradio_dashboard():
         color: #6366f1;
         letter-spacing: 2px;
     }
-    /* Improved Markdown table styling */
-    .gr-markdown table, .gr-markdown th, .gr-markdown td {
+    /* Improved table styling for HTML output */
+    .gr-html table, .gr-html th, .gr-html td {
         border: 1.5px solid #a5b4fc !important;
         border-collapse: collapse !important;
         padding: 10px 14px !important;
@@ -508,15 +564,15 @@ def gradio_dashboard():
         font-family: 'Segoe UI', Arial, sans-serif !important;
         background: #f9fafb !important;
     }
-    .gr-markdown th {
+    .gr-html th {
         background: #e0e7ff !important;
         font-weight: bold !important;
         color: #3730a3 !important;
     }
-    .gr-markdown tr:nth-child(even) {
+    .gr-html tr:nth-child(even) {
         background: #f3f4f6 !important;
     }
-    .gr-markdown tr:hover {
+    .gr-html tr:hover {
         background: #fcd34d !important;
     }
     /* Hide Gradio footer */
@@ -532,7 +588,7 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
         business_problem = gr.Textbox(label="Business Problem / Objective", value="", lines=8, placeholder="Paste your business case or objective here...")
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
-        report_output = gr.Markdown(label="Generated Report")
+        report_output = gr.HTML(label="Generated Report")
 
         def generate_report(bp):
             if not bp.strip():
