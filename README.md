@@ -1,3 +1,14 @@
+---
+title: Agentic Business Analysis Dashboard
+emoji: 💡
+colorFrom: indigo
+colorTo: cyan
+sdk: gradio
+sdk_version: "4.25.0"
+app_file: app.py
+pinned: false
+---
+
 # Agentic Business Analysis Dashboard
 
 An AI-powered dashboard for generating comprehensive business analysis reports using specialized AI agents.
