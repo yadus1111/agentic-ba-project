@@ -243,10 +243,13 @@ def validate_mermaid_code(code):
     return True
 
 def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
+    """
+    Extract and validate Mermaid diagrams from markdown text.
+    In Hugging Face Spaces, we rely on Gradio's native Mermaid rendering.
+    """
     mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
-    image_paths = []
+    validated_blocks = []
     error_blocks = []
-    fixed_blocks = []
     
     for idx, code in enumerate(mermaid_blocks, 1):
         code = sanitize_mermaid_code(code)
@@ -258,88 +261,14 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
             elif section_type == 'stakeholder':
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
+            else:
+                # Generic fallback for unknown section types
+                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
         
-        mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
-        png_path = os.path.join(output_dir, f"diagram_{idx}.png")
-        
-        with open(mmd_path, "w", encoding="utf-8") as f:
-            f.write(code)
-        
-        # Try CLI rendering
-        cli_success = False
-        last_cli_error = ""
-        
-        # Cross-platform Mermaid CLI path
-        mermaid_cli_paths = [
-            "mmdc",  # Linux/Unix (installed globally)
-            "npx", "mmdc",  # Using npx
-            r"C:\Users\acer\AppData\Roaming\npm\mmdc.cmd",  # Windows specific
-            "./node_modules/.bin/mmdc",  # Local installation
-        ]
-        
-        for attempt in range(2):
-            for cli_path in mermaid_cli_paths:
-                try:
-                    if cli_path == "npx":
-                        result = subprocess.run(["npx", "mmdc", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                    else:
-                        result = subprocess.run([cli_path, "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                    if os.path.exists(png_path):
-                        image_paths.append(png_path)
-                        cli_success = True
-                        break
-                except Exception as e:
-                    last_cli_error = str(e)
-                    continue
-            if cli_success:
-                break
-            time.sleep(0.5)
-        
-        if cli_success:
-            continue
-        
-        # Fallback logic if CLI fails
-        if section_type and business_problem and model:
-            strict_prompt = strict_mermaid_prompt(section_type, business_problem)
-            if strict_prompt:
-                try:
-                    response = model.generate_content(
-                        contents=strict_prompt
-                    )
-                    
-                    if response.text:
-                        strict_code = sanitize_mermaid_code(response.text.strip().replace('```mermaid','').replace('```','').strip())
-                        if not validate_mermaid_code(strict_code):
-                            if section_type == 'process':
-                                strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
-                            elif section_type == 'stakeholder':
-                                strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
-                    
-                        with open(mmd_path, "w", encoding="utf-8") as f:
-                            f.write(strict_code)
-                        
-                        # Try CLI rendering with cross-platform paths
-                        for cli_path in mermaid_cli_paths:
-                            try:
-                                if cli_path == "npx":
-                                    result = subprocess.run(["npx", "mmdc", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                                else:
-                                    result = subprocess.run([cli_path, "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
-                                if os.path.exists(png_path):
-                                    image_paths.append(png_path)
-                                    fixed_blocks.append((idx, strict_code))
-                                    cli_success = True
-                                    break
-                            except Exception as e:
-                                continue
-                        if cli_success:
-                            break
-                except Exception as e:
-                    pass
-        
-        error_blocks.append((idx, code, f"Initial and fallback methods failed. CLI error: {last_cli_error}"))
+        # Store validated code for display
+        validated_blocks.append((idx, code))
     
-    return image_paths, error_blocks, fixed_blocks
+    return [], error_blocks, validated_blocks
 
 def extract_use_case_details(report_text):
     """Extract actors and main flow for each use case from the report text."""
@@ -435,14 +364,17 @@ def generate_report_and_images(business_problem):
             report_text = response.text if response.text else "No content generated."
             # --- Insert unique use case diagrams ---
             report_text = insert_use_case_diagrams(report_text, business_problem)
-            image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
-            # Append info about fixed/fallback diagrams
-            if fixed_blocks:
-                for idx, code in fixed_blocks:
-                    report_text += f"\n\n**Note:** Mermaid diagram {idx} was generated using strict AI prompt.\n```mermaid\n{code}\n```\n"
+            image_paths, error_blocks, validated_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
+            
+            # Append info about validated diagrams (for debugging)
+            if validated_blocks:
+                for idx, code in validated_blocks:
+                    report_text += f"\n\n**Note:** Mermaid diagram {idx} has been validated and should render properly.\n```mermaid\n{code}\n```\n"
+            
             if error_blocks:
                 for idx, code, err in error_blocks:
-                    report_text += f"\n\n**Warning:** Mermaid diagram {idx} could not be rendered.\nError: {err}\n\n```mermaid\n{code}\n```\n"
+                    report_text += f"\n\n**Warning:** Mermaid diagram {idx} had validation issues.\nError: {err}\n\n```mermaid\n{code}\n```\n"
+            
             return report_text, image_paths
         except Exception as e:
             error_msg = str(e)
