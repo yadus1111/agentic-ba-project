@@ -20,7 +20,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Default prompt template for the full report
 REPORT_PROMPT_TEMPLATE = '''
-You are an expert Business Analyst specializing in banking and fintech. Given the following business problem/objective, generate a complete business analysis report in Markdown format. The report must include:
+You are an expert Business Analyst. Given the following business problem/objective, generate a complete business analysis report in Markdown format. The report must include:
 
 1. Stakeholder Map (as a Mermaid diagram in a code block)
    - Use the business problem and list all unique stakeholders relevant to this scenario. Do not use a generic template.
@@ -33,8 +33,8 @@ You are an expert Business Analyst specializing in banking and fintech. Given th
        B --> C[Stakeholder 3]
    ```
 
-2. Process Flow of the new loan uptake journey (as a Mermaid diagram in a code block)
-   - Use the business problem and describe the unique steps for this specific journey. Do not use a generic template.
+2. Process Flow (as a Mermaid diagram in a code block)
+   - Use the business problem and describe the unique steps for this specific business process. Do not use a generic template.
    - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
    - NO special characters, NO advanced formatting, NO styling
    - Example format:
@@ -51,7 +51,7 @@ You are an expert Business Analyst specializing in banking and fintech. Given th
    - IMPORTANT: Use ONLY simple Mermaid syntax for use case diagrams
 6. Data Mapping Sheet and Data Requirements Analysis (as a Markdown table)
     - For the Data Mapping Sheet, use the following columns:
-        | Data Element | Source System(s) | Data Type | Frequency/Freshness | Purpose for Personalization | Availability (Y/N) | PII/Sensitivity (PII, Sensitive, Public) | Data Owner | Transformation/Processing | Remarks/Privacy Concerns |
+        | Data Element | Source System(s) | Data Type | Frequency/Freshness | Purpose | Availability (Y/N) | PII/Sensitivity (PII, Sensitive, Public) | Data Owner | Transformation/Processing | Remarks/Privacy Concerns |
     - Format as a Markdown table. Be concise and clear.
 7. Functional Scope Summary (In/Out of Scope)
 8. Suggested KPIs for success measurement
@@ -73,22 +73,22 @@ Business Problem:
 # --- AGENT DEFINITIONS (imported from agents.py) ---
 class ProjectManagerAgent:
     system_message = (
-        "You are a Project Manager. Orchestrate the workflow for business analysis of improving loan product uptake in mobile banking. Assign tasks to specialized agents and ensure all deliverables are produced and compiled."
+        "You are a Project Manager. Orchestrate the workflow for business analysis projects. Assign tasks to specialized agents and ensure all deliverables are produced and compiled."
     )
 
 class BusinessAnalystAgent:
     system_message = (
-        "You are a Business Analyst specializing in banking. Gather requirements, write the BRD, FRS (including NFRs), scope, and user journey mapping for the loan personalization project."
+        "You are a Business Analyst. Gather requirements, write the BRD, FRS (including NFRs), scope, and user journey mapping for business analysis projects."
     )
 
 class DataAnalystAgent:
     system_message = (
-        "You are a Data Analyst. Map data requirements, sources, freshness, and gaps for the loan personalization project. Produce a data mapping sheet."
+        "You are a Data Analyst. Map data requirements, sources, freshness, and gaps for business analysis projects. Produce a data mapping sheet."
     )
 
 class ProcessModelerAgent:
     system_message = (
-        "You are a Process Modeler. Create process flows and user journey diagrams in Mermaid format for the loan personalization project."
+        "You are a Process Modeler. Create process flows and user journey diagrams in Mermaid format for business analysis projects."
     )
 
 class UseCaseAgent:
@@ -98,7 +98,7 @@ class UseCaseAgent:
 
 class KpiAgent:
     system_message = (
-        "You are a KPI and Success Metrics Analyst. Suggest KPIs and acceptance criteria for the loan personalization project."
+        "You are a KPI and Success Metrics Analyst. Suggest KPIs and acceptance criteria for business analysis projects."
     )
 
 class TechnicalWriterAgent:
@@ -119,31 +119,23 @@ AGENTS = {
 
 STRICT_MERMAID_TEMPLATES = {
     'stakeholder': '''flowchart TD
-    A[Bank Customer] --> B[Mobile App]
-    B --> C[Personalization Engine]
+    A[Primary User] --> B[System Interface]
+    B --> C[Core System]
     C --> D[Data Sources]
-    D --> E[Core Banking System]
-    D --> F[Transaction System]
-    D --> G[KYC System]
-    B --> H[Loan Products]
-    H --> I[Home Loan]
-    H --> J[Personal Loan]
-    H --> K[Auto Loan]
-    H --> L[Education Loan]
-    B --> M[Bank Staff]
-    M --> N[Product Managers]
-    M --> O[IT Team]
-    M --> P[Compliance Team]
+    D --> E[External Systems]
+    B --> F[Business Users]
+    F --> G[Management]
+    F --> H[IT Team]
+    F --> I[Support Team]
 ''',
     'process': '''flowchart TD
-    A[Customer Login] --> B[View Dashboard]
-    B --> C[Check Recommendations]
-    C --> D[View Loan Offers]
-    D --> E[Select Product]
-    E --> F[View Details]
-    F --> G[Apply for Loan]
-    G --> H[Submit Application]
-    H --> I[Receive Decision]
+    A[User Login] --> B[Access System]
+    B --> C[View Options]
+    C --> D[Select Function]
+    D --> E[Process Request]
+    E --> F[Submit Data]
+    F --> G[Receive Response]
+    G --> H[Complete Task]
 ''',
 }
 
@@ -469,10 +461,10 @@ def generate_report_and_images(business_problem):
 def ensure_mermaid_diagrams(report):
     # Only insert diagrams after section headers that match keywords
     keywords = [
-        (r"stakeholder.*map", '''```mermaid\nflowchart TD\n    A[Sponsor] --> B[Project Steering Committee]\n    B --> C[Business Owners]\n    B --> D[IT Leadership]\n    C --> E[Product Management]\n    C --> F[Marketing Department]\n    D --> G[Mobile App Development Team]\n    D --> H[Data Engineering Team]\n    D --> I[Cybersecurity Team]\n    E --> J[Sales Team]\n    F --> K[Customer Service]\n    L[End Users] --> M[External Regulators]\n```'''),
-        (r"process.*flow|flow\s*chart|workflow", '''```mermaid\nflowchart TD\n    A[Customer Opens App] --> B[Login Authentication]\n    B --> C[View Dashboard]\n    C --> D[Check Recommendations]\n    D --> E[Select Product]\n    E --> F[Complete Application]\n    F --> G[Submit for Approval]\n    G --> H[Receive Decision]\n    H --> I[Product/Service Delivered]\n```'''),
-        (r"use case.*diagram|use case.*chart|use case.*graph|use case", '''```mermaid\nflowchart TD\n    Actor1[Customer] -->|Interacts with| System[Mobile Banking App]\n    System -->|Recommends| Offer[Personalized Loan Offer]\n```'''),
-        (r"data.*mapping|data.*diagram|data.*chart|data.*flow", '''```mermaid\nflowchart TD\n    DataSource[Customer Data] --> Engine[Data Analytics Engine]\n    Engine --> Offers[Personalized Loan Offers]\n    Offers --> App[Mobile Banking App]\n```'''),
+        (r"stakeholder.*map", '''```mermaid\nflowchart TD\n    A[Project Sponsor] --> B[Steering Committee]\n    B --> C[Business Owners]\n    B --> D[IT Leadership]\n    C --> E[Product Management]\n    C --> F[Business Users]\n    D --> G[Development Team]\n    D --> H[Data Team]\n    D --> I[Security Team]\n    E --> J[Operations Team]\n    F --> K[End Users]\n    L[External Stakeholders] --> M[Regulatory Bodies]\n```'''),
+        (r"process.*flow|flow\s*chart|workflow", '''```mermaid\nflowchart TD\n    A[User Access] --> B[Authentication]\n    B --> C[View Interface]\n    C --> D[Select Function]\n    D --> E[Process Request]\n    E --> F[Submit Data]\n    F --> G[Receive Response]\n    G --> H[Complete Action]\n    H --> I[Service Delivered]\n```'''),
+        (r"use case.*diagram|use case.*chart|use case.*graph|use case", '''```mermaid\nflowchart TD\n    Actor1[User] -->|Interacts with| System[Business System]\n    System -->|Provides| Service[Business Service]\n```'''),
+        (r"data.*mapping|data.*diagram|data.*chart|data.*flow", '''```mermaid\nflowchart TD\n    DataSource[Business Data] --> Engine[Processing Engine]\n    Engine --> Output[Business Output]\n    Output --> Interface[User Interface]\n```'''),
     ]
     for pattern, template in keywords:
         # Only match section headers (lines starting with # or ##)

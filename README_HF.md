@@ -2,15 +2,16 @@
 
 An AI-powered dashboard for generating comprehensive business analysis reports using specialized AI agents.
 
-## Features
+## 🚀 Features
 
 - 🤖 **Multi-Agent AI System**: 7 specialized AI agents working together
 - 📊 **Visual Diagrams**: Automatic Mermaid diagram generation
 - 📋 **Complete Reports**: BRD, FRS, use cases, data mapping, and KPIs
 - 🎨 **Modern UI**: Beautiful Gradio interface with animations
 - 🔄 **Error Resilience**: Automatic retries and fallback mechanisms
+- 🌐 **Domain Agnostic**: Works for any business domain (not just banking)
 
-## How to Use
+## 🎯 How to Use
 
 1. Enter your business problem in the text area
 2. Click "Generate Report" 
@@ -22,44 +23,91 @@ An AI-powered dashboard for generating comprehensive business analysis reports u
    - Data mapping sheets
    - KPIs and metrics
 
-## Technical Stack
+## 🛠️ Technical Stack
 
 - **Frontend**: Gradio
 - **AI Model**: Google Gemini 2.5 Flash
-- **Diagrams**: Mermaid.js CLI
+- **Diagrams**: Mermaid.js
 - **Architecture**: Multi-Agent System
+- **Deployment**: Hugging Face Spaces
 
-## Setup Required
+## ⚙️ Setup Required
 
-### 1. Add your Gemini API key as a secret in Hugging Face Spaces:
-- Go to Settings → Secrets
-- Add: `GEMINI_API_KEY` = your_api_key_here
+### For Hugging Face Spaces:
 
-### 2. Dependencies
-The application uses both Python and Node.js dependencies:
+1. **Add your Gemini API key as a secret:**
+   - Go to your Space Settings → Secrets
+   - Add: `GEMINI_API_KEY` = your_api_key_here
 
-**Python (requirements.txt):**
-- pyautogen
-- python-dotenv
-- google-generativeai>=0.8.0
-- gradio>=5.0.0
+2. **Get your Gemini API key:**
+   - Visit: https://makersuite.google.com/app/apikey
+   - Create a new API key
+   - Copy and paste it as the secret above
 
-**Node.js (package.json):**
-- @mermaid-js/mermaid-cli: ^11.5.0
+## 📁 File Structure
 
-### 3. Mermaid CLI Installation
-The Mermaid CLI is automatically installed via npm when the space builds. The application will try multiple paths:
-- `mmdc` (global installation)
-- `npx mmdc` (using npx)
-- `./node_modules/.bin/mmdc` (local installation)
+```
+BA-Agentic-AI/
+├── app.py              # Main entry point for HF Spaces
+├── ba_dashboard.py     # Core dashboard logic
+├── agents.py           # AI agent definitions
+├── config.py           # Configuration settings
+├── requirements.txt    # Python dependencies
+├── deploy_to_hf.py     # Deployment helper script
+└── README_HF.md        # This file
+```
 
-## Troubleshooting
+## 🔧 Local Development
 
-If diagrams are not generating as images:
-1. Check that the Mermaid CLI is installed (should be automatic)
-2. Verify your Gemini API key is set correctly
-3. The application will fallback to showing Mermaid code blocks if image generation fails
+1. Clone the repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Set environment variable: `GEMINI_API_KEY=your_key_here`
+4. Run: `python ba_dashboard.py`
+
+## 🌟 Key Improvements
+
+- **Generic Business Analysis**: No longer limited to banking/loan scenarios
+- **Dynamic Content Generation**: Responds to your specific business problem
+- **Flexible Stakeholder Mapping**: Identifies relevant stakeholders for any domain
+- **Adaptive Process Flows**: Creates process flows specific to your business case
+
+## 🎨 UI Features
+
+- Beautiful gradient animations
+- Responsive design
+- Modern card-based layout
+- Interactive elements with hover effects
+- Professional typography and spacing
+
+## 🔒 Privacy & Security
+
+- API keys are stored as environment variables
+- No data is stored permanently
+- All processing happens in real-time
+- Secure API communication with Google Gemini
+
+## 🐛 Troubleshooting
+
+**API Overload Errors:**
+- The system automatically retries up to 3 times
+- Wait a few minutes and try again
+- Check your API key is valid
+
+**Diagram Generation Issues:**
+- Fallback templates are provided
+- Simple Mermaid syntax is enforced
+- Error messages are displayed for debugging
+
+## 📞 Support
+
+If you encounter issues:
+1. Check your API key is correctly set
+2. Ensure you have sufficient API quota
+3. Try refreshing the page
+4. Check the status messages for error details
 
 ---
 
-*Built with ❤️ using Agentic AI principles* 
+*Built with ❤️ using Agentic AI principles*
+
+**Live Demo:** [Your HF Space URL will be here] 

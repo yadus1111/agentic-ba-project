@@ -1,14 +1,21 @@
 {
-  "name": "ba-agentic-ai",
+  "name": "agentic-ba-dashboard",
   "version": "1.0.0",
-  "description": "Business Analysis Agentic AI Dashboard",
+  "description": "AI-powered business analysis dashboard with multi-agent system",
+  "main": "app.py",
   "scripts": {
-    "build": "echo 'Build completed'"
+    "start": "python app.py"
   },
   "dependencies": {
     "@mermaid-js/mermaid-cli": "^11.5.0"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "keywords": [
+    "business-analysis",
+    "ai",
+    "gradio",
+    "mermaid",
+    "gemini"
+  ],
+  "author": "Agentic BA Team",
+  "license": "MIT"
 } 
