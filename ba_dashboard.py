@@ -72,6 +72,8 @@ CRITICAL FORMATTING REQUIREMENTS:
 - Format tables properly with clear headers
 - Use code blocks for Mermaid diagrams: ```mermaid ... ```
 - Make the report well-structured and easy to read
+- DO NOT include any plain text flowchart or diagram code outside of mermaid code blocks
+- DO NOT repeat or duplicate diagram content
 
 Business Problem:
 {business_problem}
@@ -285,14 +287,16 @@ def create_mermaid_html(mermaid_code, diagram_id="mermaid-diagram"):
     <div style="margin: 20px 0; padding: 15px; border: 1px solid #e0e7ff; border-radius: 8px; background: #f8fafc;">
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
         <script>
-            mermaid.initialize({{ 
-                startOnLoad: true,
-                theme: 'default',
-                flowchart: {{
-                    useMaxWidth: true,
-                    htmlLabels: true
-                }}
-            }});
+            if (typeof mermaid !== 'undefined') {{
+                mermaid.initialize({{ 
+                    startOnLoad: true,
+                    theme: 'default',
+                    flowchart: {{
+                        useMaxWidth: true,
+                        htmlLabels: true
+                    }}
+                }});
+            }}
         </script>
         <div class="mermaid" id="{diagram_id}">
 {mermaid_code}
@@ -329,6 +333,9 @@ def convert_mermaid_to_html(md_text):
         # Replace the mermaid code block with HTML
         original_block = f"```mermaid\n{original_code}\n```"
         md_text = md_text.replace(original_block, html_block, 1)
+    
+    # Also remove any plain text flowchart that might have been added as fallback
+    md_text = re.sub(r'\nflowchart TD\n.*?\n\n', '\n\n', md_text, flags=re.DOTALL)
     
     return md_text
 
@@ -481,8 +488,15 @@ def improve_markdown_formatting(report_text):
     """
     Improve the formatting of the markdown report for better readability.
     """
+    # Fix main title formatting
+    report_text = re.sub(r'^# (.*?) ##', r'# \1\n\n##', report_text, flags=re.MULTILINE)
+    
     # Add proper spacing after headers
     report_text = re.sub(r'(#+ .*?)\n', r'\1\n\n', report_text)
+    
+    # Fix section headers that are running together
+    report_text = re.sub(r'## (.*?) ###', r'## \1\n\n###', report_text)
+    report_text = re.sub(r'### (.*?) \*\*', r'### \1\n\n**', report_text)
     
     # Add spacing around lists
     report_text = re.sub(r'(\n\* .*?)(\n\* )', r'\1\n\2', report_text)
@@ -496,6 +510,12 @@ def improve_markdown_formatting(report_text):
     
     # Ensure proper spacing between sections
     report_text = re.sub(r'(\n## .*?)(\n## )', r'\1\n\n\2', report_text)
+    
+    # Remove duplicate/fallback diagrams that appear as plain text
+    report_text = re.sub(r'\nflowchart TD\n.*?\n\n', '\n\n', report_text, flags=re.DOTALL)
+    
+    # Clean up any remaining formatting issues
+    report_text = re.sub(r'\n{3,}', '\n\n', report_text)
     
     return report_text
 
