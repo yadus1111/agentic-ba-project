@@ -2,7 +2,7 @@
 title: Agentic Business Analysis Dashboard
 emoji: 💡
 colorFrom: indigo
-colorTo: cyan
+colorTo: blue
 sdk: gradio
 sdk_version: "4.25.0"
 app_file: app.py
