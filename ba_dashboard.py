@@ -64,7 +64,14 @@ IMPORTANT MERMAID RULES:
 - Keep node labels simple and short
 - Test your syntax for Mermaid version 11.5.0
 
-Format each section with a clear Markdown header (e.g., ## 01. Stakeholder Map) and use code blocks for Mermaid diagrams. Make the report clear, structured, and actionable.
+CRITICAL FORMATTING REQUIREMENTS:
+- Start with a main title: # [Business Problem] Business Analysis Report
+- Use clear section headers: ## 01. Stakeholder Map, ## 02. Process Flow, etc.
+- Add proper spacing between sections (2-3 line breaks)
+- Use bullet points and numbered lists for better readability
+- Format tables properly with clear headers
+- Use code blocks for Mermaid diagrams: ```mermaid ... ```
+- Make the report well-structured and easy to read
 
 Business Problem:
 {business_problem}
@@ -276,8 +283,8 @@ def create_mermaid_html(mermaid_code, diagram_id="mermaid-diagram"):
     """
     html = f"""
     <div style="margin: 20px 0; padding: 15px; border: 1px solid #e0e7ff; border-radius: 8px; background: #f8fafc;">
-        <script type="module">
-            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+        <script>
             mermaid.initialize({{ 
                 startOnLoad: true,
                 theme: 'default',
@@ -303,7 +310,8 @@ def convert_mermaid_to_html(md_text):
     
     # Replace each mermaid block with HTML
     for idx, code in enumerate(mermaid_blocks, 1):
-        code = sanitize_mermaid_code(code)
+        original_code = code.strip()
+        code = sanitize_mermaid_code(original_code)
         section_type = get_section_type(code)
         
         # Validate code, fallback if invalid
@@ -319,7 +327,7 @@ def convert_mermaid_to_html(md_text):
         html_block = create_mermaid_html(code, f"diagram-{idx}")
         
         # Replace the mermaid code block with HTML
-        original_block = f"```mermaid\n{code}\n```"
+        original_block = f"```mermaid\n{original_code}\n```"
         md_text = md_text.replace(original_block, html_block, 1)
     
     return md_text
@@ -416,6 +424,10 @@ def generate_report_and_images(business_problem):
                 contents=prompt
             )
             report_text = response.text if response.text else "No content generated."
+            
+            # Improve markdown formatting first
+            report_text = improve_markdown_formatting(report_text)
+            
             # --- Insert unique use case diagrams ---
             report_text = insert_use_case_diagrams(report_text, business_problem)
             
@@ -464,6 +476,28 @@ def ensure_mermaid_diagrams(report):
                 insert_pos = section_start
                 report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
     return report
+
+def improve_markdown_formatting(report_text):
+    """
+    Improve the formatting of the markdown report for better readability.
+    """
+    # Add proper spacing after headers
+    report_text = re.sub(r'(#+ .*?)\n', r'\1\n\n', report_text)
+    
+    # Add spacing around lists
+    report_text = re.sub(r'(\n\* .*?)(\n\* )', r'\1\n\2', report_text)
+    report_text = re.sub(r'(\n\d+\. .*?)(\n\d+\. )', r'\1\n\2', report_text)
+    
+    # Add spacing around tables
+    report_text = re.sub(r'(\n\|.*\|)(\n\|)', r'\1\n\2', report_text)
+    
+    # Add spacing around code blocks
+    report_text = re.sub(r'(\n```.*?\n.*?\n```)(\n)', r'\1\n\n\2', report_text)
+    
+    # Ensure proper spacing between sections
+    report_text = re.sub(r'(\n## .*?)(\n## )', r'\1\n\n\2', report_text)
+    
+    return report_text
 
 def gradio_dashboard():
     with gr.Blocks(css="""
