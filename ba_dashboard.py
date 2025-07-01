@@ -64,16 +64,7 @@ IMPORTANT MERMAID RULES:
 - Keep node labels simple and short
 - Test your syntax for Mermaid version 11.5.0
 
-CRITICAL FORMATTING REQUIREMENTS:
-- Start with a main title: # [Business Problem] Business Analysis Report
-- Use clear section headers: ## 01. Stakeholder Map, ## 02. Process Flow, etc.
-- Add proper spacing between sections (2-3 line breaks)
-- Use bullet points and numbered lists for better readability
-- Format tables properly with clear headers
-- Use code blocks for Mermaid diagrams: ```mermaid ... ```
-- Make the report well-structured and easy to read
-- DO NOT include any plain text flowchart or diagram code outside of mermaid code blocks
-- DO NOT repeat or duplicate diagram content
+Format each section with a clear Markdown header (e.g., ## 01. Stakeholder Map) and use code blocks for Mermaid diagrams. Make the report clear, structured, and actionable.
 
 Business Problem:
 {business_problem}
@@ -252,13 +243,10 @@ def validate_mermaid_code(code):
     return True
 
 def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
-    """
-    Extract and validate Mermaid diagrams from markdown text.
-    Convert to HTML blocks with Mermaid.js for proper rendering.
-    """
     mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
-    validated_blocks = []
+    image_paths = []
     error_blocks = []
+    fixed_blocks = []
     
     for idx, code in enumerate(mermaid_blocks, 1):
         code = sanitize_mermaid_code(code)
@@ -270,74 +258,88 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
             elif section_type == 'stakeholder':
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
-            else:
-                # Generic fallback for unknown section types
-                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
         
-        # Store validated code for HTML rendering
-        validated_blocks.append((idx, code))
-    
-    return [], error_blocks, validated_blocks
-
-def create_mermaid_html(mermaid_code, diagram_id="mermaid-diagram"):
-    """
-    Create HTML block with Mermaid.js for rendering diagrams.
-    """
-    html = f"""
-    <div style="margin: 20px 0; padding: 15px; border: 1px solid #e0e7ff; border-radius: 8px; background: #f8fafc;">
-        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-        <script>
-            if (typeof mermaid !== 'undefined') {{
-                mermaid.initialize({{ 
-                    startOnLoad: true,
-                    theme: 'default',
-                    flowchart: {{
-                        useMaxWidth: true,
-                        htmlLabels: true
-                    }}
-                }});
-            }}
-        </script>
-        <div class="mermaid" id="{diagram_id}">
-{mermaid_code}
-        </div>
-    </div>
-    """
-    return html
-
-def convert_mermaid_to_html(md_text):
-    """
-    Convert Mermaid code blocks in markdown to HTML blocks with Mermaid.js.
-    """
-    # Find all mermaid code blocks
-    mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
-    
-    # Replace each mermaid block with HTML
-    for idx, code in enumerate(mermaid_blocks, 1):
-        original_code = code.strip()
-        code = sanitize_mermaid_code(original_code)
-        section_type = get_section_type(code)
+        mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
+        png_path = os.path.join(output_dir, f"diagram_{idx}.png")
         
-        # Validate code, fallback if invalid
-        if not validate_mermaid_code(code):
-            if section_type == 'process':
-                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
-            elif section_type == 'stakeholder':
-                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
-            else:
-                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
+        with open(mmd_path, "w", encoding="utf-8") as f:
+            f.write(code)
         
-        # Create HTML for this diagram
-        html_block = create_mermaid_html(code, f"diagram-{idx}")
+        # Try CLI rendering
+        cli_success = False
+        last_cli_error = ""
         
-        # Replace the mermaid code block with HTML
-        original_block = f"```mermaid\n{original_code}\n```"
-        md_text = md_text.replace(original_block, html_block, 1)
+        # Cross-platform Mermaid CLI path
+        mermaid_cli_paths = [
+            "mmdc",  # Linux/Unix (installed globally)
+            "npx", "mmdc",  # Using npx
+            r"C:\Users\acer\AppData\Roaming\npm\mmdc.cmd",  # Windows specific
+            "./node_modules/.bin/mmdc",  # Local installation
+        ]
+        
+        for attempt in range(2):
+            for cli_path in mermaid_cli_paths:
+                try:
+                    if cli_path == "npx":
+                        result = subprocess.run(["npx", "mmdc", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                    else:
+                        result = subprocess.run([cli_path, "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                    if os.path.exists(png_path):
+                        image_paths.append(png_path)
+                        cli_success = True
+                        break
+                except Exception as e:
+                    last_cli_error = str(e)
+                    continue
+            if cli_success:
+                break
+            time.sleep(0.5)
+        
+        if cli_success:
+            continue
+        
+        # Fallback logic if CLI fails
+        if section_type and business_problem and model:
+            strict_prompt = strict_mermaid_prompt(section_type, business_problem)
+            if strict_prompt:
+                try:
+                    response = model.generate_content(
+                        contents=strict_prompt
+                    )
+                    
+                    if response.text:
+                        strict_code = sanitize_mermaid_code(response.text.strip().replace('```mermaid','').replace('```','').strip())
+                        if not validate_mermaid_code(strict_code):
+                            if section_type == 'process':
+                                strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
+                            elif section_type == 'stakeholder':
+                                strict_code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
+                    
+                        with open(mmd_path, "w", encoding="utf-8") as f:
+                            f.write(strict_code)
+                        
+                        # Try CLI rendering with cross-platform paths
+                        for cli_path in mermaid_cli_paths:
+                            try:
+                                if cli_path == "npx":
+                                    result = subprocess.run(["npx", "mmdc", "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                                else:
+                                    result = subprocess.run([cli_path, "-i", mmd_path, "-o", png_path], check=True, capture_output=True, text=True)
+                                if os.path.exists(png_path):
+                                    image_paths.append(png_path)
+                                    fixed_blocks.append((idx, strict_code))
+                                    cli_success = True
+                                    break
+                            except Exception as e:
+                                continue
+                        if cli_success:
+                            break
+                except Exception as e:
+                    pass
+        
+        error_blocks.append((idx, code, f"Initial and fallback methods failed. CLI error: {last_cli_error}"))
     
-    # Also remove any plain text flowchart that might have been added as fallback
-    md_text = re.sub(r'\nflowchart TD\n.*?\n\n', '\n\n', md_text, flags=re.DOTALL)
-    
-    return md_text
+    return image_paths, error_blocks, fixed_blocks
 
 def extract_use_case_details(report_text):
     """Extract actors and main flow for each use case from the report text."""
@@ -431,24 +433,16 @@ def generate_report_and_images(business_problem):
                 contents=prompt
             )
             report_text = response.text if response.text else "No content generated."
-            
-            # Improve markdown formatting first
-            report_text = improve_markdown_formatting(report_text)
-            
             # --- Insert unique use case diagrams ---
             report_text = insert_use_case_diagrams(report_text, business_problem)
-            
-            # Convert Mermaid code blocks to HTML with Mermaid.js
-            report_text = convert_mermaid_to_html(report_text)
-            
-            # Validate diagrams (for debugging purposes)
-            image_paths, error_blocks, validated_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
-            
-            # Add any validation notes
+            image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
+            # Append info about fixed/fallback diagrams
+            if fixed_blocks:
+                for idx, code in fixed_blocks:
+                    report_text += f"\n\n**Note:** Mermaid diagram {idx} was generated using strict AI prompt.\n```mermaid\n{code}\n```\n"
             if error_blocks:
                 for idx, code, err in error_blocks:
-                    report_text += f"\n\n**Warning:** Mermaid diagram {idx} had validation issues.\nError: {err}\n"
-            
+                    report_text += f"\n\n**Warning:** Mermaid diagram {idx} could not be rendered.\nError: {err}\n\n```mermaid\n{code}\n```\n"
             return report_text, image_paths
         except Exception as e:
             error_msg = str(e)
@@ -478,46 +472,10 @@ def ensure_mermaid_diagrams(report):
         for match in matches:
             section_start = match.end()
             next_300 = report[section_start:section_start+300]
-            # Check for both mermaid code blocks and HTML divs
-            if '```mermaid' not in next_300 and '<div class="mermaid">' not in next_300:
+            if '```mermaid' not in next_300:
                 insert_pos = section_start
                 report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
     return report
-
-def improve_markdown_formatting(report_text):
-    """
-    Improve the formatting of the markdown report for better readability.
-    """
-    # Fix main title formatting
-    report_text = re.sub(r'^# (.*?) ##', r'# \1\n\n##', report_text, flags=re.MULTILINE)
-    
-    # Add proper spacing after headers
-    report_text = re.sub(r'(#+ .*?)\n', r'\1\n\n', report_text)
-    
-    # Fix section headers that are running together
-    report_text = re.sub(r'## (.*?) ###', r'## \1\n\n###', report_text)
-    report_text = re.sub(r'### (.*?) \*\*', r'### \1\n\n**', report_text)
-    
-    # Add spacing around lists
-    report_text = re.sub(r'(\n\* .*?)(\n\* )', r'\1\n\2', report_text)
-    report_text = re.sub(r'(\n\d+\. .*?)(\n\d+\. )', r'\1\n\2', report_text)
-    
-    # Add spacing around tables
-    report_text = re.sub(r'(\n\|.*\|)(\n\|)', r'\1\n\2', report_text)
-    
-    # Add spacing around code blocks
-    report_text = re.sub(r'(\n```.*?\n.*?\n```)(\n)', r'\1\n\n\2', report_text)
-    
-    # Ensure proper spacing between sections
-    report_text = re.sub(r'(\n## .*?)(\n## )', r'\1\n\n\2', report_text)
-    
-    # Remove duplicate/fallback diagrams that appear as plain text
-    report_text = re.sub(r'\nflowchart TD\n.*?\n\n', '\n\n', report_text, flags=re.DOTALL)
-    
-    # Clean up any remaining formatting issues
-    report_text = re.sub(r'\n{3,}', '\n\n', report_text)
-    
-    return report_text
 
 def gradio_dashboard():
     with gr.Blocks(css="""
@@ -560,7 +518,7 @@ def gradio_dashboard():
         transform: scale(1.07);
         box-shadow: 0 4px 16px rgba(6,182,212,0.18);
     }
-    .gr-textbox, .gr-html {
+    .gr-textbox, .gr-markdown {
         background: linear-gradient(90deg, #f0fdfa 0%, #e0e7ff 100%);
         border-radius: 12px;
         border: 1.5px solid #a5b4fc;
@@ -572,7 +530,7 @@ def gradio_dashboard():
         box-shadow: 0 0 0 2px #f472b6;
         background: #fff7ed;
     }
-    .gr-html h1 {
+    .gr-markdown h1 {
         color: #6366f1;
         font-size: 3.2em;
         margin-bottom: 0.2em;
@@ -581,14 +539,14 @@ def gradio_dashboard():
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    .gr-html h2 {
+    .gr-markdown h2 {
         color: #06b6d4;
         font-size: 2.5em;
         background: linear-gradient(90deg, #06b6d4 0%, #fcd34d 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    .gr-textbox label, .gr-html label {
+    .gr-textbox label, .gr-markdown label {
         color: #0ea5e9;
         font-weight: bold;
         font-size: 1.6em;
@@ -609,8 +567,8 @@ def gradio_dashboard():
         color: #6366f1;
         letter-spacing: 2px;
     }
-    /* Improved table styling for HTML output */
-    .gr-html table, .gr-html th, .gr-html td {
+    /* Improved Markdown table styling */
+    .gr-markdown table, .gr-markdown th, .gr-markdown td {
         border: 1.5px solid #a5b4fc !important;
         border-collapse: collapse !important;
         padding: 10px 14px !important;
@@ -618,15 +576,15 @@ def gradio_dashboard():
         font-family: 'Segoe UI', Arial, sans-serif !important;
         background: #f9fafb !important;
     }
-    .gr-html th {
+    .gr-markdown th {
         background: #e0e7ff !important;
         font-weight: bold !important;
         color: #3730a3 !important;
     }
-    .gr-html tr:nth-child(even) {
+    .gr-markdown tr:nth-child(even) {
         background: #f3f4f6 !important;
     }
-    .gr-html tr:hover {
+    .gr-markdown tr:hover {
         background: #fcd34d !important;
     }
     /* Hide Gradio footer */
@@ -642,7 +600,7 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
         business_problem = gr.Textbox(label="Business Problem / Objective", value="", lines=8, placeholder="Paste your business case or objective here...")
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
-        report_output = gr.HTML(label="Generated Report")
+        report_output = gr.Markdown(label="Generated Report")
 
         def generate_report(bp):
             if not bp.strip():
