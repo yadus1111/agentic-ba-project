@@ -7,3 +7,4 @@ uvicorn
 pydantic
 pillow
 graphviz
+# force rebuild for gradio upgrade
