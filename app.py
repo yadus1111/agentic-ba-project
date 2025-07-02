@@ -522,4 +522,5 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
 
 if __name__ == "__main__":
     port = get_free_port(7881, 20)
-    gradio_dashboard().launch(share=True, server_name="0.0.0.0", server_port=port) 
+    demo = gradio_dashboard()
+    demo.launch(server_name="0.0.0.0", server_port=port) 
