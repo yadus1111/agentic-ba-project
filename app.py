@@ -3,7 +3,7 @@
 import os
 import gradio as gr
 from dotenv import load_dotenv
-from google import genai
+import google.generativeai as genai
 import re
 import time
 import random
@@ -16,7 +16,7 @@ load_dotenv()
 MODEL_NAME = "gemini-2.5-flash"
 
 # Set up Gemini client using environment variable
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 REPORT_PROMPT_TEMPLATE = '''
 You are an expert Business Analyst specializing in banking and fintech. Given the following business problem/objective, generate a complete business analysis report in Markdown format. The report must include:
@@ -232,10 +232,8 @@ Main Flow: {use_case['main_flow']}
 Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific actors, steps, and interactions for this use case. Use only rectangles and arrows. No generic diagrams. No advanced formatting. Output only the Mermaid code, no extra text.
 """
     try:
-        response = client.models.generate_content(
-            model=MODEL_NAME,
-            contents=prompt
-        )
+        model = genai.GenerativeModel(MODEL_NAME)
+        response = model.generate_content(prompt)
         if response.text:
             code = response.text.strip().replace('```mermaid','').replace('```','').strip()
             code = sanitize_mermaid_code(code)
@@ -255,10 +253,8 @@ def insert_use_case_diagrams(report_text, business_problem):
             # fallback: use strict prompt with scenario details
             strict_prompt = f"Given the following business problem: {business_problem}\nAnd this use case: {uc['title']}\nActors: {uc['actors']}\nMain Flow: {uc['main_flow']}\nGenerate a simple Mermaid flowchart TD diagram. Use only rectangles and arrows. No advanced formatting."
             try:
-                response = client.models.generate_content(
-                    model=MODEL_NAME,
-                    contents=strict_prompt
-                )
+                model = genai.GenerativeModel(MODEL_NAME)
+                response = model.generate_content(strict_prompt)
                 if response.text:
                     diagram_code = response.text.strip().replace('```mermaid','').replace('```','').strip()
                     diagram_code = sanitize_mermaid_code(diagram_code)
@@ -285,10 +281,8 @@ def generate_report_and_images(business_problem):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            response = client.models.generate_content(
-                model=MODEL_NAME,
-                contents=prompt
-            )
+            model = genai.GenerativeModel(MODEL_NAME)
+            response = model.generate_content(prompt)
             report_text = response.text if response.text else "No content generated."
             report_text = insert_use_case_diagrams(report_text, business_problem)
             image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
