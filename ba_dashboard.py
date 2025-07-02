@@ -7,6 +7,11 @@ import os
 import time
 import random
 import copy
+import base64
+import tempfile
+from PIL import Image
+import io
+from mermaid_renderer import process_markdown_with_mermaid, create_mermaid_header
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -477,6 +482,8 @@ def ensure_mermaid_diagrams(report):
                 report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
     return report
 
+# Using the mermaid_renderer module for better Hugging Face compatibility
+
 def gradio_dashboard():
     with gr.Blocks(css="""
     body {
@@ -486,6 +493,7 @@ def gradio_dashboard():
         animation: gradientBG 12s ease-in-out infinite alternate;
         font-size: 1.25em;
     }
+
     @keyframes gradientBG {
         0% { background-position: 0% 50%; }
         100% { background-position: 100% 50%; }
@@ -590,6 +598,9 @@ def gradio_dashboard():
     /* Hide Gradio footer */
     footer, .svelte-1ipelgc, .gradio-container .footer, .gr-footer { display: none !important; }
     """) as demo:
+        # Add Mermaid.js library and styling
+        gr.HTML(create_mermaid_header())
+        
         with gr.Row():
             gr.HTML('<div class="logo"><span class="logo-emoji">💡</span><span class="logo-title">Agentic BA Dashboard</span></div>')
         gr.Markdown("""
@@ -600,7 +611,7 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
         business_problem = gr.Textbox(label="Business Problem / Objective", value="", lines=8, placeholder="Paste your business case or objective here...")
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
-        report_output = gr.Markdown(label="Generated Report")
+        report_output = gr.HTML(label="Generated Report")
 
         def generate_report(bp):
             if not bp.strip():
@@ -608,8 +619,17 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
             status_msg = "Generating report... (this may take a moment)"
             report, _ = generate_report_and_images(bp)
             report = ensure_mermaid_diagrams(report)
-            final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-            return report, final_status
+            
+            # Convert Mermaid diagrams to HTML
+            try:
+                report_with_mermaid_html = process_markdown_with_mermaid(report)
+                final_status = "Report generated successfully with diagrams!" if "Error" not in report else "Generation failed - see error message above"
+                return report_with_mermaid_html, final_status
+            except Exception as e:
+                print(f"Error processing images: {e}")
+                # Fallback to original report if image processing fails
+                final_status = "Report generated successfully! (Diagrams as HTML)" if "Error" not in report else "Generation failed - see error message above"
+                return report, final_status
 
         run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status])
     return demo
