@@ -1,0 +1,24 @@
+digraph G {
+    Start [label="Start"]
+    DataCollection [label="Data Collection from Sources"]
+    DataConsolidation [label="Data Consolidation and Cleansing"]
+    ProfileGeneration [label="Unified Customer Profile Generation"]
+    ProfileAccess [label="Employee Access Profile"]
+    OpportunityIdentification [label="Identify Cross Sell Up Sell"]
+    IssueTrackingUpdate [label="Track Update Issues"]
+    PersonalizedInteraction [label="Deliver Personalized Service"]
+    DecisionSupport [label="Support Decision Making"]
+    End [label="End"]
+
+    Start -> DataCollection
+    DataCollection -> DataConsolidation
+    DataConsolidation -> ProfileGeneration
+    ProfileGeneration -> ProfileAccess
+    ProfileAccess -> OpportunityIdentification
+    ProfileAccess -> IssueTrackingUpdate
+    ProfileAccess -> PersonalizedInteraction
+    PersonalizedInteraction -> DecisionSupport
+    OpportunityIdentification -> DecisionSupport
+    IssueTrackingUpdate -> DecisionSupport
+    DecisionSupport -> End
+}

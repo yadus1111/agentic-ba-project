@@ -1,0 +1,13 @@
+digraph G {
+    BankEmployee [label="Bank Employee"]
+    SearchCustomer [label="Search Customer"]
+    ViewUnifiedProfile [label="View Unified Customer Profile"]
+    System [label="360 CRM System"]
+
+    BankEmployee -> SearchCustomer
+    SearchCustomer -> System [label="Request Search"]
+    System -> SearchCustomer [label="Provide Results"]
+    BankEmployee -> ViewUnifiedProfile [label="Select Customer"]
+    ViewUnifiedProfile -> System [label="Request Profile"]
+    System -> ViewUnifiedProfile [label="Display Profile Data"]
+}

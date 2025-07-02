@@ -1,0 +1,16 @@
+digraph G {
+    subgraph cluster_0 {
+        label="360 Degree CRM Solution"
+        ViewCustomerIssues [label="View Customer Issues"]
+        LogNewIssue [label="Log New Issue"]
+        UpdateIssueStatus [label="Update Issue Status"]
+        AddIssueNotes [label="Add Issue Notes"]
+    }
+
+    CustomerSupportAgent [label="Customer Support Agent"]
+
+    CustomerSupportAgent -> ViewCustomerIssues [label="Reviews Past Issues"]
+    CustomerSupportAgent -> LogNewIssue [label="Creates New"]
+    CustomerSupportAgent -> UpdateIssueStatus [label="Changes Status"]
+    CustomerSupportAgent -> AddIssueNotes [label="Adds Details"]
+}

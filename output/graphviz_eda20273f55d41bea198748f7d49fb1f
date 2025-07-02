@@ -1,0 +1,12 @@
+digraph G {
+    Employee [label="Bank Employee"]
+    CRM [label="360 CRM System"]
+    CustomerProfileData [label="Customer Profile Data"]
+    ProductCatalog [label="Product Catalog"]
+    RulesEngine [label="Recommendation Rules Engine"]
+
+    Employee -> CRM [label="View Customer Profile"]
+    CRM -> CustomerProfileData [label="Access Profile Details"]
+    CRM -> ProductCatalog [label="Retrieve Product Info"]
+    CRM -> RulesEngine [label="Request Opportunity Analysis"]
+    RulesEngine -> CustomerProfileData [label=

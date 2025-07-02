@@ -1,0 +1,22 @@
+digraph G {
+    A [label="Bank Employees"]
+    B [label="Customers"]
+    C [label="IT Department"]
+    D [label="Bank Management"]
+    E [label="Digital Banking Suites"]
+    F [label="Back Office Platforms"]
+    G [label="Decision Makers"]
+
+    A -> B [label="Serve"]
+    B -> A [label="Interact"]
+    C -> A [label="Support"]
+    C -> D [label="Report To"]
+    D -> A [label="Direct"]
+    A -> G [label="Provide Data To"]
+    E -> G [label="Provide Data To"]
+    F -> G [label="Provide Data To"]
+    A -> E [label="Integrate With"]
+    A -> F [label="Integrate With"]
+    G -> A [label="Inform Actions"]
+    G -> D [label="Inform Decisions"]
+}

@@ -1,0 +1,18 @@
+digraph G {
+    Actor [label="Bank Employee"]
+    SearchCustomer [label="Search Customer Profile"]
+    RetrieveData [label="Retrieve Consolidated Data"]
+    DisplayProfile [label="Display Unified Customer Profile"]
+    CoreBankingSystem [label="Core Banking System"]
+    LoanSystem [label="Loan System"]
+    CreditCardSystem [label="Credit Card System"]
+    DBS [label="Digital Banking Suite"]
+    BackOfficeComm [label="Back Office Comm Platform"]
+
+    Actor -> SearchCustomer
+    SearchCustomer -> RetrieveData
+    RetrieveData -> CoreBankingSystem [label="Pulls Data"]
+    RetrieveData -> LoanSystem [label="Pulls Data"]
+    RetrieveData -> CreditCardSystem [label="Pulls Data"]
+    RetrieveData -> DBS [label="Pulls Data"]
+    RetrieveData -> BackOfficeComm [label="Pul

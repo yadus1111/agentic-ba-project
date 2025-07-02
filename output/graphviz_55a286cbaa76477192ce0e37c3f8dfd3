@@ -1,0 +1,18 @@
+digraph G {
+    BankEmployee [label="Bank Employee"]
+    AccessCustomerProfile [label="Access Customer Profile"]
+    AnalyzeHistoricalData [label="Analyze Historical Data"]
+    ReviewPredictiveInsights [label="Review Predictive Insights"]
+    InterpretBehaviorPatterns [label="Interpret Behavior Patterns"]
+    CRMSystem [label="360 CRM System"]
+
+    BankEmployee -> AccessCustomerProfile
+    AccessCustomerProfile -> CRMSystem [label="Retrieve Full Profile"]
+    CRMSystem -> AnalyzeHistoricalData [label="Display Historical Data"]
+    CRMSystem -> ReviewPredictiveInsights [label="Display Predictive Data"]
+    BankEmployee -> AnalyzeHistoricalData
+    BankEmployee -> ReviewPredictiveInsights
+    AnalyzeHistoricalData -> InterpretBehaviorPatterns
+    ReviewPredictiveInsights -> InterpretBehaviorPatterns
+    InterpretBehaviorPatterns -> BankEmployee
+}

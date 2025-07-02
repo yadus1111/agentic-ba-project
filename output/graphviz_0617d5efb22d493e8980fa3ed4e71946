@@ -1,0 +1,16 @@
+digraph G {
+    Actor [label="Bank Employee"]
+    ViewCustomerProfile [label="View Customer Profile"]
+    IdentifyOpportunities [label="Identify Cross Sell Up Sell Opportunities"]
+    DisplayOpportunities [label="Display Opportunities List"]
+    UpdateOpportunityStatus [label="Update Opportunity Status"]
+    CustomerProfileData [label="Customer Profile Data"]
+    ProductCatalog [label="Product Catalog"]
+    MarketingRulesEngine [label="Marketing Rules Engine"]
+
+    Actor -> ViewCustomerProfile
+    ViewCustomerProfile -> CustomerProfileData [label="Uses"]
+    ViewCustomerProfile -> IdentifyOpportunities
+    IdentifyOpportunities -> MarketingRulesEngine [label="Applies Rules"]
+    IdentifyOpportunities -> ProductCatalog [label="References"]
+    IdentifyOpportunit

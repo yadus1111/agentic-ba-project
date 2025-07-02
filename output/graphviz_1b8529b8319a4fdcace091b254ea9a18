@@ -1,0 +1,31 @@
+digraph G {
+    Start [label="Start"]
+    DataCollection [label="Data Collection From Banking Systems"]
+    DataConsolidation [label="Data Consolidation Into 360 CRM"]
+    ProfileGeneration [label="Unified Customer Profile Generation"]
+    EmployeeAccess [label="Bank Employee Access Profile"]
+    AnalyzeProfile [label="Analyze Profile For Insights"]
+    IdentifyOpportunities [label="Identify Cross Sell Up Sell Opportunities"]
+    TrackIssues [label="Track Customer Issues"]
+    DeliverPersonalizedService [label="Deliver Personalized Service"]
+    ProactiveSupport [label="Provide Proactive Support"]
+    DecisionMaking [label="Inform Decision Making"]
+    IntegrationDBS [label="Integrate With Digital Banking Suites"]
+    IntegrationBackOffice [label="Integrate With Back Office Platforms"]
+    End [label="End"]
+
+    Start -> DataCollection
+    DataCollection -> DataConsolidation
+    DataConsolidation -> ProfileGeneration
+    ProfileGeneration -> EmployeeAccess
+    EmployeeAccess -> AnalyzeProfile
+    AnalyzeProfile -> IdentifyOpportunities
+    AnalyzeProfile -> TrackIssues
+    IdentifyOpportunities -> DeliverPersonalizedService
+    TrackIssues -> ProactiveSupport
+    DeliverPersonalizedService -> DecisionMaking
+    ProactiveSupport -> DecisionMaking
+    ProfileGeneration -> IntegrationDBS
+    ProfileGeneration -> IntegrationBackOffice
+    DecisionMaking -> End
+}

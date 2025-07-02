@@ -1,0 +1,20 @@
+digraph G {
+    Actor [label="Bank Employee"]
+    UC2 [label="Manage Opportunities"]
+    Step1 [label="View Customer Profile"]
+    Step2 [label="Identify Opportunities"]
+    Step3 [label="Review Opportunity Details"]
+    Step4 [label="Propose Product Service"]
+    Step5 [label="Log Opportunity Outcome"]
+    DB [label="CRM Database"]
+
+    Actor -> Step1
+    Step1 -> Step2
+    Step2 -> Step3
+    Step3 -> Step4
+    Step4 -> Step5
+    Step5 -> DB [label="Update Opportunity Status"]
+    DB -> Step2 [label="Suggest Opportunities"]
+    Actor -> UC2
+    UC2 -> Step1
+}

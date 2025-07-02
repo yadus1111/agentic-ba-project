@@ -1,0 +1,32 @@
+digraph G {
+    Customer [label="Customer"]
+    BankEmployee [label="Bank Employee"]
+    RelationshipManager [label="Relationship Manager"]
+    BranchManager [label="Branch Manager"]
+    DecisionMaker [label="Decision Maker"]
+    ITDepartment [label="IT Department"]
+    DigitalBankingSuite [label="Digital Banking Suite DBS"]
+    BackOfficePlatforms [label="Back Office Platforms"]
+    ProjectTeam [label="Project Team"]
+
+    BankEmployee -> Customer [label="Serves"]
+    RelationshipManager -> BankEmployee [label="Is A"]
+    BranchManager -> BankEmployee [label="Is A"]
+
+    RelationshipManager -> Customer [label="Interacts With"]
+    BranchManager -> Customer [label="Interacts With"]
+
+    RelationshipManager -> DecisionMaker [label="Provides Data To"]
+    BranchManager -> DecisionMaker [label="Provides Data To"]
+    DecisionMaker -> BankEmployee [label="Informs Strategy"]
+
+    ITDepartment -> DigitalBankingSuite [label="Manages"]
+    ITDepartment -> BackOfficePlatforms [label="Manages"]
+    ITDepartment -> ProjectTeam [label="Supports"]
+
+    DigitalBankingSuite -> ProjectTeam [label="Data Source"]
+    BackOfficePlatforms -> ProjectTeam [label="Data Source"]
+
+    ProjectTeam -> BankEmployee [label="Delivers Solution To"]
+    ProjectTeam -> ITDepartment [label="Collaborates With"]
+}

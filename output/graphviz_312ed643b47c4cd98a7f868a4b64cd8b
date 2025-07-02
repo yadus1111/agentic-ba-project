@@ -1,0 +1,25 @@
+digraph G {
+    A [label="Data Collection Multi Systems"]
+    B [label="Data Consolidation CRM"]
+    C [label="Customer Profile Generation"]
+    D [label="Employee Access Profile"]
+    E [label="Analyze Customer Insights"]
+    F [label="Personalize Service"]
+    G [label="Proactive Customer Support"]
+    H [label="Cross Sell Up Sell Opportunity"]
+    I [label="Issue Tracking Resolution"]
+    J [label="Reporting Decision Making"]
+
+    A -> B
+    B -> C
+    C -> D
+    D -> E
+    E -> F
+    F -> G
+    E -> H
+    E -> I
+    F -> J
+    G -> J
+    H -> J
+    I -> J
+}

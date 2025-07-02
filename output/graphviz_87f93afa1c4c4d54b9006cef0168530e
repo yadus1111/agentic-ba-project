@@ -1,0 +1,17 @@
+digraph G {
+    DecisionMaker [label="Decision Maker"]
+    AccessReportingModule [label="Access Reporting Module"]
+    SelectReportParameters [label="Select Report Parameters"]
+    GenerateReport [label="Generate Report"]
+    ViewReport [label="View Report"]
+    CRMSystem [label="360 CRM System"]
+
+    DecisionMaker -> AccessReportingModule
+    AccessReportingModule -> CRMSystem [label="Request Access"]
+    CRMSystem -> SelectReportParameters [label="Present Options"]
+    DecisionMaker -> SelectReportParameters
+    SelectReportParameters -> GenerateReport [label="Submit Request"]
+    GenerateReport -> CRMSystem [label="Process Data"]
+    CRMSystem -> ViewReport [label="Provide Report Output"]
+    ViewReport -> DecisionMaker
+}
