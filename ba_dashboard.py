@@ -509,17 +509,15 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
         report_output = gr.Markdown(label="Generated Report")
+        image_gallery = gr.Gallery(label="Diagrams")
 
-        def generate_report(bp):
-            if not bp.strip():
-                return "Please enter a business problem first.", "Ready to generate report..."
+        def run_and_status(bp):
             status_msg = "Generating report... (this may take a moment)"
-            report, _ = generate_report_and_images(bp)
-            report = ensure_dot_diagrams(report)
+            report, images = generate_report_and_images(bp)
             final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-            return report, final_status
+            return report, images, final_status
 
-        run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status])
+        run_btn.click(run_and_status, inputs=[business_problem], outputs=[report_output, image_gallery, status])
     return demo
 
 if __name__ == "__main__":

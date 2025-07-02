@@ -359,13 +359,9 @@ def ensure_dot_diagrams(report):
                 report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
     return report
 def generate_report(bp):
-    if not bp.strip():
-        return "Please enter a business problem first.", "Ready to generate report..."
-    status_msg = "Generating report... (this may take a moment)"
-    report, _ = generate_report_and_images(bp)
-    report = ensure_dot_diagrams(report)
-    final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-    return report, final_status
+    report, image_paths = generate_report_and_images(bp)
+    return report, image_paths
+
 with gr.Blocks(css="""
 body {
     background: linear-gradient(120deg, #e0e7ff 0%, #f0fdfa 30%, #f9fafb 60%, #fcd34d 100%, #f472b6 130%);
@@ -488,5 +484,13 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
     run_btn = gr.Button("Generate Report")
     status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
     report_output = gr.Markdown(label="Generated Report")
-    run_btn.click(generate_report, inputs=[business_problem], outputs=[report_output, status])
+    image_gallery = gr.Gallery(label="Diagrams")
+
+    def run_and_status(bp):
+        status_msg = "Generating report... (this may take a moment)"
+        report, images = generate_report(bp)
+        final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
+        return report, images, final_status
+
+    run_btn.click(run_and_status, inputs=[business_problem], outputs=[report_output, image_gallery, status])
 demo.launch() 
