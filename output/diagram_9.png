@@ -1,0 +1,16 @@
+digraph G {
+subgraph cluster_actor {
+node [shapebox]
+ActorEmployee [labelBank Employee]
+}
+subgraph cluster_system {
+node [shapebox]
+CRMSystem [label360 Degree CRM System]
+}
+ActorEmployee -> CRMSystem [labelViews Customer Profile]
+CRMSystem -> CRMSystem [labelIdentifies OpportunitiesnBased on Data Rules]
+CRMSystem -> ActorEmployee [labelDisplays Opportunities]
+ActorEmployee -> CRMSystem [labelRecords Opportunity Outcome]
+CRMSystem -> CRMSystem [labelUpdates Opportunity Status]
+CRMSystem -> CRMSystem [labelGenerates Sales Reports]
+}

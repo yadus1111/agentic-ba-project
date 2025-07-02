@@ -1,0 +1,16 @@
+digraph G {
+subgraph cluster_actor {
+node [shapebox]
+ActorEmployee [labelBank Employee]
+}
+subgraph cluster_system {
+node [shapebox]
+CRMSystem [label360 Degree CRM System]
+}
+ActorEmployee -> CRMSystem [labelAccesses CRM]
+CRMSystem -> CRMSystem [labelAuthenticates User]
+ActorEmployee -> CRMSystem [labelSearches Customer]
+CRMSystem -> CRMSystem [labelRetrieves Data fromnSource Systems]
+CRMSystem -> CRMSystem [labelConsolidates Profile]
+CRMSystem -> ActorEmployee [labelDisplays Unified Profile]
+}

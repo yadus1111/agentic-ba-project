@@ -1,0 +1,19 @@
+digraph G {
+subgraph cluster_actor {
+node [shapebox]
+ActorEmployee [labelBank Employee]
+ActorCustomer [labelCustomer]
+}
+subgraph cluster_system {
+node [shapebox]
+CRMSystem [label360 Degree CRM System]
+}
+ActorCustomer -> ActorEmployee [labelReports Issue]
+ActorEmployee -> CRMSystem [labelLogs New Issue]
+CRMSystem -> CRMSystem [labelCreates Issue Ticket]
+ActorEmployee -> CRMSystem [labelUpdates Issue StatusnAdds Notes]
+CRMSystem -> CRMSystem [labelNotifies Assignee]
+CRMSystem -> ActorEmployee [labelDisplays Issue History]
+ActorEmployee -> CRMSystem [labelResolves Issue]
+CRMSystem -> CRMSystem [labelCloses Issue Ticket]
+}

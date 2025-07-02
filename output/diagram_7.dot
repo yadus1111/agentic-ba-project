@@ -1,0 +1,21 @@
+digraph G {
+CustomerInitiatesInquiry [labelCustomer Initiates Inquiry]
+EmployeeReceivesInquiry [labelEmployee Receives Inquiry]
+EmployeeLogsIntoCRM [labelEmployee Logs Into CRM]
+CRMAccessesUnifiedProfile [labelCRM Accesses Unified Profile]
+CRMConsolidatesData [labelCRM Consolidates Data]
+EmployeeAnalyzes360Data [labelEmployee Analyzes 360 Data]
+EmployeeIdentifiesSolution [labelEmployee Identifies Solution]
+EmployeeCommunicatesSolution [labelEmployee Communicates Solution]
+EmployeeLogsInteraction [labelEmployee Logs Interaction]
+IssueResolved [labelIssue Resolved]
+CustomerInitiatesInquiry -> EmployeeReceivesInquiry
+EmployeeReceivesInquiry -> EmployeeLogsIntoCRM
+EmployeeLogsIntoCRM -> CRMAccessesUnifiedProfile
+CRMAccessesUnifiedProfile -> CRMConsolidatesData
+CRMConsolidatesData -> EmployeeAnalyzes360Data
+EmployeeAnalyzes360Data -> EmployeeIdentifiesSolution
+EmployeeIdentifiesSolution -> EmployeeCommunicatesSolution
+EmployeeCommunicatesSolution -> EmployeeLogsInteraction
+EmployeeLogsInteraction -> IssueResolved
+}

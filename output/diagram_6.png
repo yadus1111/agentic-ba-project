@@ -1,0 +1,28 @@
+digraph G {
+BankSeniorManagement [labelBank Senior Management]
+CRMProductOwner [labelCRM Product Owner]
+RelationshipManager [labelRelationship Manager]
+BranchManager [labelBranch Manager]
+CustomerSupportTeam [labelCustomer Support Team]
+ITDevelopmentTeam [labelIT Development Team]
+DataGovernanceTeam [labelData Governance Team]
+Customer [labelCustomer]
+CoreBankingTeam [labelCore Banking Team]
+DigitalBankingTeam [labelDigital Banking Team]
+LegalCompliance [labelLegal Compliance]
+BankSeniorManagement -> CRMProductOwner
+CRMProductOwner -> RelationshipManager
+CRMProductOwner -> BranchManager
+CRMProductOwner -> CustomerSupportTeam
+CRMProductOwner -> ITDevelopmentTeam
+CRMProductOwner -> DataGovernanceTeam
+CRMProductOwner -> LegalCompliance
+RelationshipManager -> Customer
+BranchManager -> Customer
+CustomerSupportTeam -> Customer
+ITDevelopmentTeam -> CoreBankingTeam
+ITDevelopmentTeam -> DigitalBankingTeam
+DataGovernanceTeam -> LegalCompliance
+CoreBankingTeam -> CRMProductOwner
+DigitalBankingTeam -> CRMProductOwner
+}

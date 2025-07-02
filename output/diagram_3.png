@@ -1,0 +1,15 @@
+digraph G {
+BankEmployee [labelBank Employee]
+CRMSystem [label360 Degree CRM System]
+CoreBankingSystem [labelCore Banking System]
+DigitalBankingSuite [labelDigital Banking Suite]
+BackOfficeCommPlatform [labelBack Office Comm Platform]
+BankEmployee -> CRMSystem [label1 Search Customer]
+CRMSystem -> CoreBankingSystem [label2 Request Account Data]
+CRMSystem -> DigitalBankingSuite [label3 Request Digital Interaction Data]
+CRMSystem -> BackOfficeCommPlatform [label4 Request Communication Logs]
+CoreBankingSystem -> CRMSystem [label5 Provide Account Data]
+DigitalBankingSuite -> CRMSystem [label6 Provide Digital Interaction Data]
+BackOfficeCommPlatform -> CRMSystem [label7 Provide Communication Logs]
+CRMSystem -> BankEmployee [label8 Display Unified Profile]
+}

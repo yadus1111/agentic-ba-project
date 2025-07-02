@@ -1,0 +1,13 @@
+digraph G {
+BankEmployee [labelBank Employee]
+CRMSystem [label360 Degree CRM System]
+CustomerProfileData [labelCustomer Profile Data]
+SupportTeam [labelSupport Team]
+BankEmployee -> CRMSystem [label1 Access Customer Profile]
+BankEmployee -> CRMSystem [label2 Log New Issue]
+CRMSystem -> CustomerProfileData [label3 Associate with Customer]
+CRMSystem -> SupportTeam [label4 Assign Issue]
+SupportTeam -> CRMSystem [label5 Update Issue Status]
+CRMSystem -> BankEmployee [label6 Display Issue Status]
+BankEmployee -> CRMSystem [label7 Add Notes to Issue]
+}

@@ -1,0 +1,31 @@
+digraph G {
+A [labelCustomer Inquiry or Proactive Identification]
+B [labelBank Employee Accesses CRM]
+C [labelCRM Displays Unified Customer Profile]
+D [labelCRM Identifies Loan Cross Sell Up Sell Opportunity]
+E [labelEmployee Reviews Opportunity Details]
+F [labelEmployee Presents Personalized Loan Offer]
+G [labelCustomer Expresses Interest]
+H [labelEmployee Initiates Loan Application in LOS]
+I [labelLOS Performs Credit Checks and Approvals]
+J [labelLOS Updates Loan Status]
+K [labelCRM Updates Customer Profile with Loan Application Status]
+L [labelLoan Disbursed or Declined]
+M [labelCRM Updates Profile with Loan Outcome]
+N [labelEmployee Notifies Customer]
+O [labelPost Loan Follow up CRM Reminders]
+A -> B
+B -> C
+C -> D
+D -> E
+E -> F
+F -> G
+G -> H
+H -> I
+I -> J
+J -> K
+K -> L
+L -> M
+M -> N
+N -> O
+}
