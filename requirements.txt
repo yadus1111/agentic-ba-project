@@ -5,4 +5,5 @@ gradio==4.27.0
 fastapi
 uvicorn
 pydantic
-pillow 
+pillow
+graphviz
