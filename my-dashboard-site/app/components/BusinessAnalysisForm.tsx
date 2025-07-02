@@ -16,7 +16,7 @@ export default function BusinessAnalysisForm({ onReportGenerated }: BusinessAnal
     setError('');
 
     try {
-      const response = await fetch('/api/ba-analysis', {
+      const response = await fetch('/api/generate-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
