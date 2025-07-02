@@ -197,7 +197,7 @@ def strict_dot_prompt(section_type, business_problem, use_case_details=None, pro
 
 def sanitize_dot_code(code):
     def clean_label(label):
-        label = re.sub(r'[()&/,"]', '', label)
+        label = re.sub(r'[()&/,"\']', '', label)
         label = re.sub(r'\s+', ' ', label)
         label = re.sub(r'[^\w\s\-]', '', label)
         return label.strip()
@@ -207,6 +207,8 @@ def sanitize_dot_code(code):
         line = line.strip()
         if not line:
             continue
+        # Fix label attributes missing '=' and quotes
+        line = re.sub(r'\[label([^\]=]+)\]', r'[label="\1"]', line)
         if line.startswith('digraph G'):
             clean_lines.append(line)
             continue

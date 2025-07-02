@@ -194,6 +194,8 @@ def sanitize_dot_code(code):
         line = line.strip()
         if not line:
             continue
+        # Fix label attributes missing '=' and quotes
+        line = re.sub(r'\[label([^\]=]+)\]', r'[label="\1"]', line)
         if line.startswith('digraph G'):
             clean_lines.append(line)
             continue

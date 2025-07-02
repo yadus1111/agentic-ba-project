@@ -1,26 +1,25 @@
 digraph G {
 A [labelCustomer Opens Mobile App]
-B [labelSystem Retrieves Customer Data]
-C [labelData Analytics Personalizes Offer]
-D [labelSystem Displays Personalized Offers]
-E [labelCustomer Views Offer]
-F [labelCustomer Clicks Offer]
-G [labelCustomer Reviews Loan Details]
-H [labelCustomer Initiates Application]
-I [labelSystem Guides Application Flow]
-J [labelCustomer Submits Application]
-K [labelApplication Processed LOS]
-L [labelLoan Approved Disbursed]
+B [labelPersonalized Loan Offer Displayed]
+C [labelCustomer Views Offer Details]
+D [labelCustomer Clicks Apply Now]
+E [labelLoan Application Form Pre-filled]
+F [labelCustomer Reviews Submits Application]
+G [labelApplication Sent to Core Banking]
+H [labelCredit Assessment Performed]
+I [labelLoan Approved Declined]
+J [labelCustomer Notified of Decision]
+K [labelFunds Disbursed]
+L [labelLoan Servicing Begins]
 A -> B
 B -> C
 C -> D
 D -> E
-E -> F [labelIf Clicks]
-E -> A [labelIf Ignores]
+E -> F
 F -> G
 G -> H
 H -> I
 I -> J
-J -> K [labelOut of Scope]
-K -> L [labelOut of Scope]
+J -> K
+K -> L
 }

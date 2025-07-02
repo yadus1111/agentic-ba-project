@@ -1,31 +1,31 @@
 digraph G {
-BankManagement [labelBank Management]
-RetailBankingHead [labelRetail Banking Head]
-DigitalBankingTeam [labelDigital Banking Team]
-ITDevelopmentTeam [labelIT Development Team]
-DataAnalyticsTeam [labelData Analytics Team]
-ProductManagers [labelProduct Managers]
+BankExecutiveManagement [labelBank Executive Management]
+ProductOwnersLoans [labelProduct Owners Loans]
+MobileAppDevTeam [labelMobile App Dev Team]
+DataScienceAnalytics [labelData Science Analytics Team]
 MarketingTeam [labelMarketing Team]
-LegalCompliance [labelLegal Compliance]
+ComplianceLegal [labelCompliance Legal Team]
+ITOperations [labelIT Operations Team]
+CustomerSupport [labelCustomer Support Team]
 Customers [labelCustomers]
-SecurityTeam [labelSecurity Team]
-CreditRiskTeam [labelCredit Risk Team]
-BankManagement -> RetailBankingHead
-BankManagement -> DigitalBankingTeam
-BankManagement -> ITDevelopmentTeam
-RetailBankingHead -> ProductManagers
-RetailBankingHead -> MarketingTeam
-RetailBankingHead -> CreditRiskTeam
-DigitalBankingTeam -> ITDevelopmentTeam
-DigitalBankingTeam -> DataAnalyticsTeam
-DigitalBankingTeam -> SecurityTeam
-DigitalBankingTeam -> Customers
-ITDevelopmentTeam -> DataAnalyticsTeam
-ITDevelopmentTeam -> SecurityTeam
-DataAnalyticsTeam -> ProductManagers
-DataAnalyticsTeam -> MarketingTeam
-LegalCompliance -> BankManagement
-LegalCompliance -> DigitalBankingTeam
-LegalCompliance -> DataAnalyticsTeam
-Customers -> DigitalBankingTeam
+RiskManagement [labelRisk Management]
+CoreBankingSystemTeam [labelCore Banking System Team]
+BankExecutiveManagement -> ProductOwnersLoans [labelSponsors Directs]
+ProductOwnersLoans -> MobileAppDevTeam [labelDefines Requirements]
+ProductOwnersLoans -> DataScienceAnalytics [labelCollaborates On Logic]
+ProductOwnersLoans -> MarketingTeam [labelAligns Promotions]
+ProductOwnersLoans -> ComplianceLegal [labelEnsures Adherence]
+ProductOwnersLoans -> ITOperations [labelEnsures Infra]
+ProductOwnersLoans -> RiskManagement [labelConsults On Risk]
+MobileAppDevTeam -> DataScienceAnalytics [labelIntegrates Engine]
+MobileAppDevTeam -> ITOperations [labelDeploys Operates]
+DataScienceAnalytics -> CoreBankingSystemTeam [labelNeeds Data From]
+ComplianceLegal -> MobileAppDevTeam [labelRegulates Features]
+ComplianceLegal -> DataScienceAnalytics [labelRegulates Data Use]
+ITOperations -> MobileAppDevTeam [labelSupports Infra]
+ITOperations -> DataScienceAnalytics [labelSupports Platforms]
+Customers -> MobileAppDevTeam [labelUses App]
+Customers -> CustomerSupport [labelProvides Feedback]
+CustomerSupport -> ProductOwnersLoans [labelReports Issues]
+RiskManagement -> ProductOwnersLoans [labelAdvises On Loan Risk]
 }
