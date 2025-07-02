@@ -276,11 +276,9 @@ def insert_use_case_diagrams(report_text, business_problem):
             if mermaid_match:
                 start = insert_pos + mermaid_match.start()
                 end = insert_pos + mermaid_match.end()
-                new_report = new_report[:start] + f"```mermaid\n{diagram_code}\n```
-" + new_report[end:]
+                new_report = new_report[:start] + f"```mermaid\n{diagram_code}\n```" + new_report[end:]
             else:
-                new_report = new_report[:insert_pos] + f"\n```mermaid\n{diagram_code}\n```
-" + new_report[insert_pos:]
+                new_report = new_report[:insert_pos] + f"\n```mermaid\n{diagram_code}\n```" + new_report[insert_pos:]
     return new_report
 def generate_report_and_images(business_problem):
     prompt = REPORT_PROMPT_TEMPLATE.format(business_problem=business_problem)
