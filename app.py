@@ -520,13 +520,5 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
 
 if __name__ == "__main__":
     # For Hugging Face Spaces, use port 7860
-    port = 7860
     demo = gradio_dashboard()
-    
-    demo.launch(
-        server_name="0.0.0.0", 
-        server_port=port,
-        share=False,  # Disable public sharing for Hugging Face
-        show_error=True,
-        quiet=False
-    ) 
+    demo.launch(server_port=7860) 
