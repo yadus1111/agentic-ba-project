@@ -518,16 +518,10 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
         run_btn.click(run_and_status, inputs=[business_problem], outputs=[report_output, image_gallery, status])
     return demo
 
-def health_check():
-    return {"status": "healthy", "message": "BA Agentic AI is running"}
-
 if __name__ == "__main__":
     # For Hugging Face Spaces, use port 7860
     port = 7860
     demo = gradio_dashboard()
-    
-    # Add health check endpoint
-    demo.load(health_check, inputs=None, outputs=None)
     
     demo.launch(
         server_name="0.0.0.0", 
