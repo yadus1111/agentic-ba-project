@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import gradio as gr
 from config import MODEL_NAME
-import google.generativeai as genai
+from google import genai
 import re
 import subprocess
 import os
@@ -13,7 +13,7 @@ import socket
 import graphviz
 
 # Set up Gemini client using environment variable
-# client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+client = genai.Client()
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -284,8 +284,10 @@ Main Flow: {use_case['main_flow']}
 Generate a unique DOT diagram (digraph G) that visualizes the specific actors, steps, and interactions for this use case. Use only nodes and arrows. No generic diagrams. No advanced formatting. Output only the DOT code, no extra text.
 """
     try:
-        model = genai.GenerativeModel(MODEL_NAME)
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt
+        )
         if response.text:
             code = response.text.strip().replace('```dot','').replace('```','').strip()
             code = sanitize_dot_code(code)
@@ -305,8 +307,10 @@ def insert_use_case_diagrams(report_text, business_problem):
         if not diagram_code:
             strict_prompt = f"Given the following business problem: {business_problem}\nAnd this use case: {uc['title']}\nActors: {uc['actors']}\nMain Flow: {uc['main_flow']}\nGenerate a simple DOT digraph G diagram. Use only nodes and arrows. No advanced formatting."
             try:
-                model = genai.GenerativeModel(MODEL_NAME)
-                response = model.generate_content(strict_prompt)
+                response = client.models.generate_content(
+                    model=MODEL_NAME,
+                    contents=strict_prompt
+                )
                 if response.text:
                     diagram_code = response.text.strip().replace('```dot','').replace('```','').strip()
                     diagram_code = sanitize_dot_code(diagram_code)
@@ -333,7 +337,10 @@ def generate_report_and_images(business_problem):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            response = genai.GenerativeModel(MODEL_NAME).generate_content(prompt)
+            response = client.models.generate_content(
+                model=MODEL_NAME,
+                contents=prompt
+            )
             report_text = response.text if response.text else "No content generated."
             report_text = insert_use_case_diagrams(report_text, business_problem)
             image_paths, error_blocks, fixed_blocks = extract_and_render_dot(report_text, business_problem=business_problem)
@@ -521,6 +528,13 @@ Welcome to your AI-powered business analysis system! Generate comprehensive busi
     return demo
 
 if __name__ == "__main__":
-    port = get_free_port(7881, 20)
+    # For Hugging Face Spaces, use port 7860
+    port = 7860
     demo = gradio_dashboard()
-    demo.launch(server_name="0.0.0.0", server_port=port) 
+    demo.launch(
+        server_name="0.0.0.0", 
+        server_port=port,
+        share=False,  # Disable public sharing for Hugging Face
+        show_error=True,
+        quiet=False
+    ) 
