@@ -31,7 +31,7 @@ You are an expert Business Analyst specializing in banking and fintech. Given th
        A[Stakeholder 1] --> B[Stakeholder 2]
        B --> C[Stakeholder 3]
    ```
-2. Process Flow of the new loan uptake journey (as a Mermaid diagram in a code block)
+2. Process Flow according to business problem (as a Mermaid diagram in a code block)
    - Use the business problem and describe the unique steps for this specific journey. Do not use a generic template.
    - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
    - NO special characters, NO advanced formatting, NO styling
