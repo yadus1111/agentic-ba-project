@@ -13,26 +13,35 @@ def create_mermaid_diagram_html(mermaid_code, diagram_id):
         </div>
     </div>
     <script>
-        (function() {{
-            // Wait for Mermaid to be available
-            function renderMermaid() {{
+        // Simple Mermaid rendering function
+        function renderMermaid_{diagram_id.replace('-', '_')}() {{
+            try {{
                 if (typeof mermaid !== 'undefined') {{
-                    try {{
-                        mermaid.render('mermaid-{diagram_id}', `{escaped_code}`).then(function(result) {{
-                            document.getElementById('mermaid-{diagram_id}').innerHTML = result.svg;
-                        }});
-                    }} catch (error) {{
+                    mermaid.render('mermaid-{diagram_id}', `{escaped_code}`).then(function(result) {{
+                        document.getElementById('mermaid-{diagram_id}').innerHTML = result.svg;
+                    }}).catch(function(error) {{
                         console.error('Mermaid rendering error:', error);
                         document.getElementById('mermaid-{diagram_id}').innerHTML = 
                             '<div style="color: red; padding: 10px;">Error rendering diagram. Code: <pre>' + 
                             '{mermaid_code.replace("'", "\\'")}' + '</pre></div>';
-                    }}
+                    }});
                 }} else {{
-                    setTimeout(renderMermaid, 100);
+                    // If Mermaid is not loaded yet, try again in 500ms
+                    setTimeout(renderMermaid_{diagram_id.replace('-', '_')}, 500);
                 }}
+            }} catch (error) {{
+                console.error('Mermaid error:', error);
+                document.getElementById('mermaid-{diagram_id}').innerHTML = 
+                    '<div style="color: red; padding: 10px;">Error: ' + error.message + '</div>';
             }}
-            renderMermaid();
-        }})();
+        }}
+        
+        // Start rendering when DOM is ready
+        if (document.readyState === 'loading') {{
+            document.addEventListener('DOMContentLoaded', renderMermaid_{diagram_id.replace('-', '_')});
+        }} else {{
+            renderMermaid_{diagram_id.replace('-', '_')}();
+        }}
     </script>
     """
     return html
@@ -65,16 +74,23 @@ def create_mermaid_header():
     return """
     <script src="https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.min.js"></script>
     <script>
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'default',
-            flowchart: {
-                useMaxWidth: true,
-                htmlLabels: true,
-                curve: 'basis'
-            },
-            securityLevel: 'loose'
-        });
+        // Initialize Mermaid with better error handling
+        try {
+            mermaid.initialize({
+                startOnLoad: false,  // Don't auto-start, we'll call it manually
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                securityLevel: 'loose',
+                logLevel: 1  // Enable some logging for debugging
+            });
+            console.log('Mermaid initialized successfully');
+        } catch (error) {
+            console.error('Failed to initialize Mermaid:', error);
+        }
     </script>
     <style>
         .mermaid-container {

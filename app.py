@@ -10,10 +10,10 @@ import time
 import random
 import copy
 import socket
-import graphviz
+import base64
 
-# Add after the imports, before OUTPUT_DIR
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# Set up Gemini model using environment variable
+model = genai.GenerativeModel(MODEL_NAME)
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -21,38 +21,31 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # Default prompt template for the full report
 REPORT_PROMPT_TEMPLATE = '''
 You are an expert Business Analyst specializing in banking and fintech. Given the following business problem/objective, generate a complete business analysis report in Markdown format. The report must include:
-
-1. Stakeholder Map (as a Graphviz DOT diagram in a code block)
+1. Stakeholder Map (as a Mermaid diagram in a code block)
    - Use the business problem and list all unique stakeholders relevant to this scenario. Do not use a generic template.
-   - IMPORTANT: Use ONLY simple DOT syntax: digraph G {{ ... }} with basic nodes and arrows
+   - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
    - NO special characters, NO advanced formatting, NO styling
    - Example format:
-   ```dot
-   digraph G {{
-       A [label="Stakeholder 1"]
-       B [label="Stakeholder 2"]
-       A -> B
-   }}
+   ```mermaid
+   flowchart TD
+       A[Stakeholder 1] --> B[Stakeholder 2]
+       B --> C[Stakeholder 3]
    ```
-
-2. Process Flow of the new loan uptake journey (as a Graphviz DOT diagram in a code block)
+2. Process Flow of the new loan uptake journey (as a Mermaid diagram in a code block)
    - Use the business problem and describe the unique steps for this specific journey. Do not use a generic template.
-   - IMPORTANT: Use ONLY simple DOT syntax: digraph G {{ ... }} with basic nodes and arrows
+   - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
    - NO special characters, NO advanced formatting, NO styling
    - Example format:
-   ```dot
-   digraph G {{
-       A [label="Step 1"]
-       B [label="Step 2"]
-       A -> B
-   }}
+   ```mermaid
+   flowchart TD
+       A[Step 1] --> B[Step 2]
+       B --> C[Step 3]
    ```
-
 3. Business Requirement Document (BRD)
 4. Functional Requirement Specification (FRS), including Non-Functional Requirements
-5. Use Case Diagrams and detailed Scenarios for three specific cases
+5. Use Case Diagrams and detailed Scenarios for all provided cases
    - For each use case, generate a unique, scenario-specific diagram and description. Each diagram must visualize the specific actors, steps, and interactions for that use case, not a generic flow. Use the business problem and the use case scenario details.
-   - IMPORTANT: Use ONLY simple DOT syntax for use case diagrams
+   - IMPORTANT: Use ONLY simple Mermaid syntax for use case diagrams
 6. Data Mapping Sheet and Data Requirements Analysis (as a Markdown table)
     - For the Data Mapping Sheet, use the following columns:
         | Data Element | Source System(s) | Data Type | Frequency/Freshness | Purpose for Personalization | Availability (Y/N) | PII/Sensitivity (PII, Sensitive, Public) | Data Owner | Transformation/Processing | Remarks/Privacy Concerns |
@@ -60,15 +53,13 @@ You are an expert Business Analyst specializing in banking and fintech. Given th
 7. Functional Scope Summary (In/Out of Scope)
 8. Suggested KPIs for success measurement
 
-IMPORTANT DOT RULES:
-- Use ONLY: digraph G {{ ... }}
-- Use ONLY: basic nodes and arrows (->)
-- NO special characters: (), &, /, commas in node labels
-- NO advanced features: styling, subgraphs, classDef, etc.
-- Keep node labels simple and short
-- Test your syntax for Graphviz
-
-Format each section with a clear Markdown header (e.g., ## 01. Stakeholder Map) and use code blocks for DOT diagrams. Make the report clear, structured, and actionable.
+IMPORTANT:
+- Format all sections, headings, and lists using Markdown syntax (## for main sections, ### for sub-sections, * for bullet points, 1. for numbered lists, etc.) for maximum readability.
+- Use clear Markdown headers for each section (e.g., ## 01. Stakeholder Map).
+- Use bullet points and numbered lists for clarity.
+- Optionally, add relevant emojis or icons in section headers for visual clarity (e.g., ## 📊 03. Business Requirement Document (BRD)).
+- Make the report visually structured and easy to read.
+- Do NOT output any generic template content—make all content specific to the provided business problem and use cases.
 
 Business Problem:
 {business_problem}
@@ -92,7 +83,7 @@ class DataAnalystAgent:
 
 class ProcessModelerAgent:
     system_message = (
-        "You are a Process Modeler. Create process flows and user journey diagrams in DOT format for the loan personalization project."
+        "You are a Process Modeler. Create process flows and user journey diagrams in Mermaid format for the loan personalization project."
     )
 
 class UseCaseAgent:
@@ -121,81 +112,37 @@ AGENTS = {
     "technical_writer": TechnicalWriterAgent(),
 }
 
-STRICT_DOT_TEMPLATES = {
-    'stakeholder': '''digraph G {{
-    A [label="Bank Customer"]
-    B [label="Mobile App"]
-    C [label="Personalization Engine"]
-    D [label="Data Sources"]
-    E [label="Core Banking System"]
-    F [label="Transaction System"]
-    G [label="KYC System"]
-    H [label="Loan Products"]
-    I [label="Home Loan"]
-    J [label="Personal Loan"]
-    K [label="Auto Loan"]
-    L [label="Education Loan"]
-    M [label="Bank Staff"]
-    N [label="Product Managers"]
-    O [label="IT Team"]
-    P [label="Compliance Team"]
-    A -> B
-    B -> C
-    C -> D
-    D -> E
-    D -> F
-    D -> G
-    B -> H
-    H -> I
-    H -> J
-    H -> K
-    H -> L
-    B -> M
-    M -> N
-    M -> O
-    M -> P
-}}''',
-    'process': '''digraph G {{
-    A [label="Customer Login"]
-    B [label="View Dashboard"]
-    C [label="Check Recommendations"]
-    D [label="View Loan Offers"]
-    E [label="Select Product"]
-    F [label="View Details"]
-    G [label="Apply for Loan"]
-    H [label="Submit Application"]
-    I [label="Receive Decision"]
-    A -> B
-    B -> C
-    C -> D
-    D -> E
-    E -> F
-    F -> G
-    G -> H
-    H -> I
-}}''',
+STRICT_MERMAID_TEMPLATES = {
+    'stakeholder': '''flowchart TD
+    A[Bank Customer] --> B[Mobile App]
+    B --> C[Personalization Engine]
+    C --> D[Data Sources]
+    D --> E[Core Banking System]
+    D --> F[Transaction System]
+    D --> G[KYC System]
+    B --> H[Loan Products]
+    H --> I[Home Loan]
+    H --> J[Personal Loan]
+    H --> K[Auto Loan]
+    H --> L[Education Loan]
+    B --> M[Bank Staff]
+    M --> N[Product Managers]
+    M --> O[IT Team]
+    M --> P[Compliance Team]
+''',
+    'process': '''flowchart TD
+    A[Customer Login] --> B[View Dashboard]
+    B --> C[Check Recommendations]
+    C --> D[View Loan Offers]
+    D --> E[Select Product]
+    E --> F[View Details]
+    F --> G[Apply for Loan]
+    G --> H[Submit Application]
+    H --> I[Receive Decision]
+''',
 }
 
-# Helper to identify section type from code or context
-def get_section_type(code):
-    if re.search(r'sponsor|steering|business owners|it leadership', code, re.IGNORECASE):
-        return 'stakeholder'
-    if re.search(r'customer opens app|login authentication|dashboard', code, re.IGNORECASE):
-        return 'process'
-    return None
-
-def strict_dot_prompt(section_type, business_problem, use_case_details=None, process_steps=None, stakeholders=None):
-    if section_type == 'stakeholder':
-        stakeholder_text = f"\nStakeholders: {stakeholders}" if stakeholders else ""
-        return f"Given the following business problem: {business_problem}{stakeholder_text}\nGenerate a unique DOT diagram for a stakeholder map using only nodes and arrows. No special characters, no advanced formatting. Do not use a generic template."
-    if section_type == 'process':
-        steps_text = f"\nProcess Steps: {process_steps}" if process_steps else ""
-        return f"Given the following business problem: {business_problem}{steps_text}\nGenerate a unique DOT diagram for a process flow using only nodes and arrows. No special characters, no advanced formatting. Do not use a generic template."
-    if section_type == 'use_case' and use_case_details:
-        return f"Given the following business problem: {business_problem}\nAnd this use case: {use_case_details}\nGenerate a unique DOT diagram that visualizes the specific actors, steps, and interactions for this use case. Use only nodes and arrows. No generic diagrams."
-    return None
-
-def sanitize_dot_code(code):
+def sanitize_mermaid_code(code):
     def clean_label(label):
         label = re.sub(r'[()&/,"\']', '', label)
         label = re.sub(r'\s+', ' ', label)
@@ -207,59 +154,93 @@ def sanitize_dot_code(code):
         line = line.strip()
         if not line:
             continue
-        # Fix label attributes missing '=' and quotes
-        line = re.sub(r'\[label([^\]=]+)\]', r'[label="\1"]', line)
-        if line.startswith('digraph G'):
+        if line.startswith('flowchart') or line.startswith('graph'):
             clean_lines.append(line)
             continue
-        if '->' in line:
-            parts = line.split('->')
+        if '-->' in line:
+            parts = line.split('-->')
             left = parts[0].strip()
             for right in parts[1:]:
                 right = right.strip()
                 if right:
                     left_clean = re.sub(r'\[(.*?)\]', lambda m: f"[{clean_label(m.group(1))}]", left)
                     right_clean = re.sub(r'\[(.*?)\]', lambda m: f"[{clean_label(m.group(1))}]", right)
-                    clean_lines.append(f"{left_clean} -> {right_clean}")
+                    clean_lines.append(f"{left_clean} --> {right_clean}")
                     left = right
         else:
             line_clean = re.sub(r'\[(.*?)\]', lambda m: f"[{clean_label(m.group(1))}]", line)
             clean_lines.append(line_clean)
     return '\n'.join(clean_lines)
 
-def validate_dot_code(code):
-    if not re.search(r'^digraph G', code, re.MULTILINE):
+def validate_mermaid_code(code):
+    if not re.search(r'^flowchart TD', code, re.MULTILINE):
+        return False
+    forbidden_patterns = [
+        r'style\s+',
+        r'subgraph\s+',
+        r'classDef\s+',
+        r'click\s+',
+        r'linkStyle\s+',
+        r'end\s+',
+        r'class\s+',
+        r'%%',
+        r'-->|',
+        r'---|',
+        r'==>',
+        r'-.->',
+        r'==>',
+        r':::',
+        r'{{',
+        r'}}',
+        r'\(\(',
+        r'\)\)',
+        r'\[\(',
+        r'\)\]',
+        r'\(\[',
+        r'\]\)'
+    ]
+    for pattern in forbidden_patterns:
+        if re.search(pattern, code):
+            return False
+    if re.search(r'\[[^\]]*[()&/,"\'\{\}\[\]][^\]]*\]', code):
         return False
     return True
 
-def extract_and_render_dot(md_text, output_dir=OUTPUT_DIR, business_problem=None):
-    dot_blocks = re.findall(r"```dot\n(.*?)```", md_text, re.DOTALL)
+def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=None):
+    mermaid_blocks = re.findall(r"```mermaid\n(.*?)```", md_text, re.DOTALL)
     image_paths = []
     error_blocks = []
     fixed_blocks = []
-    for idx, code in enumerate(dot_blocks, 1):
-        code = sanitize_dot_code(code)
-        section_type = None  # Optionally, add logic to detect section type
-        if not validate_dot_code(code):
+    os.makedirs(output_dir, exist_ok=True)
+    mmdc_path = r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd"
+    for idx, code in enumerate(mermaid_blocks, 1):
+        code = sanitize_mermaid_code(code)
+        section_type = None
+        if not validate_mermaid_code(code):
             if section_type == 'process':
-                code = STRICT_DOT_TEMPLATES['process']
+                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
             elif section_type == 'stakeholder':
-                code = STRICT_DOT_TEMPLATES['stakeholder']
-        dot_path = os.path.join(output_dir, f"diagram_{idx}.dot")
+                code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
+        mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
         png_path = os.path.join(output_dir, f"diagram_{idx}.png")
-        with open(dot_path, "w", encoding="utf-8") as f:
-            f.write(code)
         try:
-            graph = graphviz.Source(code)
-            graph.format = 'png'
-            graph.render(filename=png_path, cleanup=True)
-            image_paths.append(png_path)
+            with open(mmd_path, "w", encoding="utf-8") as f:
+                f.write(code)
+            # Try to render PNG using mermaid-cli (mmdc) with full path
+            try:
+                result = subprocess.run([
+                    mmdc_path, "-i", mmd_path, "-o", png_path
+                ], check=True, capture_output=True, text=True)
+                if os.path.exists(png_path):
+                    image_paths.append(png_path)
+            except Exception as e:
+                error_blocks.append((idx, code, f"mmdc error: {str(e)}"))
+            fixed_blocks.append((idx, code))
         except Exception as e:
-            error_blocks.append((idx, code, str(e)))
+            error_blocks.append((idx, code, f"Could not save file: {str(e)}"))
     return image_paths, error_blocks, fixed_blocks
 
 def extract_use_case_details(report_text):
-    """Extract actors and main flow for each use case from the report text."""
     use_cases = []
     pattern = re.compile(r"\*\*Use Case (\d+):\*\*\s*(.*?)\n\*\*Actors:\*\*\s*(.*?)\n(?:\*\*Preconditions:\*\*\s*(.*?)\n)?\*\*Main Flow:\*\*\s*(.*?)(?:\n\*\*|\Z)", re.DOTALL)
     for match in pattern.finditer(report_text):
@@ -281,13 +262,13 @@ Given the following business problem: {business_problem}
 And this use case: {use_case['title']}
 Actors: {use_case['actors']}
 Main Flow: {use_case['main_flow']}
-Generate a unique DOT diagram (digraph G) that visualizes the specific actors, steps, and interactions for this use case. Use only nodes and arrows. No generic diagrams. No advanced formatting. Output only the DOT code, no extra text.
+Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific actors, steps, and interactions for this use case. Use only rectangles and arrows. No generic diagrams. No advanced formatting. Output only the Mermaid code, no extra text.
 """
     try:
-        response = genai.GenerativeModel(MODEL_NAME).generate_content(prompt)
+        response = model.generate_content(prompt)
         if response.text:
-            code = response.text.strip().replace('```dot','').replace('```','').strip()
-            code = sanitize_dot_code(code)
+            code = response.text.strip().replace('```mermaid','').replace('```','').strip()
+            code = sanitize_mermaid_code(code)
             return code
         else:
             return None
@@ -302,28 +283,20 @@ def insert_use_case_diagrams(report_text, business_problem):
     for uc in use_cases:
         diagram_code = generate_use_case_diagram(business_problem, uc)
         if not diagram_code:
-            strict_prompt = f"Given the following business problem: {business_problem}\nAnd this use case: {uc['title']}\nActors: {uc['actors']}\nMain Flow: {uc['main_flow']}\nGenerate a simple DOT digraph G diagram. Use only nodes and arrows. No advanced formatting."
-            try:
-                response = genai.GenerativeModel(MODEL_NAME).generate_content(strict_prompt)
-                if response.text:
-                    diagram_code = response.text.strip().replace('```dot','').replace('```','').strip()
-                    diagram_code = sanitize_dot_code(diagram_code)
-                else:
-                    diagram_code = sanitize_dot_code("digraph G { A [label='Actor'] B [label='System'] A -> B }")  # last-resort fallback
-            except Exception:
-                diagram_code = sanitize_dot_code("digraph G { A [label='Actor'] B [label='System'] A -> B }")  # last-resort fallback
+            diagram_code = "Diagram could not be generated for this use case."
+        # Always insert the diagram code block so it is picked up by the PNG generation pipeline
         uc_pattern = re.compile(rf"(\*\*Use Case {uc['idx']}:\*\*.*?\*\*Main Flow:\*\*.*?)(\n\n|\Z)", re.DOTALL)
         match = uc_pattern.search(new_report)
         if match:
             insert_pos = match.end(1)
             after_main_flow = new_report[insert_pos:insert_pos+200]
-            dot_match = re.search(r"```dot[\s\S]*?```", after_main_flow)
-            if dot_match:
-                start = insert_pos + dot_match.start()
-                end = insert_pos + dot_match.end()
-                new_report = new_report[:start] + f"```dot\n{diagram_code}\n```" + new_report[end:]
+            mermaid_match = re.search(r"```mermaid[\s\S]*?```", after_main_flow)
+            if mermaid_match:
+                start = insert_pos + mermaid_match.start()
+                end = insert_pos + mermaid_match.end()
+                new_report = new_report[:start] + f"```mermaid\n{diagram_code}\n```\n" + new_report[end:]
             else:
-                new_report = new_report[:insert_pos] + f"\n```dot\n{diagram_code}\n```" + new_report[insert_pos:]
+                new_report = new_report[:insert_pos] + f"\n```mermaid\n{diagram_code}\n```\n" + new_report[insert_pos:]
     return new_report
 
 def generate_report_and_images(business_problem):
@@ -331,16 +304,10 @@ def generate_report_and_images(business_problem):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            response = genai.GenerativeModel(MODEL_NAME).generate_content(prompt)
+            response = model.generate_content(prompt)
             report_text = response.text if response.text else "No content generated."
             report_text = insert_use_case_diagrams(report_text, business_problem)
-            image_paths, error_blocks, fixed_blocks = extract_and_render_dot(report_text, business_problem=business_problem)
-            if fixed_blocks:
-                for idx, code in fixed_blocks:
-                    report_text += f"\n\n**Note:** DOT diagram {idx} was generated using strict AI prompt.\n```dot\n{code}\n```\n"
-            if error_blocks:
-                for idx, code, err in error_blocks:
-                    report_text += f"\n\n**Warning:** DOT diagram {idx} could not be rendered.\nError: {err}\n\n```dot\n{code}\n```\n"
+            image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
             return report_text, image_paths
         except Exception as e:
             error_msg = str(e)
@@ -356,38 +323,98 @@ def generate_report_and_images(business_problem):
                 return f"Error generating report: {error_msg}", []
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
-def ensure_dot_diagrams(report):
-    keywords = [
-        (r"stakeholder.*map", '''```dot\ndigraph G {\n    A [label=\"Sponsor\"]\n    B [label=\"Project Steering Committee\"]\n    C [label=\"Business Owners\"]\n    D [label=\"IT Leadership\"]\n    E [label=\"Product Management\"]\n    F [label=\"Marketing Department\"]\n    G [label=\"Mobile App Development Team\"]\n    H [label=\"Data Engineering Team\"]\n    I [label=\"Cybersecurity Team\"]\n    J [label=\"Sales Team\"]\n    K [label=\"Customer Service\"]\n    L [label=\"End Users\"]\n    M [label=\"External Regulators\"]\n    A -> B\n    B -> C\n    B -> D\n    C -> E\n    C -> F\n    D -> G\n    D -> H\n    D -> I\n    E -> J\n    F -> K\n    L -> M\n}\n```'''),
-        (r"process.*flow|flow\s*chart|workflow", '''```dot\ndigraph G {\n    A [label=\"Customer Opens App\"]\n    B [label=\"Login Authentication\"]\n    C [label=\"View Dashboard\"]\n    D [label=\"Check Recommendations\"]\n    E [label=\"Select Product\"]\n    F [label=\"Complete Application\"]\n    G [label=\"Submit for Approval\"]\n    H [label=\"Receive Decision\"]\n    I [label=\"Product/Service Delivered\"]\n    A -> B\n    B -> C\n    C -> D\n    D -> E\n    E -> F\n    F -> G\n    G -> H\n    H -> I\n}\n```'''),
-        (r"use case.*diagram|use case.*chart|use case.*graph|use case", '''```dot\ndigraph G {\n    Actor1 [label=\"Customer\"]\n    System [label=\"Mobile Banking App\"]\n    Offer [label=\"Personalized Loan Offer\"]\n    Actor1 -> System\n    System -> Offer\n}\n```'''),
-        (r"data.*mapping|data.*diagram|data.*chart|data.*flow", '''```dot\ndigraph G {\n    DataSource [label=\"Customer Data\"]\n    Engine [label=\"Data Analytics Engine\"]\n    Offers [label=\"Personalized Loan Offers\"]\n    App [label=\"Mobile Banking App\"]\n    DataSource -> Engine\n    Engine -> Offers\n    Offers -> App\n}\n```'''),
-    ]
-    for pattern, template in keywords:
-        matches = list(re.finditer(rf"^#+\s*(.*{pattern}.*)$", report, re.IGNORECASE | re.MULTILINE))
-        for match in matches:
-            section_start = match.end()
-            next_300 = report[section_start:section_start+300]
-            if '```dot' not in next_300:
-                insert_pos = section_start
-                report = report[:insert_pos] + '\n' + template + '\n' + report[insert_pos:]
+def ensure_mermaid_diagrams(report):
+    mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
+    mermaid_blocks = re.findall(mermaid_pattern, report, re.DOTALL)
+    if not mermaid_blocks:
+        return report
+    diagram_html = ""
+    for i, code in enumerate(mermaid_blocks):
+        code = code.strip()
+        if not code or 'flowchart' not in code:
+            continue
+        diagram_id = f"mermaid-diagram-{i}"
+        diagram_html += f"""
+        <div style=\"margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;\">
+            <div class=\"mermaid\" id=\"{diagram_id}\">
+{code}
+            </div>
+        </div>
+        """
+    if diagram_html:
+        mermaid_script = """
+        <script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>
+        <script>
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    mermaid.init();
+                }, 1000);
+            });
+        </script>
+        """
+        first_replacement = mermaid_script + diagram_html
+        report = re.sub(mermaid_pattern, first_replacement, report, count=1)
+        remaining_diagrams = diagram_html.split('<div style="margin: 20px 0;')[1:]
+        for diagram in remaining_diagrams:
+            diagram_html_full = '<div style="margin: 20px 0;' + diagram
+            report = re.sub(mermaid_pattern, diagram_html_full, report, count=1)
     return report
 
-def get_free_port(start_port=7881, max_tries=20):
-    for port in range(start_port, start_port + max_tries):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            try:
-                s.bind(("0.0.0.0", port))
-                return port
-            except OSError:
-                continue
-    raise RuntimeError("No free port found in range.")
-
 def gradio_dashboard():
-    with gr.Blocks() as demo:
+    with gr.Blocks(css="""
+.html-report h1, .html-report h2, .html-report h3 {
+    color: #3b82f6;
+    background: linear-gradient(90deg, #6366f1 0%, #06b6d4 50%, #f472b6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+.html-report h2 {
+    font-size: 2em;
+}
+.html-report h3 {
+    font-size: 1.3em;
+}
+.html-report ul, .html-report ol {
+    margin-left: 2em;
+    margin-bottom: 1em;
+}
+.html-report li {
+    color: #0ea5e9;
+    font-size: 1.1em;
+    margin-bottom: 0.3em;
+}
+.html-report table, .html-report th, .html-report td {
+    border: 1.5px solid #a5b4fc !important;
+    border-collapse: collapse !important;
+    padding: 10px 14px !important;
+    font-size: 1.05em !important;
+    background: #f9fafb !important;
+}
+.html-report th {
+    background: #e0e7ff !important;
+    font-weight: bold !important;
+    color: #3730a3 !important;
+}
+.html-report tr:nth-child(even) {
+    background: #f3f4f6 !important;
+}
+.html-report tr:hover {
+    background: #fcd34d !important;
+}
+""") as demo:
         gr.HTML('<h1>💡 Agentic BA Dashboard</h1>')
         gr.Markdown("Welcome to your AI-powered business analysis system!")
-        
         business_problem = gr.Textbox(
             label="Business Problem / Objective", 
             value="", 
@@ -396,22 +423,28 @@ def gradio_dashboard():
         )
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
-        report_output = gr.Markdown(label="Generated Report")
-
+        report_output = gr.HTML(label="Generated Report")
         def run_and_status(bp):
             try:
                 status_msg = "Generating report... (this may take a moment)"
                 report, images = generate_report_and_images(bp)
+                # Replace each ```mermaid ... ``` block with the corresponding PNG image as base64
+                for idx, img_path in enumerate(images, 1):
+                    if os.path.exists(img_path):
+                        with open(img_path, "rb") as img_file:
+                            b64 = base64.b64encode(img_file.read()).decode("utf-8")
+                        img_tag = f'<img src="data:image/png;base64,{b64}" style="max-width:100%; margin: 20px 0;" />'
+                        report = re.sub(r"```mermaid[\s\S]*?```", img_tag, report, count=1)
+                import markdown
+                html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
+                html_report = f'<div class="html-report">{html_report}</div>'
                 final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-                return report, final_status
+                return html_report, final_status
             except Exception as e:
                 return f"Error: {str(e)}", "Generation failed"
-
         run_btn.click(run_and_status, inputs=[business_problem], outputs=[report_output, status])
-    
     return demo
 
 if __name__ == "__main__":
-    # For Hugging Face Spaces, use port 7860
     demo = gradio_dashboard()
-    demo.launch(server_port=7860) 
+    demo.launch(server_port=7860, pwa=True, share=True)

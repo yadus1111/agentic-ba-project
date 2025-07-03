@@ -1,10 +1,14 @@
 pyautogen
 python-dotenv
-google-generativeai==0.8.0
-gradio==4.19.2
-gradio-client==0.10.1
+google-generativeai
+gradio
+numpy
 fastapi
 uvicorn
 pydantic
 pillow
-graphviz
+markdown
+
+# For PNG generation from Mermaid diagrams, you must also install:
+# Node.js (https://nodejs.org/)
+# Mermaid CLI: npm install -g @mermaid-js/mermaid-cli
