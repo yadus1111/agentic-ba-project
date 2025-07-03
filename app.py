@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import gradio as gr
 from config import MODEL_NAME
-from google import genai
+import google.generativeai as genai
 import re
 import subprocess
 import os
@@ -12,8 +12,8 @@ import copy
 import socket
 import graphviz
 
-# Set up Gemini client using environment variable
-client = genai.Client()
+# Add after the imports, before OUTPUT_DIR
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -284,10 +284,7 @@ Main Flow: {use_case['main_flow']}
 Generate a unique DOT diagram (digraph G) that visualizes the specific actors, steps, and interactions for this use case. Use only nodes and arrows. No generic diagrams. No advanced formatting. Output only the DOT code, no extra text.
 """
     try:
-        response = client.models.generate_content(
-            model=MODEL_NAME,
-            contents=prompt
-        )
+        response = genai.GenerativeModel(MODEL_NAME).generate_content(prompt)
         if response.text:
             code = response.text.strip().replace('```dot','').replace('```','').strip()
             code = sanitize_dot_code(code)
@@ -307,10 +304,7 @@ def insert_use_case_diagrams(report_text, business_problem):
         if not diagram_code:
             strict_prompt = f"Given the following business problem: {business_problem}\nAnd this use case: {uc['title']}\nActors: {uc['actors']}\nMain Flow: {uc['main_flow']}\nGenerate a simple DOT digraph G diagram. Use only nodes and arrows. No advanced formatting."
             try:
-                response = client.models.generate_content(
-                    model=MODEL_NAME,
-                    contents=strict_prompt
-                )
+                response = genai.GenerativeModel(MODEL_NAME).generate_content(strict_prompt)
                 if response.text:
                     diagram_code = response.text.strip().replace('```dot','').replace('```','').strip()
                     diagram_code = sanitize_dot_code(diagram_code)
@@ -337,10 +331,7 @@ def generate_report_and_images(business_problem):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            response = client.models.generate_content(
-                model=MODEL_NAME,
-                contents=prompt
-            )
+            response = genai.GenerativeModel(MODEL_NAME).generate_content(prompt)
             report_text = response.text if response.text else "No content generated."
             report_text = insert_use_case_diagrams(report_text, business_problem)
             image_paths, error_blocks, fixed_blocks = extract_and_render_dot(report_text, business_problem=business_problem)
