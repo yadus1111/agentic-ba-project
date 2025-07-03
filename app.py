@@ -384,138 +384,31 @@ def get_free_port(start_port=7881, max_tries=20):
     raise RuntimeError("No free port found in range.")
 
 def gradio_dashboard():
-    with gr.Blocks(css="""
-    body {
-        background: linear-gradient(120deg, #e0e7ff 0%, #f0fdfa 30%, #f9fafb 60%, #fcd34d 100%, #f472b6 130%);
-        background-size: 200% 200%;
-        min-height: 100vh;
-        animation: gradientBG 12s ease-in-out infinite alternate;
-        font-size: 1.25em;
-    }
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 100% 50%; }
-    }
-    .gradio-container {
-        background: rgba(255,255,255,0.96);
-        border-radius: 18px;
-        box-shadow: 0 4px 32px rgba(0,0,0,0.10);
-        padding: 40px 32px 32px 32px;
-        border: 2px solid #06b6d4;
-        transition: box-shadow 0.3s, border-color 0.3s;
-        border-image: linear-gradient(90deg, #6366f1 0%, #06b6d4 50%, #f472b6 100%) 1;
-    }
-    .gradio-container:hover {
-        box-shadow: 0 8px 40px rgba(99,102,241,0.18);
-        border-color: #f472b6;
-    }
-    .gr-button {
-        background: linear-gradient(90deg, #6366f1 0%, #06b6d4 50%, #f472b6 100%);
-        color: #fff;
-        border-radius: 8px;
-        font-weight: bold;
-        box-shadow: 0 2px 8px rgba(99,102,241,0.15);
-        font-size: 1.2em;
-        transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
-        border: none;
-    }
-    .gr-button:hover {
-        background: linear-gradient(90deg, #f472b6 0%, #fcd34d 100%);
-        transform: scale(1.07);
-        box-shadow: 0 4px 16px rgba(6,182,212,0.18);
-    }
-    .gr-textbox, .gr-markdown {
-        background: linear-gradient(90deg, #f0fdfa 0%, #e0e7ff 100%);
-        border-radius: 12px;
-        border: 1.5px solid #a5b4fc;
-        font-size: 1.6em;
-        transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
-    }
-    .gr-textbox:focus-within {
-        border-color: #f472b6;
-        box-shadow: 0 0 0 2px #f472b6;
-        background: #fff7ed;
-    }
-    .gr-markdown h1 {
-        color: #6366f1;
-        font-size: 3.2em;
-        margin-bottom: 0.2em;
-        letter-spacing: 1px;
-        background: linear-gradient(90deg, #6366f1 0%, #f472b6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .gr-markdown h2 {
-        color: #06b6d4;
-        font-size: 2.5em;
-        background: linear-gradient(90deg, #06b6d4 0%, #fcd34d 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .gr-textbox label, .gr-markdown label {
-        color: #0ea5e9;
-        font-weight: bold;
-        font-size: 1.6em;
-    }
-    .logo {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 18px;
-    }
-    .logo-emoji {
-        font-size: 3.5em;
-        margin-right: 12px;
-    }
-    .logo-title {
-        font-size: 2.2em;
-        font-weight: bold;
-        color: #6366f1;
-        letter-spacing: 2px;
-    }
-    /* Improved Markdown table styling */
-    .gr-markdown table, .gr-markdown th, .gr-markdown td {
-        border: 1.5px solid #a5b4fc !important;
-        border-collapse: collapse !important;
-        padding: 10px 14px !important;
-        font-size: 1.15em !important;
-        font-family: 'Segoe UI', Arial, sans-serif !important;
-        background: #f9fafb !important;
-    }
-    .gr-markdown th {
-        background: #e0e7ff !important;
-        font-weight: bold !important;
-        color: #3730a3 !important;
-    }
-    .gr-markdown tr:nth-child(even) {
-        background: #f3f4f6 !important;
-    }
-    .gr-markdown tr:hover {
-        background: #fcd34d !important;
-    }
-    /* Hide Gradio footer */
-    footer, .svelte-1ipelgc, .gradio-container .footer, .gr-footer { display: none !important; }
-    """) as demo:
-        with gr.Row():
-            gr.HTML('<div class="logo"><span class="logo-emoji">💡</span><span class="logo-title">Agentic BA Dashboard</span></div>')
-        gr.Markdown("""
-Welcome to your AI-powered business analysis system! Generate comprehensive business analysis deliverables with a single click.
-        """)
-        gr.Markdown("⚠️ **Note:** If you encounter API overload errors, the system will automatically retry up to 3 times with increasing delays.")
+    with gr.Blocks() as demo:
+        gr.HTML('<h1>💡 Agentic BA Dashboard</h1>')
+        gr.Markdown("Welcome to your AI-powered business analysis system!")
         
-        business_problem = gr.Textbox(label="Business Problem / Objective", value="", lines=8, placeholder="Paste your business case or objective here...")
+        business_problem = gr.Textbox(
+            label="Business Problem / Objective", 
+            value="", 
+            lines=8, 
+            placeholder="Paste your business case or objective here..."
+        )
         run_btn = gr.Button("Generate Report")
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
         report_output = gr.Markdown(label="Generated Report")
-        image_gallery = gr.Gallery(label="Diagrams")
 
         def run_and_status(bp):
-            status_msg = "Generating report... (this may take a moment)"
-            report, images = generate_report_and_images(bp)
-            final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-            return report, images, final_status
+            try:
+                status_msg = "Generating report... (this may take a moment)"
+                report, images = generate_report_and_images(bp)
+                final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
+                return report, final_status
+            except Exception as e:
+                return f"Error: {str(e)}", "Generation failed"
 
-        run_btn.click(run_and_status, inputs=[business_problem], outputs=[report_output, image_gallery, status])
+        run_btn.click(run_and_status, inputs=[business_problem], outputs=[report_output, status])
+    
     return demo
 
 if __name__ == "__main__":
