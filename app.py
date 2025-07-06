@@ -405,11 +405,24 @@ def ensure_mermaid_diagrams(html_content):
     return html_content
 
 def render_mermaid_blocks(md_text):
-    # Replace ```mermaid code blocks with <div class="mermaid">...</div>
-    def repl(match):
-        code = match.group(1)
-        return f'<div class="mermaid">{code}</div>'
-    return re.sub(r'```mermaid\s*\n(.*?)```', repl, md_text, flags=re.DOTALL)
+    # Split on mermaid code blocks
+    parts = re.split(r'```mermaid\s*\n(.*?)```', md_text, flags=re.DOTALL)
+    html_parts = []
+    for i, part in enumerate(parts):
+        if i % 2 == 0:
+            # Non-mermaid: convert to HTML
+            html_parts.append(markdown.markdown(part, extensions=['tables', 'fenced_code']))
+        else:
+            # Mermaid: insert as raw HTML
+            html_parts.append(f'<div class="mermaid">{part.strip()}</div>')
+    html_report = ''.join(html_parts)
+    # Add Mermaid.js script at the top
+    html_report = (
+        '<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>'
+        '<script>mermaid.initialize({startOnLoad:true});</script>'
+        + f'<div class="html-report">{html_report}</div>'
+    )
+    return html_report
 
 def gradio_dashboard():
     with gr.Blocks(css="""
@@ -471,15 +484,7 @@ def gradio_dashboard():
             try:
                 status_msg = "Generating report... (this may take a moment)"
                 report, images = generate_report_and_images(bp)
-                # Replace mermaid blocks before markdown conversion
-                report = render_mermaid_blocks(report)
-                html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
-                # Add Mermaid.js script
-                html_report = (
-                    '<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>'
-                    '<script>mermaid.initialize({startOnLoad:true});</script>'
-                    + f'<div class="html-report">{html_report}</div>'
-                )
+                html_report = render_mermaid_blocks(report)
                 final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
                 return html_report, final_status
             except Exception as e:
