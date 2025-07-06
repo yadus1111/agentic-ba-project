@@ -11,6 +11,7 @@ import random
 import copy
 import socket
 import base64
+import markdown
 
 # Set up Gemini model using environment variable
 model = genai.GenerativeModel(MODEL_NAME)
@@ -403,6 +404,13 @@ def ensure_mermaid_diagrams(html_content):
     
     return html_content
 
+def render_mermaid_blocks(md_text):
+    # Replace ```mermaid code blocks with <div class="mermaid">...</div>
+    def repl(match):
+        code = match.group(1)
+        return f'<div class="mermaid">{code}</div>'
+    return re.sub(r'```mermaid\s*\n(.*?)```', repl, md_text, flags=re.DOTALL)
+
 def gradio_dashboard():
     with gr.Blocks(css="""
 .html-report h1, .html-report h2, .html-report h3 {
@@ -463,17 +471,15 @@ def gradio_dashboard():
             try:
                 status_msg = "Generating report... (this may take a moment)"
                 report, images = generate_report_and_images(bp)
-                
-                # Convert markdown to HTML first
-                import markdown
+                # Replace mermaid blocks before markdown conversion
+                report = render_mermaid_blocks(report)
                 html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
-                
-                # Process Mermaid diagrams - replace code blocks with rendered diagrams
-                html_report = ensure_mermaid_diagrams(html_report)
-                
-                # Add the HTML wrapper
-                html_report = f'<div class="html-report">{html_report}</div>'
-                
+                # Add Mermaid.js script
+                html_report = (
+                    '<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>'
+                    '<script>mermaid.initialize({startOnLoad:true});</script>'
+                    + f'<div class="html-report">{html_report}</div>'
+                )
                 final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
                 return html_report, final_status
             except Exception as e:
