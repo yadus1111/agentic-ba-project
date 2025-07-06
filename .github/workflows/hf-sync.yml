@@ -23,5 +23,5 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git remote add hf https://huggingface.co/spaces/Yadu-sharma/BA-Agentic-AI || true
-          git push --force https://user:${HF_TOKEN}@huggingface.co/spaces/Yadu-sharma/BA-Agentic-AI main
+          git remote add hf https://huggingface.co/spaces/Yadu-sharma/ba-agent-dashboard || true
+          git push --force https://user:${HF_TOKEN}@huggingface.co/spaces/Yadu-sharma/ba-agent-dashboard main

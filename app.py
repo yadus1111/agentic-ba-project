@@ -445,6 +445,8 @@ def gradio_dashboard():
         run_btn.click(run_and_status, inputs=[business_problem], outputs=[report_output, status])
     return demo
 
+# Create the Gradio app instance for Hugging Face Spaces
+demo = gradio_dashboard()
+
 if __name__ == "__main__":
-    demo = gradio_dashboard()
     demo.launch(server_port=7860, pwa=True, share=True)
