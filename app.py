@@ -11,7 +11,6 @@ import random
 import copy
 import socket
 import base64
-import markdown
 
 # Set up Gemini model using environment variable
 model = genai.GenerativeModel(MODEL_NAME)
@@ -351,38 +350,27 @@ def generate_report_and_images(business_problem):
                 return f"Error generating report: {error_msg}", []
     return "Failed to generate report after multiple attempts. Please try again later.", []
 
-def ensure_mermaid_diagrams(html_content):
-    # Look for <pre><code class="language-mermaid"> or <code> blocks containing mermaid
-    mermaid_pattern = r'<pre><code[^>]*class="[^"]*mermaid[^"]*"[^>]*>(.*?)</code></pre>|<pre><code[^>]*>(.*?)</code></pre>'
-    
-    def replace_mermaid(match):
-        # Extract the mermaid code from the match
-        mermaid_code = match.group(1) or match.group(2)
-        if not mermaid_code or 'flowchart' not in mermaid_code:
-            return match.group(0)  # Return original if not mermaid
-        
-        # Clean the code
-        mermaid_code = mermaid_code.strip()
-        
-        # Create a unique ID for this diagram
-        diagram_id = f"mermaid-diagram-{hash(mermaid_code) % 10000}"
-        
-        # Return the HTML for the diagram
-        return f"""
-        <div style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;">
-            <div class="mermaid" id="{diagram_id}">
-{mermaid_code}
+def ensure_mermaid_diagrams(report):
+    mermaid_pattern = r'```mermaid\s*\n(.*?)\n```'
+    mermaid_blocks = re.findall(mermaid_pattern, report, re.DOTALL)
+    if not mermaid_blocks:
+        return report
+    diagram_html = ""
+    for i, code in enumerate(mermaid_blocks):
+        code = code.strip()
+        if not code or 'flowchart' not in code:
+            continue
+        diagram_id = f"mermaid-diagram-{i}"
+        diagram_html += f"""
+        <div style=\"margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;\">
+            <div class=\"mermaid\" id=\"{diagram_id}\">
+{code}
             </div>
         </div>
         """
-    
-    # Replace all mermaid code blocks
-    html_content = re.sub(mermaid_pattern, replace_mermaid, html_content, flags=re.DOTALL)
-    
-    # Add mermaid script if we found any diagrams
-    if 'mermaid' in html_content:
+    if diagram_html:
         mermaid_script = """
-        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+        <script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>
         <script>
             mermaid.initialize({
                 startOnLoad: true,
@@ -399,30 +387,13 @@ def ensure_mermaid_diagrams(html_content):
             });
         </script>
         """
-        # Insert the script at the beginning
-        html_content = mermaid_script + html_content
-    
-    return html_content
-
-def render_mermaid_blocks(md_text):
-    # Split on mermaid code blocks
-    parts = re.split(r'```mermaid\s*\n(.*?)```', md_text, flags=re.DOTALL)
-    html_parts = []
-    for i, part in enumerate(parts):
-        if i % 2 == 0:
-            # Non-mermaid: convert to HTML
-            html_parts.append(markdown.markdown(part, extensions=['tables', 'fenced_code']))
-        else:
-            # Mermaid: insert as raw HTML
-            html_parts.append(f'<div class="mermaid">{part.strip()}</div>')
-    html_report = ''.join(html_parts)
-    # Add Mermaid.js script at the top
-    html_report = (
-        '<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>'
-        '<script>mermaid.initialize({startOnLoad:true});</script>'
-        + f'<div class="html-report">{html_report}</div>'
-    )
-    return html_report
+        first_replacement = mermaid_script + diagram_html
+        report = re.sub(mermaid_pattern, first_replacement, report, count=1)
+        remaining_diagrams = diagram_html.split('<div style="margin: 20px 0;')[1:]
+        for diagram in remaining_diagrams:
+            diagram_html_full = '<div style="margin: 20px 0;' + diagram
+            report = re.sub(mermaid_pattern, diagram_html_full, report, count=1)
+    return report
 
 def gradio_dashboard():
     with gr.Blocks(css="""
@@ -484,7 +455,16 @@ def gradio_dashboard():
             try:
                 status_msg = "Generating report... (this may take a moment)"
                 report, images = generate_report_and_images(bp)
-                html_report = render_mermaid_blocks(report)
+                # Replace each ```mermaid ... ``` block with the corresponding PNG image as base64
+                for idx, img_path in enumerate(images, 1):
+                    if os.path.exists(img_path):
+                        with open(img_path, "rb") as img_file:
+                            b64 = base64.b64encode(img_file.read()).decode("utf-8")
+                        img_tag = f'<img src="data:image/png;base64,{b64}" style="max-width:100%; margin: 20px 0;" />'
+                        report = re.sub(r"```mermaid[\s\S]*?```", img_tag, report, count=1)
+                import markdown
+                html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
+                html_report = f'<div class="html-report">{html_report}</div>'
                 final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
                 return html_report, final_status
             except Exception as e:
