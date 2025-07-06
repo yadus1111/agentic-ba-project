@@ -212,7 +212,7 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
     error_blocks = []
     fixed_blocks = []
     os.makedirs(output_dir, exist_ok=True)
-    mmdc_path = r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd"
+    
     for idx, code in enumerate(mermaid_blocks, 1):
         code = sanitize_mermaid_code(code)
         section_type = None
@@ -221,23 +221,50 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['process'])
             elif section_type == 'stakeholder':
                 code = sanitize_mermaid_code(STRICT_MERMAID_TEMPLATES['stakeholder'])
+        
         mmd_path = os.path.join(output_dir, f"diagram_{idx}.mmd")
         png_path = os.path.join(output_dir, f"diagram_{idx}.png")
+        
         try:
             with open(mmd_path, "w", encoding="utf-8") as f:
                 f.write(code)
-            # Try to render PNG using mermaid-cli (mmdc) with full path
+            
+            # Try to render PNG using mermaid-cli if available
             try:
-                result = subprocess.run([
-                    mmdc_path, "-i", mmd_path, "-o", png_path
-                ], check=True, capture_output=True, text=True)
-                if os.path.exists(png_path):
-                    image_paths.append(png_path)
+                # Try different possible mmdc paths
+                mmdc_paths = [
+                    "mmdc",  # If installed globally
+                    "/usr/local/bin/mmdc",  # Common Linux path
+                    "/usr/bin/mmdc",  # Alternative Linux path
+                    r"C:\Users\acer\AppData\Roaming\npm\mmdc.cmd"  # Windows path
+                ]
+                
+                rendered = False
+                for mmdc_path in mmdc_paths:
+                    try:
+                        result = subprocess.run([
+                            mmdc_path, "-i", mmd_path, "-o", png_path
+                        ], check=True, capture_output=True, text=True, timeout=30)
+                        if os.path.exists(png_path):
+                            image_paths.append(png_path)
+                            rendered = True
+                            break
+                    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+                        continue
+                
+                if not rendered:
+                    # If mmdc is not available, just keep the Mermaid code
+                    # The diagrams will be rendered by the frontend using Mermaid.js
+                    error_blocks.append((idx, code, "Mermaid CLI not available - diagrams will be rendered in browser"))
+                
             except Exception as e:
                 error_blocks.append((idx, code, f"mmdc error: {str(e)}"))
+            
             fixed_blocks.append((idx, code))
+            
         except Exception as e:
             error_blocks.append((idx, code, f"Could not save file: {str(e)}"))
+    
     return image_paths, error_blocks, fixed_blocks
 
 def extract_use_case_details(report_text):
@@ -449,4 +476,4 @@ def gradio_dashboard():
 demo = gradio_dashboard()
 
 if __name__ == "__main__":
-    demo.launch(server_port=7860, pwa=True, share=True)
+    demo.launch(server_port=7860, share=True)
