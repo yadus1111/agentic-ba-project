@@ -95,6 +95,54 @@ python app.py
 
 The application will launch a Gradio web interface that you can access locally or share publicly.
 
+## Deployment & Auto-Deployment Workflow
+
+### GitHub to Hugging Face Auto-Deployment
+
+This project is configured for automatic deployment from GitHub to Hugging Face Spaces. Here's how the workflow works:
+
+#### 1. Development Workflow
+```bash
+# Make your code changes locally
+git add .
+git commit -m "Your commit message"
+git push origin main
+```
+
+#### 2. Automatic Deployment Process
+- GitHub Push: When you push changes to the `main` branch on GitHub
+- GitHub Actions Trigger: The `.github/workflows/hf-sync.yml` workflow automatically runs
+- Hugging Face Sync: Changes are automatically pushed to your Hugging Face Space
+- Auto-Build: Hugging Face Spaces automatically rebuilds and deploys your application
+
+#### 3. Configuration Required
+To enable auto-deployment, you need to set up:
+
+Option A: GitHub Actions (Recommended)
+1. Add HF_TOKEN Secret to your GitHub repository:
+   - Go to your GitHub repo → Settings → Secrets and variables → Actions
+   - Click "New repository secret"
+   - Name: `HF_TOKEN`
+   - Value: Your Hugging Face access token (get from https://huggingface.co/settings/tokens)
+
+Option B: Direct GitHub Integration
+1. Go to your Hugging Face Space: https://huggingface.co/spaces/Yadu-sharma/ba-agent-dashboard
+2. Click Settings → Repository
+3. Enable Sync with GitHub repository
+4. Connect your GitHub repository
+
+#### 4. Live Application
+- Hugging Face Space: https://huggingface.co/spaces/Yadu-sharma/ba-agent-dashboard
+- Auto-updates: Every push to GitHub automatically updates the live application
+- No manual deployment needed: The entire process is automated
+
+#### 5. Benefits
+- ✅ Zero-downtime deployments
+- ✅ Automatic version control
+- ✅ Easy rollback (just revert a commit)
+- ✅ Consistent deployment process
+- ✅ Public access to your application
+
 ---
 
 *Built with ❤️ using Agentic AI principles*
