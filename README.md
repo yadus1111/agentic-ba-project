@@ -11,6 +11,14 @@ pinned: false
 
 # Agentic Business Analysis Dashboard
 
+## Recent Improvements
+
+- 🖼️ **High-Resolution Diagrams**: All Mermaid diagrams are now generated as high-resolution PNGs (2000x900, 3x scale) for maximum clarity in both the dashboard and PDF.
+- 📐 **Responsive Diagram Scaling**: Diagrams scale up to nearly the full page width (max-width: 95vw, max-height: 80vh, min-width: 400px, min-height: 200px) for readability, both in the Gradio dashboard and exported PDF.
+- 🚫 **No Generic Intros**: Any generic introductory paragraph (e.g., "Here is a complete business analysis report...") is automatically removed from the start of the report.
+- 🎨 **Professional, Monochrome Look**: The dashboard and PDF use a unified, formal black/gray color palette and Times New Roman font for all content.
+- 🖨️ **Pixel-Perfect PDF Export**: PDF export uses Playwright to render the HTML with injected CSS, ensuring the PDF matches the dashboard exactly.
+
 An AI-powered dashboard for generating comprehensive business analysis reports using specialized AI agents.
 
 ## Features
