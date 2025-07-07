@@ -1,6 +1,6 @@
 pyautogen
 python-dotenv
-google-genai
+google-generativeai
 gradio==4.44.1
 numpy
 fastapi
