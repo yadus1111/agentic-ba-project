@@ -17,8 +17,9 @@ import hashlib
 from bs4 import BeautifulSoup, Tag
 from playwright.sync_api import sync_playwright
 
-# Set up Gemini model using environment variable
-model = genai.GenerativeModel(MODEL_NAME)
+# --- Gemini Model Setup (NEW SDK) ---
+from google import genai
+client = genai.Client()  # Uses GOOGLE_API_KEY from env
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -302,7 +303,7 @@ Main Flow: {use_case['main_flow']}
 Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific actors, steps, and interactions for this use case. Use only rectangles and arrows. No generic diagrams. No advanced formatting. Output only the Mermaid code, no extra text.
 """
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(model=MODEL_NAME, contents=prompt)
         if response.text:
             code = response.text.strip().replace('```mermaid','').replace('```','').strip()
             code = sanitize_mermaid_code(code)
@@ -341,7 +342,7 @@ def generate_report_and_images(business_problem):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            response = model.generate_content(prompt)
+            response = client.models.generate_content(model=MODEL_NAME, contents=prompt)
             report_text = response.text if response.text else "No content generated."
             report_text = insert_use_case_diagrams(report_text, business_problem)
             image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
@@ -765,4 +766,4 @@ def gradio_dashboard():
 demo = gradio_dashboard()
 
 if __name__ == "__main__":
-    demo.launch(server_port=7861)
+    demo.launch(server_port=7861, share=True)
