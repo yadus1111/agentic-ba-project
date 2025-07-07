@@ -8,7 +8,5 @@ uvicorn
 pydantic
 pillow
 markdown
+beautifulsoup4
 
-# For PNG generation from Mermaid diagrams, you must also install:
-# Node.js (https://nodejs.org/)
-# Mermaid CLI: npm install -g @mermaid-js/mermaid-cli
