@@ -765,4 +765,4 @@ def gradio_dashboard():
 demo = gradio_dashboard()
 
 if __name__ == "__main__":
-    demo.launch(server_port=7861, share=True)
+    demo.launch(server_port=7861)
