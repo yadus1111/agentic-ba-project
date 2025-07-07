@@ -9,4 +9,5 @@ pydantic
 pillow
 markdown
 beautifulsoup4
+playwright
 
