@@ -1,3 +1,4 @@
+# Copy of app.py for Hugging Face Spaces (Playwright PDF export disabled)
 from dotenv import load_dotenv
 load_dotenv()
 import gradio as gr
@@ -15,108 +16,73 @@ from io import BytesIO
 import re
 import hashlib
 from bs4 import BeautifulSoup, Tag
-from playwright.sync_api import sync_playwright
+# from playwright.sync_api import sync_playwright  # Disabled for Hugging Face Spaces
 
 # --- Gemini Model Setup (NEW SDK) ---
 # Set up Gemini model using environment variable
+# Linter warning may appear here, but this is correct for the user's codebase and Spaces
 model = genai.GenerativeModel(MODEL_NAME)
 
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Default prompt template for the full report
-REPORT_PROMPT_TEMPLATE = '''
-You are an expert Business Analyst specializing in banking and fintech. According to the business problem/objective, generate a complete business analysis report in Markdown format. The report must include:
-1. Stakeholder Map (as a Mermaid diagram in a code block)
-   - Use the business problem and list all unique stakeholders relevant to this scenario. Do not use a generic template.
-   - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
-   - NO special characters, NO advanced formatting, NO styling
-   - Example format:
-   ```mermaid
-   flowchart TD
-       A[Stakeholder 1] --> B[Stakeholder 2]
-       B --> C[Stakeholder 3]
-   ```
-2. Process Flow according to business problem (as a Mermaid diagram in a code block)
-   - Use the business problem and describe the unique steps for this specific journey. Do not use a generic template.
-   - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
-   - NO special characters, NO advanced formatting, NO styling
-   - Example format:
-   ```mermaid
-   flowchart TD
-       A[Step 1] --> B[Step 2]
-       B --> C[Step 3]
-   ```
-3. Business Requirement Document (BRD)
-4. Functional Requirement Specification (FRS), including Non-Functional Requirements
-5. Use Case Diagrams and detailed Scenarios for all provided cases
-   - For each use case, generate a unique, scenario-specific diagram and description. Each diagram must visualize the specific actors, steps, and interactions for that use case, not a generic flow. Use the business problem and the use case scenario details.
-   - IMPORTANT: Use ONLY simple Mermaid syntax for use case diagrams
-6. Data Mapping Sheet and Data Requirements Analysis (as a Markdown table)
-    - For the Data Mapping Sheet, use the following columns:
-        | Data Element | Source System(s) | Data Type | Frequency/Freshness | Purpose for Personalization | Availability (Y/N) | PII/Sensitivity (PII, Sensitive, Public) | Data Owner | Transformation/Processing | Remarks/Privacy Concerns |
-    - Format as a Markdown table. Be concise and clear.
-7. Functional Scope Summary (In/Out of Scope)
-8. Suggested KPIs for success measurement
+# Playwright-based PDF export (DISABLED FOR HUGGING FACE SPACES)
+# def html_to_pdf_with_playwright(html_content, output_pdf_path):
+#     from playwright.sync_api import sync_playwright
+#     with sync_playwright() as p:
+#         browser = p.chromium.launch()
+#         page = browser.new_page()
+#         page.set_content(html_content, wait_until="load")
+#         # Set small margins (1cm on all sides)
+#         page.pdf(path=output_pdf_path, format="A4", print_background=True, margin={"top": "1cm", "bottom": "1cm", "left": "1cm", "right": "1cm"})
+#         browser.close()
 
-IMPORTANT:
-- Format all sections, headings, and lists using Markdown syntax (## for main sections, ### for sub-sections, * for bullet points, 1. for numbered lists, etc.) for maximum readability.
-- Use clear Markdown headers for each section (e.g., ## 01. Stakeholder Map).
-- Use bullet points and numbered lists for clarity.
-- Optionally, add relevant emojis or icons in section headers for visual clarity (e.g., ## 📊 03. Business Requirement Document (BRD)).
-- Make the report visually structured and easy to read.
-- Do NOT output any generic template content—make all content specific to the provided business problem and use cases.
+# Utility functions needed for Hugging Face Spaces
 
-Business Problem:
-{business_problem}
-'''
+def remove_emojis(text):
+    # Remove a wide range of emoji and sticker unicode characters
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F600-\U0001F64F"  # emoticons
+        "\U0001F300-\U0001F5FF"  # symbols & pictographs
+        "\U0001F680-\U0001F6FF"  # transport & map symbols
+        "\U0001F1E0-\U0001F1FF"  # flags (iOS)
+        "\U00002500-\U00002BEF"  # chinese char
+        "\U00002702-\U000027B0"
+        "\U00002702-\U000027B0"
+        "\U000024C2-\U0001F251"
+        "\U0001f926-\U0001f937"
+        "\U00010000-\U0010ffff"
+        "\u2640-\u2642"
+        "\u2600-\u2B55"
+        "\u200d"
+        "\u23cf"
+        "\u23e9"
+        "\u231a"
+        "\ufe0f"  # dingbats
+        "\u3030"
+        "]+",
+        flags=re.UNICODE)
+    return emoji_pattern.sub(r'', text)
 
-# --- AGENT DEFINITIONS (imported from agents.py) ---
-class ProjectManagerAgent:
-    system_message = (
-        "You are a Project Manager. Orchestrate the workflow for business analysis of improving loan product uptake in mobile banking. Assign tasks to specialized agents and ensure all deliverables are produced and compiled."
-    )
-
-class BusinessAnalystAgent:
-    system_message = (
-        "You are a Business Analyst specializing in banking. Gather requirements, write the BRD, FRS (including NFRs), scope, and user journey mapping for the loan personalization project."
-    )
-
-class DataAnalystAgent:
-    system_message = (
-        "You are a Data Analyst. Map data requirements, sources, freshness, and gaps for the loan personalization project. Produce a data mapping sheet."
-    )
-
-class ProcessModelerAgent:
-    system_message = (
-        "You are a Process Modeler. Create process flows and user journey diagrams in Mermaid format for the loan personalization project."
-    )
-
-class UseCaseAgent:
-    system_message = (
-        "You are a Use Case Analyst. Develop use case diagrams and detailed scenarios for the three specified cases."
-    )
-
-class KpiAgent:
-    system_message = (
-        "You are a KPI and Success Metrics Analyst. Suggest KPIs and acceptance criteria for the loan personalization project."
-    )
-
-class TechnicalWriterAgent:
-    system_message = (
-        "You are a Technical Writer. Compile all deliverables into Markdown files and ensure clarity and completeness."
-    )
-
-# Agent registry for orchestration
-AGENTS = {
-    "project_manager": ProjectManagerAgent(),
-    "business_analyst": BusinessAnalystAgent(),
-    "data_analyst": DataAnalystAgent(),
-    "process_modeler": ProcessModelerAgent(),
-    "use_case": UseCaseAgent(),
-    "kpi": KpiAgent(),
-    "technical_writer": TechnicalWriterAgent(),
-}
+def remove_llm_intro_paragraph(html_content):
+    from bs4 import BeautifulSoup, Tag
+    soup = BeautifulSoup(html_content, 'html.parser')
+    # Remove the first <p> if it matches the LLM intro pattern or generic intro
+    first_p = soup.find('p')
+    if first_p and isinstance(first_p, Tag):
+        text = first_p.get_text().strip().lower()
+        if (
+            text.startswith('as an expert business analyst') or
+            text.startswith('as a business analyst') or
+            'i have prepared a comprehensive report' in text or
+            text.startswith('here is a complete business analysis report') or
+            text.startswith('here is a business analysis report') or
+            text.startswith('here is the business analysis report') or
+            text.startswith('this is a complete business analysis report')
+        ):
+            first_p.decompose()
+    return str(soup)
 
 STRICT_MERMAID_TEMPLATES = {
     'stakeholder': '''flowchart TD
@@ -242,7 +208,7 @@ def extract_and_render_mermaid(md_text, output_dir=OUTPUT_DIR, business_problem=
                     "mmdc",  # If installed globally
                     "/usr/local/bin/mmdc",  # Common Linux path
                     "/usr/bin/mmdc",  # Alternative Linux path
-                    r"C:\Users\acer\AppData\Roaming\npm\mmdc.cmd"  # Windows path
+                    r"C:\\Users\\acer\\AppData\\Roaming\\npm\\mmdc.cmd"  # Windows path
                 ]
                 
                 rendered = False
@@ -337,6 +303,53 @@ def insert_use_case_diagrams(report_text, business_problem):
                 new_report = new_report[:insert_pos] + f"\n```mermaid\n{diagram_code}\n```\n" + new_report[insert_pos:]
     return new_report
 
+# Default prompt template for the full report
+REPORT_PROMPT_TEMPLATE = '''
+You are an expert Business Analyst specializing in banking and fintech. According to the business problem/objective, generate a complete business analysis report in Markdown format. The report must include:
+1. Stakeholder Map (as a Mermaid diagram in a code block)
+   - Use the business problem and list all unique stakeholders relevant to this scenario. Do not use a generic template.
+   - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
+   - NO special characters, NO advanced formatting, NO styling
+   - Example format:
+   ```mermaid
+   flowchart TD
+       A[Stakeholder 1] --> B[Stakeholder 2]
+       B --> C[Stakeholder 3]
+   ```
+2. Process Flow according to business problem (as a Mermaid diagram in a code block)
+   - Use the business problem and describe the unique steps for this specific journey. Do not use a generic template.
+   - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
+   - NO special characters, NO advanced formatting, NO styling
+   - Example format:
+   ```mermaid
+   flowchart TD
+       A[Step 1] --> B[Step 2]
+       B --> C[Step 3]
+   ```
+3. Business Requirement Document (BRD)
+4. Functional Requirement Specification (FRS), including Non-Functional Requirements
+5. Use Case Diagrams and detailed Scenarios for all provided cases
+   - For each use case, generate a unique, scenario-specific diagram and description. Each diagram must visualize the specific actors, steps, and interactions for that use case, not a generic flow. Use the business problem and the use case scenario details.
+   - IMPORTANT: Use ONLY simple Mermaid syntax for use case diagrams
+6. Data Mapping Sheet and Data Requirements Analysis (as a Markdown table)
+    - For the Data Mapping Sheet, use the following columns:
+        | Data Element | Source System(s) | Data Type | Frequency/Freshness | Purpose for Personalization | Availability (Y/N) | PII/Sensitivity (PII, Sensitive, Public) | Data Owner | Transformation/Processing | Remarks/Privacy Concerns |
+    - Format as a Markdown table. Be concise and clear.
+7. Functional Scope Summary (In/Out of Scope)
+8. Suggested KPIs for success measurement
+
+IMPORTANT:
+- Format all sections, headings, and lists using Markdown syntax (## for main sections, ### for sub-sections, * for bullet points, 1. for numbered lists, etc.) for maximum readability.
+- Use clear Markdown headers for each section (e.g., ## 01. Stakeholder Map).
+- Use bullet points and numbered lists for clarity.
+- Optionally, add relevant emojis or icons in section headers for visual clarity (e.g., ## 📊 03. Business Requirement Document (BRD)).
+- Make the report visually structured and easy to read.
+- Do NOT output any generic template content—make all content specific to the provided business problem and use cases.
+
+Business Problem:
+{business_problem}
+'''
+
 def generate_report_and_images(business_problem):
     prompt = REPORT_PROMPT_TEMPLATE.format(business_problem=business_problem)
     max_retries = 3
@@ -360,223 +373,6 @@ def generate_report_and_images(business_problem):
             else:
                 return f"Error generating report: {error_msg}", []
     return "Failed to generate report after multiple attempts. Please try again later.", []
-
-def bold_label_phrases(text):
-    # Bold any 'Label: value' style phrase (e.g., 'Functional Dependency: ...')
-    return re.sub(r'(\b[\w\s]+:)', r'<b>\1</b>', text)
-
-def remove_emojis(text):
-    # Remove a wide range of emoji and sticker unicode characters
-    emoji_pattern = re.compile(
-        "["
-        "\U0001F600-\U0001F64F"  # emoticons
-        "\U0001F300-\U0001F5FF"  # symbols & pictographs
-        "\U0001F680-\U0001F6FF"  # transport & map symbols
-        "\U0001F1E0-\U0001F1FF"  # flags (iOS)
-        "\U00002500-\U00002BEF"  # chinese char
-        "\U00002702-\U000027B0"
-        "\U00002702-\U000027B0"
-        "\U000024C2-\U0001F251"
-        "\U0001f926-\U0001f937"
-        "\U00010000-\U0010ffff"
-        "\u2640-\u2642"
-        "\u2600-\u2B55"
-        "\u200d"
-        "\u23cf"
-        "\u23e9"
-        "\u231a"
-        "\ufe0f"  # dingbats
-        "\u3030"
-        "]+",
-        flags=re.UNICODE)
-    return emoji_pattern.sub(r'', text)
-
-def remove_duplicate_sections(html_content):
-    from bs4 import BeautifulSoup, Tag
-    soup = BeautifulSoup(html_content, 'html.parser')
-    seen_headers = set()
-    new_content = []
-    current_section = []
-    current_header = None
-    for element in soup.find_all(['h1', 'h2', 'h3', 'p', 'ul', 'ol', 'li', 'table', 'img']):
-        if isinstance(element, Tag) and element.name in ['h1', 'h2', 'h3']:
-            header_text = element.get_text(strip=True)
-            if header_text in seen_headers:
-                current_header = None  # skip this header and its content
-            else:
-                seen_headers.add(header_text)
-                if current_section:
-                    new_content.extend(current_section)
-                current_section = [str(element)]
-                current_header = header_text
-        else:
-            if current_header is not None:
-                current_section.append(str(element))
-    if current_section:
-        new_content.extend(current_section)
-    # Wrap in a div if needed
-    return '<div class="html-report">' + '\n'.join(new_content) + '</div>'
-
-def advanced_deduplicate_content(html_content):
-    from bs4 import BeautifulSoup, Tag
-    soup = BeautifulSoup(html_content, 'html.parser')
-    new_content = []
-    text_groups = {}
-    diagram_hashes = set()
-    # Group similar text by normalized substring containment
-    def add_to_group(text, element):
-        norm = ' '.join(text.split()).lower()
-        for key in list(text_groups.keys()):
-            if norm in key or key in norm:
-                # Keep the longer one
-                if len(norm) > len(key):
-                    text_groups[norm] = element
-                    del text_groups[key]
-                return
-        text_groups[norm] = element
-    for element in soup.find_all(['h1', 'h2', 'h3', 'p', 'ul', 'ol', 'li', 'table', 'img']):
-        if isinstance(element, Tag):
-            # Deduplicate diagrams by image content hash
-            src = element.get('src') if element.name == 'img' else None
-            if src and isinstance(src, str) and src.startswith('data:image'):
-                try:
-                    img_data = src.split(',')[1]
-                    img_bytes = img_data.encode('utf-8')
-                    img_hash = hashlib.md5(img_bytes).hexdigest()
-                    if img_hash in diagram_hashes:
-                        continue
-                    diagram_hashes.add(img_hash)
-                    new_content.append(str(element))
-                except Exception:
-                    new_content.append(str(element))
-            # Advanced deduplication for paragraphs and list items
-            elif element.name in ['p', 'li']:
-                text = element.get_text(strip=True)
-                add_to_group(text, element)
-            else:
-                new_content.append(str(element))
-    # Add only the best (longest) occurrence for each text group
-    for elem in text_groups.values():
-        new_content.append(str(elem))
-    return '<div class="html-report">' + '\n'.join(new_content) + '</div>'
-
-def remove_duplicate_content(html_content):
-    from bs4 import BeautifulSoup, Tag
-    soup = BeautifulSoup(html_content, 'html.parser')
-    new_content = []
-    seen_text = set()
-    seen_diagrams = set()
-    for element in soup.find_all(['h1', 'h2', 'h3', 'p', 'ul', 'ol', 'li', 'table', 'img']):
-        if isinstance(element, Tag):
-            # Deduplicate diagrams (img with src containing 'diagram')
-            if element.name == 'img' and 'diagram' in (element.get('src') or ''):
-                src = element.get('src')
-                if src in seen_diagrams:
-                    continue
-                seen_diagrams.add(src)
-                new_content.append(str(element))
-            # Deduplicate paragraphs and list items
-            elif element.name in ['p', 'li']:
-                norm_text = ' '.join(element.get_text(strip=True).split()).lower()
-                if norm_text in seen_text:
-                    continue
-                seen_text.add(norm_text)
-                new_content.append(str(element))
-            # Always keep headers, tables, lists, etc.
-            else:
-                new_content.append(str(element))
-    return '<div class="html-report">' + '\n'.join(new_content) + '</div>'
-
-def ensure_mermaid_diagrams(report):
-    mermaid_pattern = r'```mermaid\s*\n(.*?)```'
-    mermaid_blocks = re.findall(mermaid_pattern, report, re.DOTALL)
-    if not mermaid_blocks:
-        return report
-    diagram_html = ""
-    for i, code in enumerate(mermaid_blocks):
-        code = code.strip()
-        if not code or 'flowchart' not in code:
-            continue
-        diagram_id = f"mermaid-diagram-{i}"
-        diagram_html += f"""
-        <div style=\"margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e0e7ff; text-align: center;\">
-            <div class=\"mermaid\" id=\"{diagram_id}\">
-{code}
-            </div>
-        </div>
-        """
-    if diagram_html:
-        mermaid_script = """
-        <script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>
-        <script>
-            mermaid.initialize({
-                startOnLoad: true,
-                theme: 'default',
-                flowchart: {
-                    useMaxWidth: true,
-                    htmlLabels: true
-                }
-            });
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    mermaid.init();
-                }, 1000);
-            });
-        </script>
-        """
-        first_replacement = mermaid_script + diagram_html
-        report = re.sub(mermaid_pattern, first_replacement, report, count=1)
-        remaining_diagrams = diagram_html.split('<div style="margin: 20px 0;')[1:]
-        for diagram in remaining_diagrams:
-            diagram_html_full = '<div style="margin: 20px 0;' + diagram
-            report = re.sub(mermaid_pattern, diagram_html_full, report, count=1)
-    return report
-
-# Playwright-based PDF export
-# Requires: pip install playwright && python -m playwright install
-
-def html_to_pdf_with_playwright(html_content, output_pdf_path):
-    from playwright.sync_api import sync_playwright
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
-        page.set_content(html_content, wait_until="load")
-        # Set small margins (1cm on all sides)
-        page.pdf(path=output_pdf_path, format="A4", print_background=True, margin={"top": "1cm", "bottom": "1cm", "left": "1cm", "right": "1cm"})
-        browser.close()
-
-def remove_sticker_images(html_content):
-    from bs4 import BeautifulSoup, Tag
-    soup = BeautifulSoup(html_content, 'html.parser')
-    for img in soup.find_all('img'):
-        if isinstance(img, Tag):
-            src = img.get('src')
-            if src and isinstance(src, str) and not src.startswith('data:image/png;base64'):
-                img.decompose()
-    return str(soup)
-
-def wrap_html_with_css(html_content):
-    css = '''<style>\n.html-report h1, .html-report h2, .html-report h3 {\n    color: #22223b;\n    font-weight: bold;\n    font-family: 'Times New Roman', Times, serif;\n    margin-top: 1.5em;\n    margin-bottom: 0.5em;\n}\n.html-report h2 {\n    font-size: 2em;\n}\n.html-report h3 {\n    font-size: 1.3em;\n}\n.html-report ul, .html-report ol {\n    margin-left: 2.2em;\n    margin-bottom: 1.2em;\n    font-size: 0.97em;\n    font-family: 'Times New Roman', Times, serif;\n}\n.html-report li {\n    color: #22223b;\n    font-size: 0.97em;\n    margin-bottom: 0.25em;\n    font-family: 'Times New Roman', Times, serif;\n    padding-left: 0.2em;\n}\n.html-report p {\n    font-family: 'Times New Roman', Times, serif;\n    font-size: 1.01em;\n    margin-bottom: 0.7em;\n    color: #22223b;\n}\n.html-report table, .html-report th, .html-report td {\n    border: 1.5px solid #22223b !important;\n    border-collapse: collapse !important;\n    padding: 7px 8px !important;\n    font-size: 0.98em !important;\n    background: #fff !important;\n    word-break: break-word !important;\n    overflow-wrap: break-word !important;\n    max-width: 120px !important;\n    font-family: 'Times New Roman', Times, serif;\n}\n.html-report th, .html-report td {\n    word-break: break-word !important;\n    overflow-wrap: break-word !important;\n    max-width: 120px !important;\n}\n.html-report table {\n    display: block;\n    overflow-x: auto;\n    width: 100% !important;\n    max-width: 100% !important;\n    margin-left: auto;\n    margin-right: auto;\n}\n.html-report th {\n    background: #fff !important;\n    font-weight: bold !important;\n    color: #22223b !important;\n}\n.html-report tr:nth-child(even) {\n    background: #f3f4f6 !important;\n}\n.html-report tr:hover {\n    background: #e5e5e5 !important;\n}\n.html-report img {\n    border: 1.5px solid #22223b;\n    border-radius: 10px;\n    margin: 18px auto;\n    display: block;\n    max-width: 95vw;\n    max-height: 80vh;\n    min-width: 400px;\n    min-height: 200px;\n    object-fit: contain;\n    background: #fff;\n}\n.html-report code {\n    background-color: #f1f5f9;\n    padding: 2px 6px;\n    border-radius: 4px;\n    font-family: 'Courier New', monospace;\n    font-size: 0.9em;\n    color: #22223b;\n}\n.html-report pre {\n    background-color: #f8fafc;\n    border: 1px solid #e2e8f0;\n    border-radius: 8px;\n    padding: 15px;\n    overflow-x: auto;\n    margin: 15px 0;\n}\n.html-report pre code {\n    background: none;\n    padding: 0;\n    color: #22223b;\n}\n</style>'''
-    return f'<html><head>{css}</head><body>{html_content}</body></html>'
-
-def remove_llm_intro_paragraph(html_content):
-    from bs4 import BeautifulSoup, Tag
-    soup = BeautifulSoup(html_content, 'html.parser')
-    # Remove the first <p> if it matches the LLM intro pattern or generic intro
-    first_p = soup.find('p')
-    if first_p and isinstance(first_p, Tag):
-        text = first_p.get_text().strip().lower()
-        if (
-            text.startswith('as an expert business analyst') or
-            text.startswith('as a business analyst') or
-            'i have prepared a comprehensive report' in text or
-            text.startswith('here is a complete business analysis report') or
-            text.startswith('here is a business analysis report') or
-            text.startswith('here is the business analysis report') or
-            text.startswith('this is a complete business analysis report')
-        ):
-            first_p.decompose()
-    return str(soup)
 
 def gradio_dashboard():
     with gr.Blocks(css="""
@@ -693,11 +489,11 @@ def gradio_dashboard():
         
         with gr.Row():
             run_btn = gr.Button("🚀 Generate Report", variant="primary", size="lg")
-            download_btn = gr.Button("📄 Download PDF", variant="secondary", size="lg", visible=False)
+            # download_btn = gr.Button("📄 Download PDF", variant="secondary", size="lg", visible=False)  # Disabled for Spaces
         
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
         report_output = gr.HTML(label="Generated Report")
-        pdf_download = gr.File(label="Download PDF", file_types=[".pdf"], visible=False)
+        # pdf_download = gr.File(label="Download PDF", file_types=[".pdf"], visible=False)  # Disabled for Spaces
         
         # Store the current report data for PDF generation
         current_report_data = gr.State({"html": "", "business_problem": ""})
@@ -723,47 +519,19 @@ def gradio_dashboard():
                 # Store data for PDF generation
                 report_data = {"html": html_report, "business_problem": bp}
                 
-                return html_report, final_status, report_data, gr.update(visible=True), gr.update(visible=True)
+                return html_report, final_status, report_data
             except Exception as e:
-                return f"Error: {str(e)}", "Generation failed", {"html": "", "business_problem": ""}, gr.update(visible=False), gr.update(visible=False)
-        
-        def download_pdf(report_data):
-            try:
-                if not report_data or not report_data.get("html"):
-                    return None, "No report available for download"
-                # Remove sticker images and emojis
-                html_clean = remove_sticker_images(report_data["html"])
-                html_clean = remove_emojis(html_clean)
-                html_clean = remove_llm_intro_paragraph(html_clean)
-                html_final = wrap_html_with_css(html_clean)
-                # Use Playwright to generate PDF
-                timestamp = time.strftime("%Y%m%d_%H%M%S")
-                filename = f"business_analysis_report_{timestamp}.pdf"
-                temp_file_path = os.path.join(OUTPUT_DIR, filename)
-                html_to_pdf_with_playwright(html_final, temp_file_path)
-                if os.path.exists(temp_file_path):
-                    return temp_file_path, "PDF generated successfully!"
-                else:
-                    return None, "Failed to generate PDF"
-            except Exception as e:
-                return None, f"PDF generation error: {str(e)}"
+                return f"Error: {str(e)}", "Generation failed", {"html": "", "business_problem": ""}
         
         run_btn.click(
             run_and_status, 
             inputs=[business_problem], 
-            outputs=[report_output, status, current_report_data, download_btn, pdf_download]
-        )
-        
-        download_btn.click(
-            download_pdf,
-            inputs=[current_report_data],
-            outputs=[pdf_download, status]
+            outputs=[report_output, status, current_report_data]
         )
     
     return demo
 
-# Create the Gradio app instance for Hugging Face Spaces
 demo = gradio_dashboard()
 
 if __name__ == "__main__":
-    demo.launch(server_port=7861, share=True)
+    demo.launch()  # Remove share=True and server_port for Hugging Face Spaces 
