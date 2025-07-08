@@ -502,23 +502,20 @@ def gradio_dashboard():
             try:
                 status_msg = "Generating report... (this may take a moment)"
                 report, images = generate_report_and_images(bp)
-                # Replace each ```mermaid ... ``` block with the corresponding PNG image as base64
-                for idx, img_path in enumerate(images, 1):
-                    if os.path.exists(img_path):
-                        with open(img_path, "rb") as img_file:
-                            b64 = base64.b64encode(img_file.read()).decode("utf-8")
-                        img_tag = f'<img src="data:image/png;base64,{b64}" style="max-width:100%; margin: 20px 0;" />'
-                        report = re.sub(r"```mermaid[\s\S]*?```", img_tag, report, count=1)
-                import markdown
-                html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
+                # Inject Mermaid.js and render diagrams client-side
+                mermaid_script = """
+                <script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>
+                <script>mermaid.initialize({startOnLoad:true});</script>
+                """
+                import re
+                # Replace mermaid code blocks with <div class="mermaid">...</div>
+                report = re.sub(r"```mermaid\s*([\s\S]*?)```", r'<div class="mermaid">\1</div>', report)
+                html_report = mermaid_script + report
                 html_report = f'<div class="html-report">{html_report}</div>'
                 html_report = remove_emojis(html_report)
                 html_report = remove_llm_intro_paragraph(html_report)
                 final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-                
-                # Store data for PDF generation
                 report_data = {"html": html_report, "business_problem": bp}
-                
                 return html_report, final_status, report_data
             except Exception as e:
                 return f"Error: {str(e)}", "Generation failed", {"html": "", "business_problem": ""}
