@@ -19,9 +19,12 @@ jobs:
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
+      - name: Ensure Hugging Face remote
+        run: |
+          git remote | grep hf || git remote add hf https://huggingface.co/spaces/Yadu-sharma/ba-agent-dashboard
+
       - name: Push to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git remote add hf https://huggingface.co/spaces/Yadu-sharma/ba-agent-dashboard || true
           git push --force https://user:${HF_TOKEN}@huggingface.co/spaces/Yadu-sharma/ba-agent-dashboard main
