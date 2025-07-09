@@ -48,6 +48,7 @@ Thumbs.db
 
 # Output files
 output/
+*.pdf
 *.png
 *.mmd
 
