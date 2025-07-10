@@ -17,10 +17,12 @@ import re
 import hashlib
 from bs4 import BeautifulSoup, Tag
 # from playwright.sync_api import sync_playwright  # Disabled for Hugging Face Spaces
+import markdown  # Add this import at the top if not present
 
 # --- Gemini Model Setup (NEW SDK) ---
 # Set up Gemini model using environment variable
 # Linter warning may appear here, but this is correct for the user's codebase and Spaces
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 model = genai.GenerativeModel(MODEL_NAME)
 
 OUTPUT_DIR = "output"
@@ -39,50 +41,6 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Utility functions needed for Hugging Face Spaces
 
-def remove_emojis(text):
-    # Remove a wide range of emoji and sticker unicode characters
-    emoji_pattern = re.compile(
-        "["
-        "\U0001F600-\U0001F64F"  # emoticons
-        "\U0001F300-\U0001F5FF"  # symbols & pictographs
-        "\U0001F680-\U0001F6FF"  # transport & map symbols
-        "\U0001F1E0-\U0001F1FF"  # flags (iOS)
-        "\U00002500-\U00002BEF"  # chinese char
-        "\U00002702-\U000027B0"
-        "\U00002702-\U000027B0"
-        "\U000024C2-\U0001F251"
-        "\U0001f926-\U0001f937"
-        "\U00010000-\U0010ffff"
-        "\u2640-\u2642"
-        "\u2600-\u2B55"
-        "\u200d"
-        "\u23cf"
-        "\u23e9"
-        "\u231a"
-        "\ufe0f"  # dingbats
-        "\u3030"
-        "]+",
-        flags=re.UNICODE)
-    return emoji_pattern.sub(r'', text)
-
-def remove_llm_intro_paragraph(html_content):
-    from bs4 import BeautifulSoup, Tag
-    soup = BeautifulSoup(html_content, 'html.parser')
-    # Remove the first <p> if it matches the LLM intro pattern or generic intro
-    first_p = soup.find('p')
-    if first_p and isinstance(first_p, Tag):
-        text = first_p.get_text().strip().lower()
-        if (
-            text.startswith('as an expert business analyst') or
-            text.startswith('as a business analyst') or
-            'i have prepared a comprehensive report' in text or
-            text.startswith('here is a complete business analysis report') or
-            text.startswith('here is a business analysis report') or
-            text.startswith('here is the business analysis report') or
-            text.startswith('this is a complete business analysis report')
-        ):
-            first_p.decompose()
-    return str(soup)
 
 STRICT_MERMAID_TEMPLATES = {
     'stakeholder': '''flowchart TD
@@ -305,7 +263,13 @@ def insert_use_case_diagrams(report_text, business_problem):
 
 # Default prompt template for the full report
 REPORT_PROMPT_TEMPLATE = '''
-You are an expert Business Analyst specializing in banking and fintech. According to the business problem/objective, generate a complete business analysis report in Markdown format. The report must include:
+You are an expert Business Analyst specializing in banking and fintech. According to the business problem/objective, generate a complete business analysis report in Markdown format. The report must start with:
+- A clear project title as a top-level heading (e.g., "# Project Title: ...").
+- A concise summary/overview paragraph (2-4 sentences) describing what the project is about and what the report contains.
+
+After the summary, continue with the required sections below, starting directly with the first required section header.
+
+The report must include:
 1. Stakeholder Map (as a Mermaid diagram in a code block)
    - Use the business problem and list all unique stakeholders relevant to this scenario. Do not use a generic template.
    - IMPORTANT: Use ONLY simple Mermaid syntax: flowchart TD with basic rectangles and arrows
@@ -342,7 +306,6 @@ IMPORTANT:
 - Format all sections, headings, and lists using Markdown syntax (## for main sections, ### for sub-sections, * for bullet points, 1. for numbered lists, etc.) for maximum readability.
 - Use clear Markdown headers for each section (e.g., ## 01. Stakeholder Map).
 - Use bullet points and numbered lists for clarity.
-- Optionally, add relevant emojis or icons in section headers for visual clarity (e.g., ## 📊 03. Business Requirement Document (BRD)).
 - Make the report visually structured and easy to read.
 - Do NOT output any generic template content—make all content specific to the provided business problem and use cases.
 
@@ -502,18 +465,16 @@ def gradio_dashboard():
             try:
                 status_msg = "Generating report... (this may take a moment)"
                 report, images = generate_report_and_images(bp)
-                # Inject Mermaid.js and render diagrams client-side
-                mermaid_script = """
-                <script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>
-                <script>mermaid.initialize({startOnLoad:true});</script>
-                """
-                import re
-                # Replace mermaid code blocks with <div class="mermaid">...</div>
-                report = re.sub(r"```mermaid\s*([\s\S]*?)```", r'<div class="mermaid">\1</div>', report)
-                html_report = mermaid_script + report
+                # Replace each ```mermaid ... ``` block with the corresponding PNG image as base64 (if images are generated)
+                for idx, img_path in enumerate(images, 1):
+                    if os.path.exists(img_path):
+                        with open(img_path, "rb") as img_file:
+                            b64 = base64.b64encode(img_file.read()).decode("utf-8")
+                        img_tag = f'<img src="data:image/png;base64,{b64}" style="max-width:100%; margin: 20px 0;" />'
+                        report = re.sub(r"```mermaid[\s\S]*?```", img_tag, report, count=1)
+                # Convert Markdown to HTML
+                html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
                 html_report = f'<div class="html-report">{html_report}</div>'
-                html_report = remove_emojis(html_report)
-                html_report = remove_llm_intro_paragraph(html_report)
                 final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
                 report_data = {"html": html_report, "business_problem": bp}
                 return html_report, final_status, report_data
