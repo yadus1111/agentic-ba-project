@@ -19,6 +19,7 @@ from playwright.sync_api import sync_playwright
 import random
 import subprocess
 
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 # --- Gemini Model Setup (NEW SDK) ---
 model = genai.GenerativeModel(MODEL_NAME)
 OUTPUT_DIR = "output"
