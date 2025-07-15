@@ -1,7 +1,6 @@
 pyautogen
 python-dotenv
 google-generativeai
-gradio==4.44.1
 numpy
 fastapi
 uvicorn
@@ -10,4 +9,5 @@ pillow
 markdown
 beautifulsoup4
 playwright
+streamlit
 

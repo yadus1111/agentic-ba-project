@@ -451,7 +451,7 @@ def gradio_dashboard():
                 )
         
         with gr.Row():
-            run_btn = gr.Button("🚀 Generate Report", variant="primary", size="lg")
+            run_btn = gr.Button("Generate Report", variant="primary", size="lg")
             # download_btn = gr.Button("📄 Download PDF", variant="secondary", size="lg", visible=False)  # Disabled for Spaces
         
         status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)

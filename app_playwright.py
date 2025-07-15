@@ -578,134 +578,34 @@ def remove_llm_intro_paragraph(html_content):
             first_p.decompose()
     return str(soup)
 
-def gradio_dashboard():
-    with gr.Blocks(css="""
-.html-report h1, .html-report h2, .html-report h3 {
-    color: #22223b;
-    font-weight: bold;
-    font-family: 'Times New Roman', Times, serif;
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
-}
-.html-report h2 {
-    font-size: 2em;
-}
-.html-report h3 {
-    font-size: 1.3em;
-}
-.html-report ul, .html-report ol {
-    margin-left: 2.2em;
-    margin-bottom: 1.2em;
-    font-size: 0.97em;
-    font-family: 'Times New Roman', Times, serif;
-}
-.html-report li {
-    color: #22223b;
-    font-size: 0.97em;
-    margin-bottom: 0.25em;
-    font-family: 'Times New Roman', Times, serif;
-    padding-left: 0.2em;
-}
-.html-report p {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 1.01em;
-    margin-bottom: 0.7em;
-    color: #22223b;
-}
-.html-report table, .html-report th, .html-report td {
-    border: 1.5px solid #22223b !important;
-    border-collapse: collapse !important;
-    padding: 7px 8px !important;
-    font-size: 0.98em !important;
-    background: #fff !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-    max-width: 120px !important;
-    font-family: 'Times New Roman', Times, serif;
-}
-.html-report th, .html-report td {
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-    max-width: 120px !important;
-}
-.html-report table {
-    display: block;
-    overflow-x: auto;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: auto;
-    margin-right: auto;
-}
-.html-report th {
-    background: #fff !important;
-    font-weight: bold !important;
-    color: #22223b !important;
-}
-.html-report tr:nth-child(even) {
-    background: #f3f4f6 !important;
-}
-.html-report tr:hover {
-    background: #e5e5e5 !important;
-}
-.html-report img {
-    border: 1.5px solid #22223b;
-    border-radius: 10px;
-    margin: 18px auto;
-    display: block;
-    max-width: 350px;
-    max-height: 220px;
-    object-fit: contain;
-    background: #fff;
-}
-.html-report code {
-    background-color: #f1f5f9;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9em;
-    color: #22223b;
-}
-.html-report pre {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 15px;
-    overflow-x: auto;
-    margin: 15px 0;
-}
-.html-report pre code {
-    background: none;
-    padding: 0;
-    color: #22223b;
-}
-""") as demo:
-        gr.HTML('<h1>💡 Agentic BA Dashboard</h1>')
-        gr.Markdown("Welcome to your AI-powered business analysis system!")
-        
-        with gr.Row():
-            with gr.Column(scale=3):
-                business_problem = gr.Textbox(
-                    label="Business Problem / Objective", 
-                    value="", 
-                    lines=8, 
-                    placeholder="Paste your business case or objective here..."
-                )
-        
-        with gr.Row():
-            run_btn = gr.Button("🚀 Generate Report", variant="primary", size="lg")
-            download_btn = gr.Button("📄 Download PDF", variant="secondary", size="lg", visible=False)
-        
-        status = gr.Textbox(label="Status", value="Ready to generate report...", interactive=False)
-        report_output = gr.HTML(label="Generated Report")
-        pdf_download = gr.File(label="Download PDF", file_types=[".pdf"], visible=False)
-        
-        # Store the current report data for PDF generation
-        current_report_data = gr.State({"html": "", "business_problem": ""})
-        
-        def run_and_status(bp):
-            try:
-                status_msg = "Generating report... (this may take a moment)"
-                report, images = generate_report_and_images(bp)
+# --- Streamlit UI for Agentic BA Dashboard ---
+import streamlit as st
+import tempfile
+
+# Reuse all backend logic and utility functions from this file
+
+def main():
+    st.set_page_config(page_title="Agentic BA Dashboard", layout="wide")
+    st.title("Agentic BA Dashboard")
+    st.markdown("Welcome to your AI-powered business analysis system!")
+
+    business_problem = st.text_area(
+        "Business Problem / Objective",
+        value="",
+        height=180,
+        placeholder="Paste your business case or objective here..."
+    )
+
+    if 'report_data' not in st.session_state:
+        st.session_state['report_data'] = {"html": "", "business_problem": ""}
+    if 'pdf_path' not in st.session_state:
+        st.session_state['pdf_path'] = None
+
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        if st.button("Generate Report", type="primary"):
+            with st.spinner("Generating report... (this may take a moment)"):
+                report, images = generate_report_and_images(business_problem)
                 # Replace each ```mermaid ... ``` block with the corresponding PNG image as base64
                 for idx, img_path in enumerate(images, 1):
                     if os.path.exists(img_path):
@@ -718,52 +618,35 @@ def gradio_dashboard():
                 html_report = f'<div class="html-report">{html_report}</div>'
                 html_report = remove_emojis(html_report)
                 html_report = remove_llm_intro_paragraph(html_report)
-                final_status = "Report generated successfully!" if "Error" not in report else "Generation failed - see error message above"
-                
-                # Store data for PDF generation
-                report_data = {"html": html_report, "business_problem": bp}
-                
-                return html_report, final_status, report_data, gr.update(visible=True), gr.update(visible=True)
-            except Exception as e:
-                return f"Error: {str(e)}", "Generation failed", {"html": "", "business_problem": ""}, gr.update(visible=False), gr.update(visible=False)
-        
-        def download_pdf(report_data):
-            try:
-                if not report_data or not report_data.get("html"):
-                    return None, "No report available for download"
-                # Remove sticker images and emojis
-                html_clean = remove_sticker_images(report_data["html"])
-                html_clean = remove_emojis(html_clean)
-                html_clean = remove_llm_intro_paragraph(html_clean)
-                html_final = wrap_html_with_css(html_clean)
-                # Use Playwright to generate PDF
-                timestamp = time.strftime("%Y%m%d_%H%M%S")
-                filename = f"business_analysis_report_{timestamp}.pdf"
-                temp_file_path = os.path.join(OUTPUT_DIR, filename)
-                html_to_pdf_with_playwright(html_final, temp_file_path)
-                if os.path.exists(temp_file_path):
-                    return temp_file_path, "PDF generated successfully!"
-                else:
-                    return None, "Failed to generate PDF"
-            except Exception as e:
-                return None, f"PDF generation error: {str(e)}"
-        
-        run_btn.click(
-            run_and_status, 
-            inputs=[business_problem], 
-            outputs=[report_output, status, current_report_data, download_btn, pdf_download]
-        )
-        
-        download_btn.click(
-            download_pdf,
-            inputs=[current_report_data],
-            outputs=[pdf_download, status]
-        )
-    
-    return demo
+                st.session_state['report_data'] = {"html": html_report, "business_problem": business_problem}
+                st.session_state['pdf_path'] = None  # Reset PDF path
 
-# Create the Gradio app instance for Hugging Face Spaces
-demo = gradio_dashboard()
+    with col1:
+        if st.session_state['report_data']['html']:
+            st.markdown("### Generated Report")
+            st.components.v1.html(st.session_state['report_data']['html'], height=900, scrolling=True)
+
+    with col2:
+        if st.session_state['report_data']['html']:
+            if st.button("Download PDF"):
+                with st.spinner("Generating PDF..."):
+                    html_clean = remove_sticker_images(st.session_state['report_data']['html'])
+                    html_clean = remove_emojis(html_clean)
+                    html_clean = remove_llm_intro_paragraph(html_clean)
+                    html_final = wrap_html_with_css(html_clean)
+                    timestamp = time.strftime("%Y%m%d_%H%M%S")
+                    filename = f"business_analysis_report_{timestamp}.pdf"
+                    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+                    html_to_pdf_with_playwright(html_final, temp_file.name)
+                    st.session_state['pdf_path'] = temp_file.name
+            if st.session_state['pdf_path']:
+                with open(st.session_state['pdf_path'], "rb") as f:
+                    st.download_button(
+                        label="Download PDF File",
+                        data=f,
+                        file_name="business_analysis_report.pdf",
+                        mime="application/pdf"
+                    )
 
 if __name__ == "__main__":
-    demo.launch(server_port=7861, share=True)
+    main()
