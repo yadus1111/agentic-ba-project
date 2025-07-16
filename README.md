@@ -1,4 +1,4 @@
-[**🚀 Try the Live App on Streamlit Cloud**](https://agentic-ba-dashboard.streamlit.app/)
+[** Try the Live App on Streamlit Cloud**](https://agentic-ba-dashboard.streamlit.app/)
 
 # Agentic Business Analysis Dashboard
 
@@ -6,7 +6,7 @@ Welcome to the **Agentic Business Analysis Dashboard**—a project built by me, 
 
 ---
 
-## 🌟 What is This Project?
+##  What is This Project?
 
 This dashboard is an **AI-powered tool** that generates comprehensive business analysis reports from a simple business problem description. It leverages Google Gemini (via API) and a team of specialized AI agents to produce:
 - Stakeholder maps
@@ -18,7 +18,7 @@ This dashboard is an **AI-powered tool** that generates comprehensive business a
 
 ---
 
-## 🚀 How Does It Work?
+##  How Does It Work?
 
 1. **User Input:**  
    You enter your business problem or objective in the Streamlit app.
@@ -39,7 +39,7 @@ This dashboard is an **AI-powered tool** that generates comprehensive business a
 
 ---
 
-## 🖥️ Technologies & Code Used
+## 🖥 Technologies & Code Used
 
 - **Frontend:** Streamlit (for a modern, interactive UI)
 - **AI Model:** Google Gemini 2.5 Flash (via API)
@@ -55,7 +55,7 @@ This dashboard is an **AI-powered tool** that generates comprehensive business a
 
 ---
 
-## ❓ Why Do I See Mermaid Code Instead of Diagrams on Streamlit Cloud?
+##  Why Do I See Mermaid Code Instead of Diagrams on Streamlit Cloud?
 
 **Streamlit Cloud does not allow running Playwright or Mermaid CLI for security reasons.**  
 - This means the app cannot generate diagram images (PNGs) dynamically in the cloud.
@@ -65,7 +65,7 @@ This dashboard is an **AI-powered tool** that generates comprehensive business a
 
 ---
 
-## 🔑 How to Set Up
+##  How to Set Up
 
 1. **Clone the repo and install requirements:**
    ```bash
@@ -97,7 +97,7 @@ This dashboard is an **AI-powered tool** that generates comprehensive business a
 
 ---
 
-## 💡 Features
+##  Features
 
 - Multi-agent AI system for deep, structured analysis
 - Visual diagrams (images locally, code on cloud)
@@ -124,4 +124,4 @@ I created this project to:
 
 ---
 
-*Built with ❤️ by Yadu Sharma using Agentic AI principles and Streamlit.*
+
