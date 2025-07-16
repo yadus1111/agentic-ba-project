@@ -1,13 +1,4 @@
----
-title: Agentic Business Analysis Dashboard
-emoji: 🤖
-colorFrom: blue
-colorTo: purple
-sdk: gradio
-sdk_version: 4.44.0
-app_file: app.py
-pinned: false
----
+[**🚀 Try the Live App on Streamlit Cloud**](https://agentic-ba-dashboard.streamlit.app/)
 
 # Agentic Business Analysis Dashboard
 
