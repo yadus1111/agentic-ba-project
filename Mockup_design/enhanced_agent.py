@@ -229,9 +229,11 @@ class EnhancedBRDAgent:
     def _generate_dynamic_html_from_brd(self, app_type, brd_text=None):
         """Generate completely dynamic HTML from BRD analysis"""
         if not self.client:
+            print("✗ No Gemini client available, using fallback HTML")
             return self._get_fallback_html(app_type)
         
         try:
+            print(f"🔍 Generating dynamic HTML for app type: {app_type}")
             brd_section = f"\n\nBRD Content (for reference):\n{brd_text[:4000]}\n" if brd_text else ""
             prompt = f"""
             Based on the following BRD content, generate a complete HTML mockup for a BUSINESS ANALYST DASHBOARD specifically designed for BUSINESS ANALYSTS working in FINTECH companies.
@@ -283,12 +285,18 @@ class EnhancedBRDAgent:
             Return ONLY the complete HTML document. Do not include any explanations or markdown.
             """
             
+            print("📤 Sending request to Gemini AI...")
             response = self.client.models.generate_content(
                 model="gemini-2.5-flash",
                 contents=prompt
             )
             
+            if not response or not response.text:
+                print("✗ Empty response from Gemini AI")
+                return self._get_fallback_html(app_type)
+            
             html_content = response.text.strip()
+            print(f"📥 Received response of {len(html_content)} characters")
             
             # Clean up the response to ensure it's valid HTML
             if html_content.startswith('```html'):
@@ -296,11 +304,16 @@ class EnhancedBRDAgent:
             if html_content.endswith('```'):
                 html_content = html_content[:-3]
             
+            if len(html_content) < 100:
+                print("✗ Response too short, likely an error message")
+                return self._get_fallback_html(app_type)
+            
             print("✓ Generated completely dynamic HTML from BRD")
             return html_content
                 
         except Exception as e:
             print(f"✗ Error generating dynamic HTML: {e}")
+            print(f"✗ Error type: {type(e).__name__}")
             return self._get_fallback_html(app_type)
     
     def _get_fallback_html(self, app_type):

@@ -406,21 +406,54 @@ def main():
         # --- Mockup Generation Integration ---
         if st.button("Generate Mockup"):
             with st.spinner("Generating HTML mockup..."):
-                brd_text = st.session_state['report_data']['business_problem']
-                agent = st.session_state['ba_agent']
-                app_type = agent.analyze_brd_content(brd_text)
-                schema = agent.generate_ui_schema(brd_text, app_type)
-                html_content = agent.convert_schema_to_html(schema, app_type, brd_text)
-                timestamp = time.strftime("%Y%m%d_%H%M%S")
-                outputs = agent.save_outputs(schema, html_content, app_type, timestamp)
-                st.success(f"Mockup generated and saved: {outputs['html']}")
-                with open(outputs['html'], "r", encoding="utf-8") as f:
-                    st.download_button(
-                        label="Download HTML Mockup",
-                        data=f,
-                        file_name=f"{app_type}_mockup_{timestamp}.html",
-                        mime="text/html"
-                    )
+                try:
+                    brd_text = st.session_state['report_data']['business_problem']
+                    agent = st.session_state['ba_agent']
+                    
+                    # Debug: Check if agent is properly initialized
+                    if not agent.client:
+                        st.error("❌ Gemini AI client not available. Please check your API key.")
+                        return
+                    
+                    st.info(f"📝 Analyzing BRD content...")
+                    app_type = agent.analyze_brd_content(brd_text)
+                    st.info(f"🎯 Detected app type: {app_type}")
+                    
+                    st.info(f"🎨 Generating UI schema...")
+                    schema = agent.generate_ui_schema(brd_text, app_type)
+                    if not schema:
+                        st.error("❌ Failed to generate UI schema")
+                        return
+                    
+                    st.info(f"🌐 Converting to HTML mockup...")
+                    html_content = agent.convert_schema_to_html(schema, app_type, brd_text)
+                    if not html_content:
+                        st.error("❌ Failed to convert schema to HTML")
+                        return
+                    
+                    timestamp = time.strftime("%Y%m%d_%H%M%S")
+                    outputs = agent.save_outputs(schema, html_content, app_type, timestamp)
+                    
+                    if outputs and outputs.get('html'):
+                        st.success(f"✅ Mockup generated successfully!")
+                        
+                        # Display the HTML mockup directly in Streamlit
+                        st.subheader("Generated HTML Mockup Preview")
+                        st.components.v1.html(html_content, height=600, scrolling=True)
+                        
+                        # Download button
+                        st.download_button(
+                            label="Download HTML Mockup",
+                            data=html_content,
+                            file_name=f"{app_type}_mockup_{timestamp}.html",
+                            mime="text/html"
+                        )
+                    else:
+                        st.error("❌ Failed to save mockup outputs")
+                        
+                except Exception as e:
+                    st.error(f"❌ Error generating mockup: {str(e)}")
+                    st.info("💡 This might be due to API limitations on Streamlit Cloud. Try running locally for full functionality.")
 
 if __name__ == "__main__":
     main() 
