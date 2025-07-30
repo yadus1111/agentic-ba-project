@@ -19,7 +19,7 @@ from playwright.sync_api import sync_playwright
 import random
 import subprocess
 import sys
-sys.path.append("c:/Users/acer/OneDrive/Desktop/BA Agentic AI pro/mockup_design/python-agent")
+sys.path.append("Mockup_design")
 from enhanced_agent import EnhancedBRDAgent
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
