@@ -427,27 +427,44 @@ class EnhancedBRDAgent:
     
     def save_outputs(self, schema, html_content, app_type, timestamp):
         """Save all outputs to files"""
-        # Create output directories
-        output_dirs = ['schemas', 'html_mockups', 'pdf_mockups']
-        for dir_name in output_dirs:
-            os.makedirs(dir_name, exist_ok=True)
-        
-        # Save schema
-        schema_filename = f"schemas/{app_type}_schema_{timestamp}.json"
-        with open(schema_filename, 'w', encoding='utf-8') as f:
-            json.dump(schema, f, indent=2)
-        print(f"✓ Schema saved: {schema_filename}")
-        
-        # Save HTML
-        html_filename = f"html_mockups/{app_type}_mockup_{timestamp}.html"
-        with open(html_filename, 'w', encoding='utf-8') as f:
-            f.write(html_content)
-        print(f"✓ HTML mockup saved: {html_filename}")
-        
-        return {
-            'schema': schema_filename,
-            'html': html_filename
-        }
+        try:
+            # Create output directories
+            output_dirs = ['schemas', 'html_mockups', 'pdf_mockups']
+            for dir_name in output_dirs:
+                os.makedirs(dir_name, exist_ok=True)
+            
+            # Save schema
+            schema_filename = f"schemas/{app_type}_schema_{timestamp}.json"
+            with open(schema_filename, 'w', encoding='utf-8') as f:
+                json.dump(schema, f, indent=2)
+            print(f"✓ Schema saved: {schema_filename}")
+            
+            # Save HTML - handle None case
+            if html_content is None:
+                print("⚠️ HTML content is None, using fallback HTML")
+                html_content = self._get_fallback_html(app_type)
+            
+            # Ensure html_content is a string
+            if not isinstance(html_content, str):
+                print("⚠️ HTML content is not a string, converting to string")
+                html_content = str(html_content)
+            
+            html_filename = f"html_mockups/{app_type}_mockup_{timestamp}.html"
+            with open(html_filename, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            print(f"✓ HTML mockup saved: {html_filename}")
+            
+            return {
+                'schema': schema_filename,
+                'html': html_filename
+            }
+        except Exception as e:
+            print(f"✗ Error saving outputs: {e}")
+            # Return a minimal response to prevent crashes
+            return {
+                'schema': None,
+                'html': html_content if html_content else self._get_fallback_html(app_type)
+            }
     
     def process_pdf_pipeline(self, pdf_path):
         """Complete pipeline: PDF → Schema → HTML → Save"""
