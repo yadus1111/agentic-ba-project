@@ -1,0 +1,586 @@
+[
+  {
+    "type": "frame",
+    "x": 0,
+    "y": 0,
+    "width": 1440,
+    "height": 1050,
+    "name": "LoyaltyDashboard"
+  },
+  {
+    "type": "rectangle",
+    "x": 0,
+    "y": 0,
+    "width": 1440,
+    "height": 60,
+    "name": "HeaderBar",
+    "parent": "LoyaltyDashboard"
+  },
+  {
+    "type": "text",
+    "x": 20,
+    "y": 18,
+    "width": 150,
+    "height": 24,
+    "content": "Banking App Name",
+    "parent": "HeaderBar"
+  },
+  {
+    "type": "icon",
+    "x": 1380,
+    "y": 18,
+    "width": 24,
+    "height": 24,
+    "name": "UserIcon",
+    "content": "User Profile Icon",
+    "parent": "HeaderBar"
+  },
+  {
+    "type": "icon",
+    "x": 1330,
+    "y": 18,
+    "width": 24,
+    "height": 24,
+    "name": "NotificationIcon",
+    "content": "Notification Icon",
+    "parent": "HeaderBar"
+  },
+  {
+    "type": "rectangle",
+    "x": 0,
+    "y": 60,
+    "width": 220,
+    "height": 990,
+    "name": "Sidebar",
+    "parent": "LoyaltyDashboard"
+  },
+  {
+    "type": "button",
+    "x": 0,
+    "y": 80,
+    "width": 220,
+    "height": 50,
+    "name": "HomeButton",
+    "content": "Home",
+    "parent": "Sidebar"
+  },
+  {
+    "type": "button",
+    "x": 0,
+    "y": 130,
+    "width": 220,
+    "height": 50,
+    "name": "AccountsButton",
+    "content": "Accounts",
+    "parent": "Sidebar"
+  },
+  {
+    "type": "button",
+    "x": 0,
+    "y": 180,
+    "width": 220,
+    "height": 50,
+    "name": "TransactionsButton",
+    "content": "Transactions",
+    "parent": "Sidebar"
+  },
+  {
+    "type": "button",
+    "x": 0,
+    "y": 230,
+    "width": 220,
+    "height": 50,
+    "name": "PaymentsButton",
+    "content": "Payments",
+    "parent": "Sidebar"
+  },
+  {
+    "type": "button",
+    "x": 0,
+    "y": 280,
+    "width": 220,
+    "height": 50,
+    "name": "LoyaltyButton",
+    "content": "Loyalty Program",
+    "parent": "Sidebar"
+  },
+  {
+    "type": "rectangle",
+    "x": 240,
+    "y": 80,
+    "width": 1180,
+    "height": 960,
+    "name": "MainContentArea",
+    "parent": "LoyaltyDashboard"
+  },
+  {
+    "type": "text",
+    "x": 260,
+    "y": 100,
+    "width": 300,
+    "height": 30,
+    "content": "Welcome, User Name!",
+    "parent": "MainContentArea"
+  },
+  {
+    "type": "rectangle",
+    "x": 260,
+    "y": 140,
+    "width": 400,
+    "height": 200,
+    "name": "PointsBalanceCard",
+    "parent": "MainContentArea"
+  },
+  {
+    "type": "text",
+    "x": 280,
+    "y": 160,
+    "width": 300,
+    "height": 20,
+    "content": "Your Current Points Balance",
+    "parent": "PointsBalanceCard"
+  },
+  {
+    "type": "text",
+    "x": 280,
+    "y": 190,
+    "width": 300,
+    "height": 40,
+    "content": "12,345 Points",
+    "parent": "PointsBalanceCard"
+  },
+  {
+    "type": "text",
+    "x": 280,
+    "y": 240,
+    "width": 150,
+    "height": 20,
+    "content": "Points Earned: 500",
+    "parent": "PointsBalanceCard"
+  },
+  {
+    "type": "text",
+    "x": 280,
+    "y": 265,
+    "width": 150,
+    "height": 20,
+    "content": "Points Redeemed: 150",
+    "parent": "PointsBalanceCard"
+  },
+  {
+    "type": "button",
+    "x": 280,
+    "y": 295,
+    "width": 150,
+    "height": 30,
+    "name": "ViewPointsHistoryButton",
+    "content": "View Points History",
+    "parent": "PointsBalanceCard"
+  },
+  {
+    "type": "rectangle",
+    "x": 680,
+    "y": 140,
+    "width": 400,
+    "height": 200,
+    "name": "ExpiringPointsCard",
+    "parent": "MainContentArea"
+  },
+  {
+    "type": "text",
+    "x": 700,
+    "y": 160,
+    "width": 300,
+    "height": 20,
+    "content": "Points Nearing Expiration",
+    "parent": "ExpiringPointsCard"
+  },
+  {
+    "type": "text",
+    "x": 700,
+    "y": 190,
+    "width": 350,
+    "height": 40,
+    "content": "500 Points expire on YYYY-MM-DD",
+    "parent": "ExpiringPointsCard"
+  },
+  {
+    "type": "button",
+    "x": 700,
+    "y": 295,
+    "width": 150,
+    "height": 30,
+    "name": "RedeemExpiringPointsButton",
+    "content": "Redeem Now",
+    "parent": "ExpiringPointsCard"
+  },
+  {
+    "type": "rectangle",
+    "x": 260,
+    "y": 360,
+    "width": 1150,
+    "height": 220,
+    "name": "RecommendedOffersSection",
+    "parent": "MainContentArea"
+  },
+  {
+    "type": "text",
+    "x": 280,
+    "y": 380,
+    "width": 300,
+    "height": 20,
+    "content": "Personalized Recommendations",
+    "parent": "RecommendedOffersSection"
+  },
+  {
+    "type": "rectangle",
+    "x": 280,
+    "y": 420,
+    "width": 250,
+    "height": 140,
+    "name": "OfferCard1",
+    "parent": "RecommendedOffersSection"
+  },
+  {
+    "type": "text",
+    "x": 290,
+    "y": 430,
+    "width": 230,
+    "height": 20,
+    "content": "Merchant Name 1",
+    "parent": "OfferCard1"
+  },
+  {
+    "type": "text",
+    "x": 290,
+    "y": 455,
+    "width": 230,
+    "height": 40,
+    "content": "Get XX% Off on your next purchase",
+    "parent": "OfferCard1"
+  },
+  {
+    "type": "button",
+    "x": 300,
+    "y": 510,
+    "width": 100,
+    "height": 30,
+    "name": "ActivateOffer1Button",
+    "content": "Activate Offer",
+    "parent": "OfferCard1"
+  },
+  {
+    "type": "rectangle",
+    "x": 550,
+    "y": 420,
+    "width": 250,
+    "height": 140,
+    "name": "OfferCard2",
+    "parent": "RecommendedOffersSection"
+  },
+  {
+    "type": "text",
+    "x": 560,
+    "y": 430,
+    "width": 230,
+    "height": 20,
+    "content": "Merchant Name 2",
+    "parent": "OfferCard2"
+  },
+  {
+    "type": "text",
+    "x": 560,
+    "y": 455,
+    "width": 230,
+    "height": 40,
+    "content": "Earn Bonus Points on Payments",
+    "parent": "OfferCard2"
+  },
+  {
+    "type": "button",
+    "x": 570,
+    "y": 510,
+    "width": 100,
+    "height": 30,
+    "name": "ViewDetailsOffer2Button",
+    "content": "View Details",
+    "parent": "OfferCard2"
+  },
+  {
+    "type": "rectangle",
+    "x": 820,
+    "y": 420,
+    "width": 250,
+    "height": 140,
+    "name": "OfferCard3",
+    "parent": "RecommendedOffersSection"
+  },
+  {
+    "type": "text",
+    "x": 830,
+    "y": 430,
+    "width": 230,
+    "height": 20,
+    "content": "Category Offer",
+    "parent": "OfferCard3"
+  },
+  {
+    "type": "text",
+    "x": 830,
+    "y": 455,
+    "width": 230,
+    "height": 40,
+    "content": "Get Free Item with X Points",
+    "parent": "OfferCard3"
+  },
+  {
+    "type": "button",
+    "x": 840,
+    "y": 510,
+    "width": 100,
+    "height": 30,
+    "name": "RedeemOffer3Button",
+    "content": "Redeem Offer",
+    "parent": "OfferCard3"
+  },
+  {
+    "type": "button",
+    "x": 1090,
+    "y": 510,
+    "width": 100,
+    "height": 30,
+    "name": "ViewAllOffersButton",
+    "content": "View All Offers",
+    "parent": "RecommendedOffersSection"
+  },
+  {
+    "type": "rectangle",
+    "x": 260,
+    "y": 600,
+    "width": 1150,
+    "height": 220,
+    "name": "ChallengesSection",
+    "parent": "MainContentArea"
+  },
+  {
+    "type": "text",
+    "x": 280,
+    "y": 620,
+    "width": 300,
+    "height": 20,
+    "content": "Your Gamified Challenges",
+    "parent": "ChallengesSection"
+  },
+  {
+    "type": "rectangle",
+    "x": 280,
+    "y": 660,
+    "width": 350,
+    "height": 140,
+    "name": "ChallengeCard1",
+    "parent": "ChallengesSection"
+  },
+  {
+    "type": "text",
+    "x": 290,
+    "y": 670,
+    "width": 330,
+    "height": 20,
+    "content": "Spend with 3 merchants this week",
+    "parent": "ChallengeCard1"
+  },
+  {
+    "type": "text",
+    "x": 290,
+    "y": 695,
+    "width": 330,
+    "height": 20,
+    "content": "Progress: 1/3 Merchants",
+    "parent": "ChallengeCard1"
+  },
+  {
+    "type": "rectangle",
+    "x": 290,
+    "y": 720,
+    "width": 200,
+    "height": 10,
+    "name": "ProgressBar1",
+    "parent": "ChallengeCard1"
+  },
+  {
+    "type": "button",
+    "x": 290,
+    "y": 750,
+    "width": 120,
+    "height": 30,
+    "name": "ContinueChallenge1Button",
+    "content": "Continue",
+    "parent": "ChallengeCard1"
+  },
+  {
+    "type": "rectangle",
+    "x": 650,
+    "y": 660,
+    "width": 350,
+    "height": 140,
+    "name": "ChallengeCard2",
+    "parent": "ChallengesSection"
+  },
+  {
+    "type": "text",
+    "x": 660,
+    "y": 670,
+    "width": 330,
+    "height": 20,
+    "content": "Pay 5 Bills via App",
+    "parent": "ChallengeCard2"
+  },
+  {
+    "type": "text",
+    "x": 660,
+    "y": 695,
+    "width": 330,
+    "height": 20,
+    "content": "Progress: 4/5 Bills",
+    "parent": "ChallengeCard2"
+  },
+  {
+    "type": "rectangle",
+    "x": 660,
+    "y": 720,
+    "width": 250,
+    "height": 10,
+    "name": "ProgressBar2",
+    "parent": "ChallengeCard2"
+  },
+  {
+    "type": "button",
+    "x": 660,
+    "y": 750,
+    "width": 120,
+    "height": 30,
+    "name": "ContinueChallenge2Button",
+    "content": "Continue",
+    "parent": "ChallengeCard2"
+  },
+  {
+    "type": "button",
+    "x": 1020,
+    "y": 770,
+    "width": 150,
+    "height": 30,
+    "name": "ViewAllChallengesButton",
+    "content": "View All Challenges",
+    "parent": "ChallengesSection"
+  },
+  {
+    "type": "rectangle",
+    "x": 260,
+    "y": 840,
+    "width": 1150,
+    "height": 180,
+    "name": "FlashSalesSection",
+    "parent": "MainContentArea"
+  },
+  {
+    "type": "text",
+    "x": 280,
+    "y": 860,
+    "width": 300,
+    "height": 20,
+    "content": "Limited Time Deals & Flash Sales",
+    "parent": "FlashSalesSection"
+  },
+  {
+    "type": "rectangle",
+    "x": 280,
+    "y": 900,
+    "width": 300,
+    "height": 100,
+    "name": "FlashSaleCard1",
+    "parent": "FlashSalesSection"
+  },
+  {
+    "type": "text",
+    "x": 290,
+    "y": 910,
+    "width": 280,
+    "height": 20,
+    "content": "Product/Service Name",
+    "parent": "FlashSaleCard1"
+  },
+  {
+    "type": "text",
+    "x": 290,
+    "y": 935,
+    "width": 280,
+    "height": 20,
+    "content": "Flash Sale: XX% Off!",
+    "parent": "FlashSaleCard1"
+  },
+  {
+    "type": "text",
+    "x": 290,
+    "y": 955,
+    "width": 280,
+    "height": 20,
+    "content": "Time Left: HH:MM:SS",
+    "parent": "FlashSaleCard1"
+  },
+  {
+    "type": "button",
+    "x": 490,
+    "y": 955,
+    "width": 80,
+    "height": 30,
+    "name": "ShopNowButton1",
+    "content": "Shop Now",
+    "parent": "FlashSaleCard1"
+  },
+  {
+    "type": "rectangle",
+    "x": 600,
+    "y": 900,
+    "width": 300,
+    "height": 100,
+    "name": "FlashSaleCard2",
+    "parent": "FlashSalesSection"
+  },
+  {
+    "type": "text",
+    "x": 610,
+    "y": 910,
+    "width": 280,
+    "height": 20,
+    "content": "Partner Merchant Offer",
+    "parent": "FlashSaleCard2"
+  },
+  {
+    "type": "text",
+    "x": 610,
+    "y": 935,
+    "width": 280,
+    "height": 20,
+    "content": "Earn Bonus Points!",
+    "parent": "FlashSaleCard2"
+  },
+  {
+    "type": "text",
+    "x": 610,
+    "y": 955,
+    "width": 280,
+    "height": 20,
+    "content": "Time Left: HH:MM:SS",
+    "parent": "FlashSaleCard2"
+  },
+  {
+    "type": "button",
+    "x": 800,
+    "y": 955,
+    "width": 80,
+    "height": 30,
+    "name": "GetDealButton2",
+    "content": "Get Deal",
+    "parent": "FlashSaleCard2"
+  }
+]
