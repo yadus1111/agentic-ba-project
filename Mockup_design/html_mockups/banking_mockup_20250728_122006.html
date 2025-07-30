@@ -1,0 +1,1020 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nepal Fintech Banking Portal - BA View</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #28a745; /* Green */
+            --accent-color: #ffc107; /* Yellow */
+            --background-light: #f4f7fa;
+            --background-dark: #e0e6ed;
+            --text-dark: #333;
+            --text-light: #fff;
+            --border-color: #ddd;
+            --card-bg: #ffffff;
+            --sidebar-bg-start: #0a2e5c;
+            --sidebar-bg-end: #0c4380;
+            --header-bg: linear-gradient(to right, #0056b3, #007bff);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, var(--background-light), var(--background-dark));
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styling */
+        header {
+            background: var(--header-bg);
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-right: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info {
+            margin-right: 1.5rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background-color: #dc3545; /* Red */
+            color: var(--text-light);
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar Styling */
+        nav.sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, var(--sidebar-bg-start), var(--sidebar-bg-end));
+            color: var(--text-light);
+            padding-top: 2rem;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 70px; /* Height of header */
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar ul li a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, padding-left 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-left: 1.8rem;
+            border-left-color: var(--accent-color);
+        }
+
+        .sidebar ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left-color: var(--accent-color);
+            font-weight: 600;
+            padding-left: 1.8rem;
+        }
+
+        /* Main Content Area */
+        main.content {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        /* Dashboard Specifics */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(to right, #e3f2fd, #bbdefb); /* Light blue gradient */
+            padding: 1.8rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            pointer-events: none;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+        }
+
+        .dashboard-card p {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: linear-gradient(to right, var(--primary-color), #0056b3);
+            color: var(--text-light);
+            padding: 1.2rem 2.2rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(to right, #0056b3, #003d7a);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .recent-transactions h3 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        table th, table td {
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table th {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f7fe;
+        }
+
+        .amount-credit {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .amount-debit {
+            color: #dc3545; /* Red */
+            font-weight: 600;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group input[type="date"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+
+        .form-actions {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .submit-btn, .clear-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-btn {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .clear-btn {
+            background-color: #6c757d; /* Grey */
+            color: var(--text-light);
+        }
+
+        .clear-btn:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .integration-toggle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f7f9fc;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+        }
+
+        .integration-toggle label {
+            flex-grow: 1;
+            margin-bottom: 0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Toggle switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--secondary-color);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--secondary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #343a40;
+            color: #f8f9fa;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            margin-top: auto; /* Pushes footer to the bottom */
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            nav.sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding-top: 1rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            .sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .sidebar ul li {
+                margin: 0.5rem;
+            }
+            .sidebar ul li a {
+                padding: 0.8rem 1.2rem;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            .sidebar ul li a:hover,
+            .sidebar ul li a.active {
+                padding-left: 1.2rem;
+                border-left: none;
+                border-bottom-color: var(--accent-color);
+            }
+            main.content {
+                padding: 1.5rem;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-actions {
+                flex-direction: column;
+            }
+            .action-btn {
+                width: 100%;
+            }
+            header {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 10px;
+            }
+            .header-left, .header-right {
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+            .user-info {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo {
+                font-size: 1.5rem;
+            }
+            .app-title {
+                font-size: 1rem;
+            }
+            .logout-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .section {
+                padding: 1.5rem;
+            }
+            table th, table td {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+            .dashboard-card {
+                padding: 1.2rem;
+            }
+            .dashboard-card p {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="logo">NRB FinTech</div>
+            <div class="app-title">नेपाल बैंकिङ पोर्टल - Business Analyst View</div>
+        </div>
+        <div class="header-right">
+            <div class="user-info">बिकेश गुरुङ (Fintech BA)</div>
+            <button class="logout-btn" onclick="alert('तपाईं लगआउट हुनुभयो।')">लगआउट</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#" class="nav-link active" data-section="dashboard-section">ड्यासबोर्ड</a></li>
+                <li><a href="#" class="nav-link" data-section="accounts-section">खाताहरू</a></li>
+                <li><a href="#" class="nav-link" data-section="transactions-section">लेन-देन</a></li>
+                <li><a href="#" class="nav-link" data-section="reports-section">प्रतिवेदन</a></li>
+                <li><a href="#" class="nav-link" data-section="nrb-compliance-section">एनआरबी नियामक</a></li>
+                <li><a href="#" class="nav-link" data-section="settings-section">सेटिङ्ग्स</a></li>
+            </ul>
+        </nav>
+
+        <main class="content" id="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="section active">
+                <h2>ड्यासबोर्ड - तपाईंको बैंकिङ सेवा एकै ठाउँमा</h2>
+                <p>नमस्ते बिकेश गुरुङ, नेपालको वित्तीय सेवामा स्वागत छ। आजको मिति: २०८० मंसिर १५ गते, शुक्रबार।</p>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>कुल उपलब्ध टंका</h3>
+                        <p>Rs. 1,52,34,567.89</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>सक्रिय खाताहरू</h3>
+                        <p>७</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>पेन्डिङ्ग लेनदेन</h3>
+                        <p>३</p>
+                    </div>
+                </div>
+
+                <div class="recent-transactions">
+                    <h3>छिटो कार्यहरू</h3>
+                    <div class="dashboard-actions">
+                        <button class="action-btn" onclick="showSection('transactions-section'); document.getElementById('fund-transfer-form').scrollIntoView({ behavior: 'smooth' });">टंका पठाउने</button>
+                        <button class="action-btn" onclick="alert('बिल भुक्तानी सुविधा चाँडै आउँदैछ!')">बिल तिर्ने</button>
+                        <button class="action-btn" onclick="alert('QR भुक्तानी मार्फत छिटो लेनदेन गर्नुहोस्!')">QR भुक्तानी</button>
+                    </div>
+                </div>
+
+                <div class="recent-transactions">
+                    <h3>पछिल्लो लेनदेन</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>दिनांक</th>
+                                <th>विवरण</th>
+                                <th>बैंक</th>
+                                <th>जमा (Rs.)</th>
+                                <th>निकास (Rs.)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-transactions-body">
+                            <tr>
+                                <td>२०८०/११/१४</td>
+                                <td>डिजिटल भुक्तानी - किराना</td>
+                                <td>नबिल बैंक</td>
+                                <td></td>
+                                <td class="amount-debit">Rs. 2,500.00</td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/११/१४</td>
+                                <td>वेतन क्रेडिट</td>
+                                <td>नेपाल बैंक लिमिटेड</td>
+                                <td class="amount-credit">Rs. 85,000.00</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/११/१३</td>
+                                <td>मोबाइल टप-अप (eSewa)</td>
+                                <td>एभरेष्ट बैंक</td>
+                                <td></td>
+                                <td class="amount-debit">Rs. 500.00</td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/११/१२</td>
+                                <td>ATM निकासी - काठमाडौं</td>
+                                <td>ग्लोबल आईएमई बैंक</td>
+                                <td></td>
+                                <td class="amount-debit">Rs. 10,000.00</td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/११/११</td>
+                                <td>घर भाडा भुक्तानी - राम भण्डारी</td>
+                                <td>लक्ष्मी बैंक</td>
+                                <td></td>
+                                <td class="amount-debit">Rs. 15,000.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Accounts Section -->
+            <section id="accounts-section" class="section">
+                <h2>खाताहरू - तपाईंको सबै खाताको विवरण</h2>
+                <p>यहाँ तपाईंको बैंक खाताहरूको सूची र तिनीहरूको वर्तमान स्थिति छ।</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>खाता नम्बर</th>
+                            <th>खाता प्रकार</th>
+                            <th>बैंक</th>
+                            <th>हालको टंका (Rs.)</th>
+                            <th>साखा</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>४५६७८९०१२३४</td>
+                            <td>बचत खाता</td>
+                            <td>नबिल बैंक</td>
+                            <td>Rs. 5,45,678.90</td>
+                            <td>काठमाडौं</td>
+                        </tr>
+                        <tr>
+                            <td>१२३४५६७८९०१</td>
+                            <td>चालु खाता</td>
+                            <td>नेपाल बैंक लिमिटेड</td>
+                            <td>Rs. 12,34,500.00</td>
+                            <td>पोखरा</td>
+                        </tr>
+                        <tr>
+                            <td>९८७६५४३२१०९</td>
+                            <td>तलब खाता</td>
+                            <td>एभरेष्ट बैंक</td>
+                            <td>Rs. 89,123.45</td>
+                            <td>बिराटनगर</td>
+                        </tr>
+                        <tr>
+                            <td>६७८९०१२३४५६</td>
+                            <td>मुद्दति खाता</td>
+                            <td>ग्लोबल आईएमई बैंक</td>
+                            <td>Rs. 1,00,000.00</td>
+                            <td>ललितपुर</td>
+                        </tr>
+                        <tr>
+                            <td>२३४५६७८९०१२</td>
+                            <td>कर्जा खाता (लोन)</td>
+                            <td>सिद्धार्थ बैंक</td>
+                            <td>Rs. -5,00,000.00</td>
+                            <td>भक्तपुर</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Transactions Section -->
+            <section id="transactions-section" class="section">
+                <h2>लेन-देन - भुक्तानी र निकासी विवरण</h2>
+                <p>यहाँ तपाईंको सबै लेनदेनको विस्तृत जानकारी प्राप्त गर्नुहोस्।</p>
+
+                <div class="form-group">
+                    <label for="transaction-search">लेनदेन खोज्नुहोस्:</label>
+                    <input type="text" id="transaction-search" placeholder="विवरण, रकम वा मिति द्वारा खोज्नुहोस्...">
+                </div>
+
+                <h3>टंका पठाउने (Fund Transfer)</h3>
+                <div id="fund-transfer-form">
+                    <div class="form-group">
+                        <label for="source-account">स्रोत खाता (Source Khata):</label>
+                        <select id="source-account" required>
+                            <option value="">खाता छान्नुहोस्</option>
+                            <option value="45678901234">नबिल बैंक - बचत खाता (Rs. 5,45,678.90)</option>
+                            <option value="12345678901">नेपाल बैंक लिमिटेड - चालु खाता (Rs. 12,34,500.00)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="destination-account">गन्तव्य खाता (Destination Khata) / मोबाइल नम्बर:</label>
+                        <input type="text" id="destination-account" placeholder="खाता नम्बर वा मोबाइल नम्बर प्रविष्ट गर्नुहोस्" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">मात्रा (Amount - Rs.):</label>
+                        <input type="number" id="amount" min="1" step="0.01" placeholder="Rs. 1,000.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="purpose">उद्देश्य (Purpose):</label>
+                        <textarea id="purpose" rows="3" placeholder="लेनदेनको उद्देश्य लेख्नुहोस् (उदा. घर भाडा, सामान खरिद)"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button class="submit-btn" onclick="alert('Rs. ' + document.getElementById('amount').value + ' ' + 'सफलतापूर्वक ट्रान्सफर भयो!')">टंका ट्रान्सफर गर्नुहोस्</button>
+                        <button class="clear-btn" onclick="this.form.reset();">खाली गर्नुहोस्</button>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2.5rem;">सबै लेनदेन इतिहास</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>दिनांक</th>
+                            <th>विवरण</th>
+                            <th>बैंक</th>
+                            <th>जमा (Rs.)</th>
+                            <th>निकास (Rs.)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-transactions-body">
+                        <tr>
+                            <td>२०८०/११/१५</td>
+                            <td>eSewa लोड - सीता थापा</td>
+                            <td>नबिल बैंक</td>
+                            <td></td>
+                            <td class="amount-debit">Rs. 1,500.00</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/१४</td>
+                            <td>डिजिटल भुक्तानी - किराना</td>
+                            <td>नबिल बैंक</td>
+                            <td></td>
+                            <td class="amount-debit">Rs. 2,500.00</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/१४</td>
+                            <td>वेतन क्रेडिट</td>
+                            <td>नेपाल बैंक लिमिटेड</td>
+                            <td class="amount-credit">Rs. 85,000.00</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/१३</td>
+                            <td>मोबाइल टप-अप (eSewa)</td>
+                            <td>एभरेष्ट बैंक</td>
+                            <td></td>
+                            <td class="amount-debit">Rs. 500.00</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/१२</td>
+                            <td>ATM निकासी - काठमाडौं</td>
+                            <td>ग्लोबल आईएमई बैंक</td>
+                            <td></td>
+                            <td class="amount-debit">Rs. 10,000.00</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/११</td>
+                            <td>घर भाडा भुक्तानी - राम भण्डारी</td>
+                            <td>लक्ष्मी बैंक</td>
+                            <td></td>
+                            <td class="amount-debit">Rs. 15,000.00</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/१०</td>
+                            <td>खाद्य सामग्री खरिद</td>
+                            <td>नबिल बैंक</td>
+                            <td></td>
+                            <td class="amount-debit">Rs. 7,200.00</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/०९</td>
+                            <td>फ्रीलान्स आय - विदेश</td>
+                            <td>नेपाल बैंक लिमिटेड</td>
+                            <td class="amount-credit">Rs. 50,000.00</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/०८</td>
+                            <td>खल्ती भुक्तानी - बिजुली बिल</td>
+                            <td>एभरेष्ट बैंक</td>
+                            <td></td>
+                            <td class="amount-debit">Rs. 1,850.00</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/११/०७</td>
+                            <td>फिक्स डिपोजिटको ब्याज</td>
+                            <td>ग्लोबल आईएमई बैंक</td>
+                            <td class="amount-credit">Rs. 3,200.00</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="section">
+                <h2>प्रतिवेदन - वित्तीय प्रतिवेदनहरू उत्पन्न गर्नुहोस्</h2>
+                <p>तपाईंको आवश्यकता अनुसार विभिन्न प्रकारका वित्तीय प्रतिवेदनहरू यहाँबाट उत्पन्न गर्न सक्नुहुन्छ।</p>
+
+                <div class="form-group">
+                    <label for="report-type">प्रतिवेदन प्रकार:</label>
+                    <select id="report-type" required>
+                        <option value="">प्रतिवेदन प्रकार छान्नुहोस्</option>
+                        <option value="transaction-history">लेनदेन इतिहास</option>
+                        <option value="account-statement">खाता विवरण</option>
+                        <option value="interest-statement">ब्याज विवरण</option>
+                        <option value="cash-flow">नगद प्रवाह</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="start-date">सुरु मिति:</label>
+                    <input type="date" id="start-date" value="2023-01-01" required>
+                </div>
+                <div class="form-group">
+                    <label for="end-date">अन्तिम मिति:</label>
+                    <input type="date" id="end-date" value="2023-12-31" required>
+                </div>
+                <div class="form-actions">
+                    <button class="submit-btn" onclick="alert(document.getElementById('report-type').options[document.getElementById('report-type').selectedIndex].text + ' प्रतिवेदन उत्पन्न भयो!')">प्रतिवेदन उत्पन्न गर्नुहोस्</button>
+                    <button class="clear-btn" onclick="alert('प्रतिवेदन डाउनलोड हुँदैछ...')">डाउनलोड गर्नुहोस् (PDF)</button>
+                </div>
+            </section>
+
+            <!-- NRB Compliance Section -->
+            <section id="nrb-compliance-section" class="section">
+                <h2>एनआरबी नियामक - नेपाल राष्ट्र बैंकका नियमहरू</h2>
+                <p>एक व्यवसाय विश्लेषकको रूपमा, नेपाल राष्ट्र बैंक (NRB) द्वारा निर्धारित नियमहरू र दिशानिर्देशहरू बुझ्न महत्त्वपूर्ण छ।</p>
+                
+                <h3>मुख्य NRB दिशानिर्देशहरू:</h3>
+                <ul>
+                    <li>**KYC (Know Your Customer) / ग्राहक पहिचान:** वित्तीय संस्थाहरूले ग्राहकको पहिचान र ठेगानाको प्रमाणीकरण गर्नुपर्छ।</li>
+                    <li>**AML (Anti-Money Laundering) / सम्पत्ति शुद्धीकरण निवारण:** अवैध तरिकाले कमाएको पैसालाई वैध बनाउने प्रयासहरूलाई रोक्न कडा अनुगमन।</li>
+                    <li>**CRG (Customer Redressal Guidelines) / ग्राहक गुनासो व्यवस्थापन:** ग्राहकका गुनासोहरू समयमै र उचित तरिकाले सम्बोधन गर्नुपर्ने।</li>
+                    <li>**डिजिटल भुक्तानी प्रणाली नियमहरू:** मोबाइल बैंकिङ, QR भुक्तानी, eSewa, खल्ती जस्ता डिजिटल प्लेटफर्महरूका लागि सुरक्षा र परिचालन मानकहरू।</li>
+                    <li>**साइबर सुरक्षा दिशानिर्देशहरू:** ग्राहकको डाटा र वित्तीय प्रणालीको सुरक्षा सुनिश्चित गर्नका लागि नियमहरू।</li>
+                    <li>**बैंकिङ सेवा समय:** NRB निर्धारित कार्य घण्टा: बिहान १० बजे देखि बेलुका ५ बजे सम्म (आइतबार-शुक्रबार)।</li>
+                </ul>
+                <p>यी नियमहरूले नेपालको वित्तीय प्रणालीको स्थिरता, पारदर्शिता र विश्वासयोग्यता सुनिश्चित गर्दछ। नयाँ FinTech उत्पादनहरू विकास गर्दा, यी नियमहरूको पूर्ण पालना गर्नु अनिवार्य छ।</p>
+                <p>थप जानकारीको लागि, <a href="https://www.nrb.org.np" target="_blank" style="color: var(--primary-color); text-decoration: none;">नेपाल राष्ट्र बैंकको आधिकारिक वेबसाइट</a>मा जानुहोस्।</p>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="section">
+                <h2>सेटिङ्ग्स - तपाईंको प्रोफाइल र प्रणाली सेटिङ्ग्स</h2>
+                <p>यहाँ तपाईं आफ्नो व्यक्तिगत जानकारी अपडेट गर्न सक्नुहुन्छ र आवेदनको सेटिङ्ग्स मिलाउन सक्नुहुन्छ।</p>
+
+                <h3>प्रोफाइल जानकारी</h3>
+                <div class="form-group">
+                    <label for="full-name">पूरा नाम:</label>
+                    <input type="text" id="full-name" value="बिकेश गुरुङ">
+                </div>
+                <div class="form-group">
+                    <label for="email">इमेल:</label>
+                    <input type="text" id="email" value="bikash.gurung@fintechco.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">फोन नम्बर:</label>
+                    <input type="text" id="phone" value="+९७७ ९८४१२३४५६७">
+                </div>
+                <div class="form-group">
+                    <label for="location">ठेगाना:</label>
+                    <input type="text" id="location" value="काठमाडौं, नेपाल">
+                </div>
+                <div class="form-actions">
+                    <button class="submit-btn" onclick="alert('प्रोफाइल जानकारी अपडेट गरियो!')">अपडेट प्रोफाइल</button>
+                </div>
+
+                <h3 style="margin-top: 2.5rem;">वित्तीय प्रविधि (Fintech) एकीकरण</h3>
+                <p>यहाँ तपाईंले मोबाइल वालेट सेवाहरू जस्तै eSewa र Khalti सँग एकीकरण सक्षम वा अक्षम गर्न सक्नुहुन्छ।</p>
+                
+                <div class="integration-toggle">
+                    <label for="esewa-toggle">eSewa एकीकरण सक्षम गर्नुहोस्</label>
+                    <label class="switch">
+                        <input type="checkbox" id="esewa-toggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="integration-toggle">
+                    <label for="khalti-toggle">Khalti एकीकरण सक्षम गर्नुहोस्</label>
+                    <label class="switch">
+                        <input type="checkbox" id="khalti-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; २०८० नेपाल फिनटेक समाधानहरू. सबै अधिकार सुरक्षित। | सम्पर्क: info@nepalfintech.com</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
+            const mainContent = document.getElementById('main-content');
+            const allTransactionsBody = document.getElementById('all-transactions-body');
+            const transactionSearchInput = document.getElementById('transaction-search');
+
+            // Function to show a specific section
+            function showSection(sectionId) {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionId).classList.add('active');
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+            }
+
+            // Event listener for navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const sectionId = this.dataset.section;
+                    showSection(sectionId);
+                });
+            });
+
+            // Transaction search functionality
+            if (transactionSearchInput) {
+                transactionSearchInput.addEventListener('keyup', function() {
+                    const searchTerm = transactionSearchInput.value.toLowerCase();
+                    const rows = allTransactionsBody.getElementsByTagName('tr');
+
+                    for (let i = 0; i < rows.length; i++) {
+                        const row = rows[i];
+                        const description = row.cells[1].textContent.toLowerCase();
+                        const amountCredit = row.cells[3].textContent.toLowerCase();
+                        const amountDebit = row.cells[4].textContent.toLowerCase();
+                        const date = row.cells[0].textContent.toLowerCase();
+
+                        if (description.includes(searchTerm) || 
+                            amountCredit.includes(searchTerm) || 
+                            amountDebit.includes(searchTerm) ||
+                            date.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // Dummy data for dashboard recent transactions (matches all-transactions-body initially)
+            const dashboardTransactionsBody = document.getElementById('dashboard-transactions-body');
+            if (dashboardTransactionsBody) {
+                // For simplicity, using first 5 transactions from the main list.
+                // In a real app, this would be fetched separately.
+                const allRows = Array.from(allTransactionsBody.children);
+                dashboardTransactionsBody.innerHTML = ''; // Clear existing
+                for (let i = 0; i < Math.min(5, allRows.length); i++) {
+                    dashboardTransactionsBody.appendChild(allRows[i].cloneNode(true));
+                }
+            }
+
+            // Expose showSection to global scope for action buttons
+            window.showSection = showSection;
+        });
+    </script>
+</body>
+</html>

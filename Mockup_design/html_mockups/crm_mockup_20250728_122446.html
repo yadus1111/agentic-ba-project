@@ -1,0 +1,1021 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analyst Dashboard - Fintech Nepal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3f51b5; /* Deep Blue */
+            --secondary-color: #fdd835; /* Yellow */
+            --accent-color: #4CAF50; /* Green */
+            --background-dark: #2c3e50; /* Dark Blue-Grey */
+            --background-light: #f4f7f6; /* Off-white */
+            --card-background: #ffffff;
+            --text-color-dark: #2c3e50;
+            --text-color-light: #ecf0f1;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --gradient-start: #4a69bd;
+            --gradient-end: #3f51b5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--background-light);
+            color: var(--text-color-dark);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+            color: var(--text-color-light);
+            padding: 20px 0;
+            box-shadow: var(--shadow-medium);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 20px 0 40px 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0 20px;
+        }
+
+        .sidebar-nav ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--text-color-light);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .sidebar-nav ul li a:hover,
+        .sidebar-nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav ul li a i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info span {
+            margin-right: 15px;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Dashboard Sections */
+        .section-title {
+            font-size: 1.6em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .card-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2.5em;
+            color: rgba(0, 0, 0, 0.05);
+            z-index: 1;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-title {
+            font-size: 1em;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .card-description {
+            font-size: 0.9em;
+            color: #95a5a6;
+        }
+
+        .card-value.green { color: var(--accent-color); }
+        .card-value.red { color: #e74c3c; }
+        .card-value.yellow { color: var(--secondary-color); }
+
+
+        /* Charts & Tables */
+        .chart-container, .table-container {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 40px;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #e0f2f7, #bbdefb); /* Light blue gradient */
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 1.1em;
+            border: 1px dashed var(--primary-color);
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table th {
+            background-color: var(--background-light);
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        table tbody tr:hover {
+            background-color: #f8fbfd;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: white;
+        }
+        .status-badge.active { background-color: var(--accent-color); }
+        .status-badge.inactive { background-color: #e74c3c; }
+        .status-badge.pending { background-color: var(--secondary-color); }
+        .status-badge.high { background-color: #e74c3c; }
+        .status-badge.medium { background-color: var(--secondary-color); }
+        .status-badge.low { background-color: var(--accent-color); }
+        .status-badge.compliant { background-color: var(--accent-color); }
+        .status-badge.non-compliant { background-color: #e74c3c; }
+        .status-badge.flagged { background-color: #f39c12; }
+
+
+        /* Customer Profile */
+        .customer-profile-section {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .customer-search {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .customer-search input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        .customer-search button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .customer-search button:hover {
+            background-color: #303f9f;
+        }
+
+        .customer-detail-card {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            flex: 2;
+            min-width: 400px;
+            display: none; /* Hidden by default, shown via JS */
+        }
+
+        .customer-detail-card h3 {
+            font-size: 1.5em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .customer-detail-card h3 i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .customer-detail-card ul {
+            list-style: none;
+        }
+
+        .customer-detail-card ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.95em;
+        }
+        .customer-detail-card ul li:last-child {
+            border-bottom: none;
+        }
+
+        .customer-detail-card ul li span:first-child {
+            font-weight: 500;
+            color: #555;
+        }
+
+        /* Interaction History */
+        .interaction-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .interaction-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            width: 2px;
+            background-color: var(--primary-color);
+            height: 100%;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+            background-color: var(--card-background);
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            margin-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 18px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            border: 2px solid white;
+            z-index: 1;
+        }
+
+        .timeline-item h4 {
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .timeline-item p {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .timeline-item .timestamp {
+            font-size: 0.8em;
+            color: #95a5a6;
+            text-align: right;
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mt-30 { margin-top: 30px; }
+        .mb-30 { margin-bottom: 30px; }
+
+        /* Font Awesome Icons (placeholder, assuming CDN or local setup) */
+        /* For the mockup, these icons are just represented by dummy text or squares */
+        .icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-right: 8px;
+            color: white; /* For sidebar icons */
+            font-size: 14px;
+        }
+        .sidebar-nav ul li a .icon {
+            background: none;
+            width: auto;
+            height: auto;
+            color: inherit;
+        }
+        /* Using actual unicode characters or simple text to represent icons */
+        .icon-dashboard::before { content: "📊"; }
+        .icon-customers::before { content: "👥"; }
+        .icon-analytics::before { content: "📈"; }
+        .icon-risk::before { content: "⚠️"; }
+        .icon-compliance::before { content: "✅"; }
+        .icon-settings::before { content: "⚙️"; }
+        .icon-user::before { content: "👤"; }
+        .icon-total-customers::before { content: "👨‍👩‍👧‍👦"; }
+        .icon-active-users::before { content: "🟢"; }
+        .icon-transaction-volume::before { content: "💰"; }
+        .icon-avg-transaction::before { content: "💸"; }
+        .icon-segmentation::before { content: "🧩"; }
+        .icon-finance::before { content: "💹"; }
+        .icon-behavior::before { content: "🚶"; }
+        .icon-search::before { content: "🔍"; }
+        .icon-profile::before { content: "📋"; }
+        .icon-interaction::before { content: "💬"; }
+        .icon-satisfaction::before { content: "😊"; }
+        .icon-kyc::before { content: "🆔"; }
+        .icon-phone::before { content: "📞"; }
+        .icon-email::before { content: "✉️"; }
+        .icon-location::before { content: "📍"; }
+        .icon-account::before { content: "💳"; }
+        .icon-citizenship::before { content: "🇳🇵"; }
+        .icon-bank::before { content: "🏦"; }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: none;
+                padding: 15px 0;
+            }
+
+            .sidebar-header {
+                padding: 15px 0 20px 0;
+                font-size: 1.3em;
+            }
+
+            .sidebar-nav ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+                padding: 0 10px;
+            }
+
+            .sidebar-nav ul li {
+                margin-bottom: 0;
+            }
+
+            .sidebar-nav ul li a {
+                padding: 10px 12px;
+                font-size: 0.9em;
+            }
+
+            .sidebar-nav ul li a i {
+                margin-right: 5px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+            }
+
+            .user-info {
+                margin-top: 10px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .customer-profile-section {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+            .section-title {
+                font-size: 1.4em;
+                margin-bottom: 20px;
+            }
+            .card {
+                padding: 20px;
+            }
+            .card-value {
+                font-size: 1.8em;
+            }
+            .chart-placeholder {
+                height: 250px;
+                font-size: 1em;
+            }
+            table th, table td {
+                padding: 10px 12px;
+                font-size: 0.85em;
+            }
+            .customer-detail-card {
+                padding: 20px;
+            }
+            .timeline-item {
+                padding: 12px 15px;
+                margin-left: 15px;
+            }
+            .timeline-item::before {
+                left: -32px;
+                top: 15px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            Fintech Nepal BA
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#" class="active"><span class="icon icon-dashboard"></span>Dashboard</a></li>
+                <li><a href="#"><span class="icon icon-customers"></span>Customers</a></li>
+                <li><a href="#"><span class="icon icon-analytics"></span>Analytics & Insights</a></li>
+                <li><a href="#"><span class="icon icon-risk"></span>Risk Assessment</a></li>
+                <li><a href="#"><span class="icon icon-compliance"></span>NRB Compliance</a></li>
+                <li><a href="#"><span class="icon icon-settings"></span>Settings</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Business Analyst Dashboard</h1>
+            <div class="user-info">
+                <span>नमस्ते, Bikash Lama</span>
+                <div class="user-avatar">BL</div>
+            </div>
+        </div>
+
+        <section class="overview-cards">
+            <h2 class="section-title">Overview & Key Metrics</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon icon-total-customers"></div>
+                    <div class="card-content">
+                        <div class="card-title">कुल ग्राहक संख्या (Total Customers)</div>
+                        <div class="card-value">1,25,000</div>
+                        <div class="card-description">गत महिना भन्दा ५% वृद्धि</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-active-users"></div>
+                    <div class="card-content">
+                        <div class="card-title">सक्रिय ग्राहक (Active Users - Last 30 Days)</div>
+                        <div class="card-value green">95,870</div>
+                        <div class="card-description">सक्रियता दर: ७६.७%</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-transaction-volume"></div>
+                    <div class="card-content">
+                        <div class="card-title">कुल कारोबार रकम (Total Transaction Volume)</div>
+                        <div class="card-value">Rs. 8,75,00,000</div>
+                        <div class="card-description">यस महिनाको कारोबार</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-avg-transaction"></div>
+                    <div class="card-content">
+                        <div class="card-title">औसत कारोबार मूल्य (Avg. Transaction Value)</div>
+                        <div class="card-value yellow">Rs. 8,500</div>
+                        <div class="card-description">प्रति ग्राहक कारोबार औसत</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="financial-performance mt-30">
+            <h2 class="section-title">वित्तीय विश्लेषण र प्रवृत्ति (Financial Analysis & Trends)</h2>
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-placeholder">मासिक राजस्व प्रवृत्ति (Monthly Revenue Trends) - लाइन चार्ट</div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">खता प्रकार अनुसार कारोबार रकम (Transaction Volume by Khata Type) - बार चार्ट</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="customer-segmentation mt-30">
+            <h2 class="section-title">ग्राहक विभाजन र विश्लेषण (Customer Segmentation & Analysis)</h2>
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-placeholder">जनसांख्यिकी अनुसार ग्राहक विभाजन (Customer Segmentation by Demographics) - पाई चार्ट</div>
+                </div>
+                <div class="table-container">
+                    <h3>शीर्ष विभाजनहरू द्वारा राजस्व (Top Segments by Revenue)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>सेगमेंट (Segment)</th>
+                                <th>ग्राहक संख्या (Customers)</th>
+                                <th>राजस्व (Revenue)</th>
+                                <th>औसत कारोबार (Avg. Txn)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>युवा पेशेवर (Young Professionals)</td>
+                                <td>30,120</td>
+                                <td>Rs. 3,20,00,000</td>
+                                <td>Rs. 12,000</td>
+                            </tr>
+                            <tr>
+                                <td>लघु व्यवसायी (Small Business Owners)</td>
+                                <td>15,890</td>
+                                <td>Rs. 2,50,00,000</td>
+                                <td>Rs. 25,000</td>
+                            </tr>
+                            <tr>
+                                <td>ग्रामीण ग्राहक (Rural Users)</td>
+                                <td>45,000</td>
+                                <td>Rs. 1,80,00,000</td>
+                                <td>Rs. 4,000</td>
+                            </tr>
+                            <tr>
+                                <td>शहरवासी परिवार (Urban Families)</td>
+                                <td>20,000</td>
+                                <td>Rs. 1,00,00,000</td>
+                                <td>Rs. 5,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="customer-behavior mt-30">
+            <h2 class="section-title">ग्राहक व्यवहार ढाँचा (Customer Behavior Patterns)</h2>
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-placeholder">लोकप्रिय बैंकिङ सेवाहरू (Popular Banking Sewa Usage) - बार चार्ट</div>
+                </div>
+                <div class="table-container">
+                    <h3>हालसालैका उच्च-मूल्य कारोबार (Recent High-Value Transactions)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ग्राहक (Customer)</th>
+                                <th>कारोबार रकम (Amount)</th>
+                                <th>सेवा (Service)</th>
+                                <th>मिति (Date)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ram Bdr. Thapa</td>
+                                <td>Rs. 5,00,000</td>
+                                <td>फण्ड ट्रान्सफर (Fund Transfer)</td>
+                                <td>२०८०/१२/१५</td>
+                            </tr>
+                            <tr>
+                                <td>Anjali Gurung</td>
+                                <td>Rs. 2,50,000</td>
+                                <td>EMI भुक्तानी (EMI Payment)</td>
+                                <td>२०८०/१२/१४</td>
+                            </tr>
+                            <tr>
+                                <td>Sita Devi Sharma</td>
+                                <td>Rs. 1,80,000</td>
+                                <td>Nabil Bank बिल भुक्तानी (Nabil Bank Bill Pay)</td>
+                                <td>२०८०/१२/१२</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="customer-profiles mt-30">
+            <h2 class="section-title">ग्राहक प्रोफाइल र विवरण (Customer Profiles & Details)</h2>
+            <div class="customer-profile-section">
+                <div class="customer-search card">
+                    <h3 class="mb-30">ग्राहक खोज (Search Customer) <span class="icon icon-search"></span></h3>
+                    <input type="text" id="customerSearchInput" placeholder="ग्राहक ID वा नाम प्रविष्ट गर्नुहोस्...">
+                    <button id="searchCustomerBtn">खोज (Search)</button>
+                    <div id="searchResults" class="mt-20">
+                        <p class="text-center" style="color: #7f8c8d;">परिणाम यहाँ देखिनेछन्।</p>
+                    </div>
+                </div>
+                <div class="customer-detail-card" id="customerDetailCard">
+                    <h3><span class="icon icon-profile"></span>ग्राहक विवरण (Customer Details)</h3>
+                    <ul>
+                        <li><span>ग्राहक ID:</span> <span>CUST100123</span></li>
+                        <li><span>नाम:</span> <span>राम बहादुर थापा (Ram Bahadur Thapa)</span></li>
+                        <li><span>ठेगाना:</span> <span>काठमाडौं, नेपाल (Kathmandu, Nepal)</span></li>
+                        <li><span>जन्म मिति:</span> <span>२०४५/०५/१२ (1988/08/28 AD)</span></li>
+                        <li><span>सम्पर्क नम्बर:</span> <span>९८४१-xxxxxx</span></li>
+                        <li><span>इमेल:</span> <span>ram.thapa@example.com</span></li>
+                        <li><span>KYC स्थिति:</span> <span class="status-badge compliant">अनुकूल (Compliant)</span></li>
+                        <li><span>खता प्रकार:</span> <span>बचत (Savings)</span></li>
+                        <li><span>लिंक गरिएको बैंक:</span> <span>नेपाल बैंक लिमिटेड (Nepal Bank Ltd)</span></li>
+                        <li><span>हालको ब्यालेन्स:</span> <span>Rs. 1,50,000</span></li>
+                        <li><span>गत ३० दिनको कारोबार:</span> <span>१२ वटा (12 Transactions)</span></li>
+                        <li><span>NPS स्कोर (पछिल्लो):</span> <span>८ (Promoter)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="risk-compliance mt-30">
+            <h2 class="section-title">जोखिम मूल्यांकन र अनुपालन (Risk Assessment & Compliance)</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon icon-risk"></div>
+                    <div class="card-content">
+                        <div class="card-title">उच्च जोखिमका खाता (High-Risk Khata)</div>
+                        <div class="card-value red">85</div>
+                        <div class="card-description">सक्रिय निगरानीमा रहेका खाता</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-compliance"></div>
+                    <div class="card-content">
+                        <div class="card-title">NRB रिपोर्ट बाँकी (Pending NRB Reports)</div>
+                        <div class="card-value yellow">3</div>
+                        <div class="card-description">तत्काल पेश गर्नुपर्ने</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-kyc"></div>
+                    <div class="card-content">
+                        <div class="card-title">KYC अपडेट बाँकी (Pending KYC Updates)</div>
+                        <div class="card-value">2,100</div>
+                        <div class="card-description">२०८१/०२/३० सम्मको डेडलाइन</div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <h3>पछिल्ला जोखिम अलर्टहरू (Recent Risk Alerts)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>मिति (Date)</th>
+                            <th>ग्राहक ID</th>
+                            <th>अलर्ट प्रकार (Alert Type)</th>
+                            <th>स्थिति (Status)</th>
+                            <th>कार्य (Action)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>२०८०/१२/१५</td>
+                            <td>CUST100054</td>
+                            <td>असामान्य ठूलो कारोबार (Unusual Large Transaction)</td>
+                            <td><span class="status-badge flagged">झण्डा लगाइएको (Flagged)</span></td>
+                            <td>समीक्षा (Review)</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/१२/१४</td>
+                            <td>CUST100201</td>
+                            <td>एउटै IP बाट बहु लगइन (Multiple Logins from Same IP)</td>
+                            <td><span class="status-badge high">उच्च (High)</span></td>
+                            <td>अनुसन्धान (Investigate)</td>
+                        </tr>
+                        <tr>
+                            <td>२०८०/१२/११</td>
+                            <td>CUST100099</td>
+                            <td>नयाँ उपकरण लगइन (New Device Login)</td>
+                            <td><span class="status-badge low">न्यून (Low)</span></td>
+                            <td>जानकारी (Inform)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="customer-interaction mt-30">
+            <h2 class="section-title">ग्राहक अन्तरक्रिया इतिहास (Customer Interaction History)</h2>
+            <div class="chart-container">
+                <div class="interaction-timeline">
+                    <div class="timeline-item">
+                        <h4>ग्राहक सेवा कल (Customer Service Call)</h4>
+                        <p>पासवर्ड रिसेट अनुरोध (Password reset request)। समस्या समाधान भयो।</p>
+                        <div class="timestamp">२०८०/१२/१४, ११:३० AM</div>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>इमेल सोधपुछ (Email Inquiry)</h4>
+                        <p>नयाँ "खुला खता" सेवा बारे जानकारी (Inquiry about new "Khula Khata" service).</p>
+                        <div class="timestamp">२०८०/१२/१२, ०२:०० PM</div>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>इन-एप च्याट (In-App Chat)</h4>
+                        <p>बिल भुक्तानीमा समस्या (Issue with bill payment). प्राविधिक टीमलाई पठाइयो।</p>
+                        <div class="timestamp">२०८०/१२/०८, १०:०० AM</div>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>KYC कागजात अपलोड (KYC Document Upload)</h4>
+                        <p>नागरिकता र फोटो अपलोड गरी KYC अद्यावधिक गरियो।</p>
+                        <div class="timestamp">२०८०/११/२८, ०४:४५ PM</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="customer-satisfaction mt-30">
+            <h2 class="section-title">ग्राहक सन्तुष्टि मेट्रिक्स (Customer Satisfaction Metrics)</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon icon-satisfaction"></div>
+                    <div class="card-content">
+                        <div class="card-title">NPS स्कोर (Net Promoter Score)</div>
+                        <div class="card-value green">45</div>
+                        <div class="card-description">उद्योग औसत भन्दा राम्रो</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-satisfaction"></div>
+                    <div class="card-content">
+                        <div class="card-title">CSAT स्कोर (Customer Satisfaction Score)</div>
+                        <div class="card-value green">88%</div>
+                        <div class="card-description">पछिल्लो ३० दिनको औसत</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-satisfaction"></div>
+                    <div class="card-content">
+                        <div class="card-title">पछिल्लो प्रतिक्रिया (Recent Feedback)</div>
+                        <div class="card-value">"सेवा उत्कृष्ट लाग्यो!"</div>
+                        <div class="card-description">समीक्षाबाट</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Simple JavaScript for interactivity
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchCustomerBtn = document.getElementById('searchCustomerBtn');
+            const customerSearchInput = document.getElementById('customerSearchInput');
+            const customerDetailCard = document.getElementById('customerDetailCard');
+            const searchResults = document.getElementById('searchResults');
+
+            const mockCustomers = [
+                {
+                    id: 'CUST100123',
+                    name: 'राम बहादुर थापा',
+                    address: 'काठमाडौं, नेपाल',
+                    dob: '२०४५/०५/१२ (1988/08/28 AD)',
+                    phone: '९८४१-xxxxxx',
+                    email: 'ram.thapa@example.com',
+                    kycStatus: 'अनुकूल',
+                    kycClass: 'compliant',
+                    accountType: 'बचत',
+                    linkedBank: 'नेपाल बैंक लिमिटेड',
+                    balance: 'Rs. 1,50,000',
+                    transactions30Days: '१२ वटा',
+                    nps: '८ (Promoter)'
+                },
+                {
+                    id: 'CUST100456',
+                    name: 'सीता देवी शर्मा',
+                    address: 'पोखरा, नेपाल',
+                    dob: '२०४८/०९/०१ (1991/12/17 AD)',
+                    phone: '९८०८-xxxxxx',
+                    email: 'sita.sharma@example.com',
+                    kycStatus: 'बाँकी',
+                    kycClass: 'pending',
+                    accountType: 'चालू',
+                    linkedBank: 'नबिल बैंक लिमिटेड',
+                    balance: 'Rs. 2,10,000',
+                    transactions30Days: '१८ वटा',
+                    nps: '६ (Passive)'
+                },
+                {
+                    id: 'CUST100789',
+                    name: 'अञ्जली गुरुङ',
+                    address: 'विराटनगर, नेपाल',
+                    dob: '२०५५/०३/२५ (1998/07/09 AD)',
+                    phone: '९८६०-xxxxxx',
+                    email: 'anjali.gurung@example.com',
+                    kycStatus: 'अनुकूल',
+                    kycClass: 'compliant',
+                    accountType: 'बचत',
+                    linkedBank: 'एभरेष्ट बैंक लिमिटेड',
+                    balance: 'Rs. 75,000',
+                    transactions30Days: '७ वटा',
+                    nps: '९ (Promoter)'
+                }
+            ];
+
+            searchCustomerBtn.addEventListener('click', () => {
+                const query = customerSearchInput.value.toLowerCase();
+                const foundCustomer = mockCustomers.find(customer => 
+                    customer.id.toLowerCase().includes(query) || 
+                    customer.name.toLowerCase().includes(query)
+                );
+
+                if (foundCustomer) {
+                    displayCustomerDetails(foundCustomer);
+                    searchResults.innerHTML = `<p style="color: ${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}; font-weight: 500;">ग्राहक फेला पर्यो: ${foundCustomer.name}</p>`;
+                } else {
+                    customerDetailCard.style.display = 'none';
+                    searchResults.innerHTML = `<p style="color: #e74c3c; font-weight: 500;">ग्राहक फेला परेन!</p>`;
+                }
+            });
+
+            function displayCustomerDetails(customer) {
+                const ul = customerDetailCard.querySelector('ul');
+                ul.innerHTML = `
+                    <li><span>ग्राहक ID:</span> <span>${customer.id}</span></li>
+                    <li><span>नाम:</span> <span>${customer.name}</span></li>
+                    <li><span>ठेगाना:</span> <span>${customer.address}</span></li>
+                    <li><span>जन्म मिति:</span> <span>${customer.dob}</span></li>
+                    <li><span>सम्पर्क नम्बर:</span> <span>${customer.phone}</span></li>
+                    <li><span>इमेल:</span> <span>${customer.email}</span></li>
+                    <li><span>KYC स्थिति:</span> <span class="status-badge ${customer.kycClass}">${customer.kycStatus}</span></li>
+                    <li><span>खता प्रकार:</span> <span>${customer.accountType}</span></li>
+                    <li><span>लिंक गरिएको बैंक:</span> <span>${customer.linkedBank}</span></li>
+                    <li><span>हालको ब्यालेन्स:</span> <span>${customer.balance}</span></li>
+                    <li><span>गत ३० दिनको कारोबार:</span> <span>${customer.transactions30Days}</span></li>
+                    <li><span>NPS स्कोर (पछिल्लो):</span> <span>${customer.nps}</span></li>
+                `;
+                customerDetailCard.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

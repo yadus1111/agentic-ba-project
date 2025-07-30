@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nepal Fintech GENERIC Application</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+        .container { max-width: 1440px; margin: 0 auto; background: white; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .app-title { font-size: 24px; font-weight: bold; }
+        .search-section { display: flex; align-items: center; gap: 10px; flex: 1; max-width: 600px; margin: 0 20px; }
+        .search-input { flex: 1; padding: 10px 15px; border: none; border-radius: 25px; font-size: 14px; background: rgba(255,255,255,0.9); color: #333; }
+        .search-btn { padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; }
+        .search-btn:hover { background: #45a049; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .main-content { padding: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; min-height: calc(100vh - 80px); }
+        .card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; margin-bottom: 20px; }
+        .card-title { font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #3498db; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; text-decoration: none; display: inline-block; text-align: center; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .data-label { font-weight: 600; color: #555; min-width: 120px; }
+        .data-value { color: #333; text-align: right; flex: 1; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        @media (max-width: 1200px) { .main-content { grid-template-columns: 1fr; } }
+        .card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="app-title">Business Analyst Dashboard - GENERIC Analytics</div>
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="search-btn" onclick="performSearch()">Search</button>
+            </div>
+            <div class="user-info">
+                <div class="user-name">Sita Sharma</div>
+                <div class="user-role">Business Analyst (Nepal)</div>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="left-column">
+                <div class="card">
+                    <h3 class="card-title">Overview (Kathmandu)</h3>
+                    <div class="data-row">
+                        <span class="data-label">Total Customers:</span>
+                        <span class="data-value">1,250</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Active in Pokhara:</span>
+                        <span class="data-value">1,180</span>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('Action 1')">Action 1</button>
+                        <button class="btn btn-success" onclick="alert('Action 2')">Action 2</button>
+                    </div>
+                </div>
+            </div>
+            <div class="middle-column">
+                <div class="card">
+                    <h3 class="card-title">Recent Activity (Biratnagar)</h3>
+                    <div class="data-row">New account opened - Dec 15, 2024</div>
+                    <div class="data-row">Loan approved - Dec 14, 2024</div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('View All')">View All</button>
+                    </div>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="card">
+                    <h3 class="card-title">Quick Actions (Lalitpur)</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('Create New')">Create New</button>
+                        <button class="btn btn-success" onclick="alert('Generate Report')">Generate Report</button>
+                        <button class="btn btn-warning" onclick="alert('Settings')">Settings</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        function performSearch() {
+            const searchTerm = document.querySelector('.search-input').value;
+            if (searchTerm.trim()) {
+                alert(`Searching for: ${searchTerm}`);
+            } else {
+                alert('Please enter a search term');
+            }
+        }
+        
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1696 @@
+[
+  {
+    "type": "frame",
+    "name": "CRM_Application_Frame",
+    "x": 0,
+    "y": 0,
+    "width": 1200,
+    "height": 800,
+    "content": null,
+    "parent": null
+  },
+  {
+    "type": "rectangle",
+    "name": "Navigation_Sidebar",
+    "x": 0,
+    "y": 0,
+    "width": 200,
+    "height": 800,
+    "content": null,
+    "parent": "CRM_Application_Frame"
+  },
+  {
+    "type": "text",
+    "name": "App_Title",
+    "x": 20,
+    "y": 20,
+    "width": 160,
+    "height": 30,
+    "content": "CRM Solution",
+    "parent": "Navigation_Sidebar"
+  },
+  {
+    "type": "button",
+    "name": "Nav_Dashboard",
+    "x": 20,
+    "y": 80,
+    "width": 160,
+    "height": 40,
+    "content": "Dashboard",
+    "parent": "Navigation_Sidebar"
+  },
+  {
+    "type": "button",
+    "name": "Nav_Customers",
+    "x": 20,
+    "y": 130,
+    "width": 160,
+    "height": 40,
+    "content": "Customers",
+    "parent": "Navigation_Sidebar"
+  },
+  {
+    "type": "button",
+    "name": "Nav_Opportunities",
+    "x": 20,
+    "y": 180,
+    "width": 160,
+    "height": 40,
+    "content": "Opportunities",
+    "parent": "Navigation_Sidebar"
+  },
+  {
+    "type": "button",
+    "name": "Nav_Service",
+    "x": 20,
+    "y": 230,
+    "width": 160,
+    "height": 40,
+    "content": "Service",
+    "parent": "Navigation_Sidebar"
+  },
+  {
+    "type": "button",
+    "name": "Nav_Reports",
+    "x": 20,
+    "y": 280,
+    "width": 160,
+    "height": 40,
+    "content": "Reports",
+    "parent": "Navigation_Sidebar"
+  },
+  {
+    "type": "button",
+    "name": "Nav_Admin",
+    "x": 20,
+    "y": 330,
+    "width": 160,
+    "height": 40,
+    "content": "Admin",
+    "parent": "Navigation_Sidebar"
+  },
+  {
+    "type": "rectangle",
+    "name": "Main_Content_Area",
+    "x": 200,
+    "y": 0,
+    "width": 1000,
+    "height": 800,
+    "content": null,
+    "parent": "CRM_Application_Frame"
+  },
+  {
+    "type": "text",
+    "name": "Page_Title_Customers",
+    "x": 220,
+    "y": 20,
+    "width": 200,
+    "height": 30,
+    "content": "Customer Profile",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "input",
+    "name": "Customer_Search_Input",
+    "x": 220,
+    "y": 60,
+    "width": 500,
+    "height": 40,
+    "content": "Search Customer by Name, ID, or Account Number",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "button",
+    "name": "Customer_Search_Button",
+    "x": 730,
+    "y": 60,
+    "width": 100,
+    "height": 40,
+    "content": "Search",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "text",
+    "name": "Customer_Name_Heading",
+    "x": 220,
+    "y": 120,
+    "width": 400,
+    "height": 40,
+    "content": "Customer Full Name",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "text",
+    "name": "Customer_ID_Display",
+    "x": 220,
+    "y": 165,
+    "width": 200,
+    "height": 20,
+    "content": "Customer ID: [ID]",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "text",
+    "name": "Customer_Account_Balance",
+    "x": 430,
+    "y": 165,
+    "width": 250,
+    "height": 20,
+    "content": "Account Balance: [Amount]",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "text",
+    "name": "Customer_Total_Assets",
+    "x": 220,
+    "y": 190,
+    "width": 250,
+    "height": 20,
+    "content": "Total Assets: [Amount]",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "text",
+    "name": "Customer_Total_Liabilities",
+    "x": 430,
+    "y": 190,
+    "width": 250,
+    "height": 20,
+    "content": "Total Liabilities: [Amount]",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "button",
+    "name": "Edit_Profile_Button",
+    "x": 840,
+    "y": 120,
+    "width": 150,
+    "height": 40,
+    "content": "Edit Profile",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "button",
+    "name": "Add_Interaction_Button",
+    "x": 840,
+    "y": 170,
+    "width": 150,
+    "height": 40,
+    "content": "Add Interaction Log",
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "rectangle",
+    "name": "Customer_Profile_Tabs",
+    "x": 220,
+    "y": 230,
+    "width": 760,
+    "height": 40,
+    "content": null,
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "button",
+    "name": "Tab_Overview",
+    "x": 220,
+    "y": 230,
+    "width": 120,
+    "height": 40,
+    "content": "Overview",
+    "parent": "Customer_Profile_Tabs"
+  },
+  {
+    "type": "button",
+    "name": "Tab_Accounts_Products",
+    "x": 340,
+    "y": 230,
+    "width": 180,
+    "height": 40,
+    "content": "Accounts & Products",
+    "parent": "Customer_Profile_Tabs"
+  },
+  {
+    "type": "button",
+    "name": "Tab_Transactions",
+    "x": 520,
+    "y": 230,
+    "width": 120,
+    "height": 40,
+    "content": "Transactions",
+    "parent": "Customer_Profile_Tabs"
+  },
+  {
+    "type": "button",
+    "name": "Tab_Service_Comm",
+    "x": 640,
+    "y": 230,
+    "width": 150,
+    "height": 40,
+    "content": "Service & Comm.",
+    "parent": "Customer_Profile_Tabs"
+  },
+  {
+    "type": "button",
+    "name": "Tab_Insights_Opportunities",
+    "x": 790,
+    "y": 230,
+    "width": 190,
+    "height": 40,
+    "content": "Insights & Opportunities",
+    "parent": "Customer_Profile_Tabs"
+  },
+  {
+    "type": "button",
+    "name": "Tab_Relationships",
+    "x": 980,
+    "y": 230,
+    "width": 120,
+    "height": 40,
+    "content": "Relationships",
+    "parent": "Customer_Profile_Tabs"
+  },
+  {
+    "type": "rectangle",
+    "name": "Customer_Profile_Content_Area",
+    "x": 220,
+    "y": 270,
+    "width": 760,
+    "height": 510,
+    "content": null,
+    "parent": "Main_Content_Area"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Demographic_Info",
+    "x": 230,
+    "y": 280,
+    "width": 370,
+    "height": 240,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Overview' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Demographic_Info",
+    "x": 240,
+    "y": 290,
+    "width": 300,
+    "height": 20,
+    "content": "Demographic Information",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_FirstName",
+    "x": 240,
+    "y": 320,
+    "width": 300,
+    "height": 20,
+    "content": "First Name: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_LastName",
+    "x": 240,
+    "y": 340,
+    "width": 300,
+    "height": 20,
+    "content": "Last Name: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_DateOfBirth",
+    "x": 240,
+    "y": 360,
+    "width": 300,
+    "height": 20,
+    "content": "Date of Birth: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_Gender",
+    "x": 240,
+    "y": 380,
+    "width": 300,
+    "height": 20,
+    "content": "Gender: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_MaritalStatus",
+    "x": 240,
+    "y": 400,
+    "width": 300,
+    "height": 20,
+    "content": "Marital Status: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_Address",
+    "x": 240,
+    "y": 420,
+    "width": 300,
+    "height": 20,
+    "content": "Address: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_Email",
+    "x": 240,
+    "y": 440,
+    "width": 300,
+    "height": 20,
+    "content": "Email: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_Phone",
+    "x": 240,
+    "y": 460,
+    "width": 300,
+    "height": 20,
+    "content": "Phone: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_MarketingPreferences",
+    "x": 240,
+    "y": 480,
+    "width": 300,
+    "height": 20,
+    "content": "Marketing Preferences: [Opt-in/out Status]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "text",
+    "name": "Text_PreferredChannel",
+    "x": 240,
+    "y": 500,
+    "width": 300,
+    "height": 20,
+    "content": "Preferred Channel: [Value]",
+    "parent": "Card_Demographic_Info"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Key_Metrics_Risk",
+    "x": 610,
+    "y": 280,
+    "width": 370,
+    "height": 180,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Overview' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Key_Metrics_Risk",
+    "x": 620,
+    "y": 290,
+    "width": 300,
+    "height": 20,
+    "content": "Key Metrics & Risk Profile",
+    "parent": "Card_Key_Metrics_Risk"
+  },
+  {
+    "type": "text",
+    "name": "Text_Customer_Segment",
+    "x": 620,
+    "y": 320,
+    "width": 300,
+    "height": 20,
+    "content": "Customer Segment: [Value]",
+    "parent": "Card_Key_Metrics_Risk"
+  },
+  {
+    "type": "text",
+    "name": "Text_Churn_Risk",
+    "x": 620,
+    "y": 340,
+    "width": 300,
+    "height": 20,
+    "content": "Churn Risk: [Value]",
+    "parent": "Card_Key_Metrics_Risk"
+  },
+  {
+    "type": "text",
+    "name": "Text_Credit_Score",
+    "x": 620,
+    "y": 360,
+    "width": 300,
+    "height": 20,
+    "content": "Credit Score: [Value]",
+    "parent": "Card_Key_Metrics_Risk"
+  },
+  {
+    "type": "text",
+    "name": "Text_Last_Interaction",
+    "x": 620,
+    "y": 380,
+    "width": 300,
+    "height": 20,
+    "content": "Last Interaction: [Date/Type]",
+    "parent": "Card_Key_Metrics_Risk"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Timeline_Interactions",
+    "x": 230,
+    "y": 530,
+    "width": 750,
+    "height": 240,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Overview' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Timeline_Interactions",
+    "x": 240,
+    "y": 540,
+    "width": 300,
+    "height": 20,
+    "content": "Timeline of Interactions",
+    "parent": "Card_Timeline_Interactions"
+  },
+  {
+    "type": "text",
+    "name": "Timeline_Event_1",
+    "x": 240,
+    "y": 570,
+    "width": 700,
+    "height": 20,
+    "content": "Event 1: [Date] - [Description of interaction/event]",
+    "parent": "Card_Timeline_Interactions"
+  },
+  {
+    "type": "text",
+    "name": "Timeline_Event_2",
+    "x": 240,
+    "y": 590,
+    "width": 700,
+    "height": 20,
+    "content": "Event 2: [Date] - [Description of interaction/event]",
+    "parent": "Card_Timeline_Interactions"
+  },
+  {
+    "type": "text",
+    "name": "Timeline_Event_3",
+    "x": 240,
+    "y": 610,
+    "width": 700,
+    "height": 20,
+    "content": "Event 3: [Date] - [Description of interaction/event]",
+    "parent": "Card_Timeline_Interactions"
+  },
+  {
+    "type": "button",
+    "name": "Button_View_All_Events",
+    "x": 800,
+    "y": 740,
+    "width": 150,
+    "height": 30,
+    "content": "View All Events",
+    "parent": "Card_Timeline_Interactions"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Accounts_Summary",
+    "x": 230,
+    "y": 280,
+    "width": 750,
+    "height": 250,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Accounts & Products' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Account_Summary",
+    "x": 240,
+    "y": 290,
+    "width": 300,
+    "height": 20,
+    "content": "Account Summary",
+    "parent": "Card_Accounts_Summary"
+  },
+  {
+    "type": "table",
+    "name": "Table_Accounts",
+    "x": 240,
+    "y": 320,
+    "width": 730,
+    "height": 180,
+    "content": {
+      "headers": [
+        "Account Type",
+        "Account Number",
+        "Current Balance",
+        "Status",
+        "Opening Date"
+      ],
+      "rows": [
+        [
+          "Checking",
+          "XXXX1234",
+          "$12,345.67",
+          "Active",
+          "01/01/2010"
+        ],
+        [
+          "Savings",
+          "XXXX5678",
+          "$98,765.43",
+          "Active",
+          "05/15/2015"
+        ],
+        [
+          "Loan",
+          "XXXX9012",
+          "$50,000.00",
+          "Active",
+          "03/20/2020"
+        ]
+      ]
+    },
+    "parent": "Card_Accounts_Summary"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Product_Holdings",
+    "x": 230,
+    "y": 540,
+    "width": 750,
+    "height": 230,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Accounts & Products' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Product_Holdings",
+    "x": 240,
+    "y": 550,
+    "width": 300,
+    "height": 20,
+    "content": "Product Holdings",
+    "parent": "Card_Product_Holdings"
+  },
+  {
+    "type": "table",
+    "name": "Table_Products",
+    "x": 240,
+    "y": 580,
+    "width": 730,
+    "height": 150,
+    "content": {
+      "headers": [
+        "Product Name",
+        "Product Type",
+        "Current Status",
+        "Investment Amount/Limit"
+      ],
+      "rows": [
+        [
+          "Gold Credit Card",
+          "Credit Card",
+          "Active",
+          "$10,000"
+        ],
+        [
+          "Wealth Management Plan",
+          "Investment",
+          "Active",
+          "$250,000"
+        ],
+        [
+          "Mortgage Loan",
+          "Loan",
+          "Active",
+          "$300,000"
+        ]
+      ]
+    },
+    "parent": "Card_Product_Holdings"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Transaction_History",
+    "x": 230,
+    "y": 280,
+    "width": 750,
+    "height": 490,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Transactions' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Transaction_History",
+    "x": 240,
+    "y": 290,
+    "width": 300,
+    "height": 20,
+    "content": "Transaction History",
+    "parent": "Card_Transaction_History"
+  },
+  {
+    "type": "input",
+    "name": "Input_Search_Transactions",
+    "x": 240,
+    "y": 320,
+    "width": 200,
+    "height": 30,
+    "content": "Search Transactions",
+    "parent": "Card_Transaction_History"
+  },
+  {
+    "type": "dropdown",
+    "name": "Dropdown_Filter_Account",
+    "x": 450,
+    "y": 320,
+    "width": 150,
+    "height": 30,
+    "content": "Filter by Account",
+    "parent": "Card_Transaction_History"
+  },
+  {
+    "type": "dropdown",
+    "name": "Dropdown_Filter_Date_Range",
+    "x": 610,
+    "y": 320,
+    "width": 150,
+    "height": 30,
+    "content": "Filter by Date Range",
+    "parent": "Card_Transaction_History"
+  },
+  {
+    "type": "table",
+    "name": "Table_Transactions",
+    "x": 240,
+    "y": 360,
+    "width": 730,
+    "height": 400,
+    "content": {
+      "headers": [
+        "Date",
+        "Description",
+        "Type",
+        "Amount",
+        "Account"
+      ],
+      "rows": [
+        [
+          "2023-10-26",
+          "Online Purchase",
+          "Debit",
+          "$50.00",
+          "Checking"
+        ],
+        [
+          "2023-10-25",
+          "Salary Deposit",
+          "Credit",
+          "$3,500.00",
+          "Checking"
+        ],
+        [
+          "2023-10-24",
+          "ATM Withdrawal",
+          "Debit",
+          "$100.00",
+          "Savings"
+        ]
+      ]
+    },
+    "parent": "Card_Transaction_History"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Service_Request_History",
+    "x": 230,
+    "y": 280,
+    "width": 750,
+    "height": 250,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Service & Comm.' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Service_Requests",
+    "x": 240,
+    "y": 290,
+    "width": 300,
+    "height": 20,
+    "content": "Service Request History",
+    "parent": "Card_Service_Request_History"
+  },
+  {
+    "type": "button",
+    "name": "Button_Create_Service_Request",
+    "x": 780,
+    "y": 290,
+    "width": 180,
+    "height": 30,
+    "content": "Create New Service Request",
+    "parent": "Card_Service_Request_History"
+  },
+  {
+    "type": "table",
+    "name": "Table_Service_Requests",
+    "x": 240,
+    "y": 330,
+    "width": 730,
+    "height": 160,
+    "content": {
+      "headers": [
+        "Request ID",
+        "Subject",
+        "Status",
+        "Created Date",
+        "Last Update",
+        "Assigned To"
+      ],
+      "rows": [
+        [
+          "SR001",
+          "Credit Card Query",
+          "Open",
+          "2023-10-20",
+          "2023-10-26",
+          "CSR Smith"
+        ],
+        [
+          "SR002",
+          "Address Change",
+          "Closed",
+          "2023-09-15",
+          "2023-09-16",
+          "CSR Jones"
+        ]
+      ]
+    },
+    "parent": "Card_Service_Request_History"
+  },
+  {
+    "type": "button",
+    "name": "Button_View_SR_Details",
+    "x": 840,
+    "y": 500,
+    "width": 120,
+    "height": 30,
+    "content": "View Details",
+    "parent": "Card_Service_Request_History"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Communication_Log",
+    "x": 230,
+    "y": 540,
+    "width": 750,
+    "height": 230,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Service & Comm.' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Communication_Log",
+    "x": 240,
+    "y": 550,
+    "width": 300,
+    "height": 20,
+    "content": "Communication Log",
+    "parent": "Card_Communication_Log"
+  },
+  {
+    "type": "table",
+    "name": "Table_Communication_Log",
+    "x": 240,
+    "y": 580,
+    "width": 730,
+    "height": 150,
+    "content": {
+      "headers": [
+        "Date",
+        "Channel",
+        "Type",
+        "Subject/Summary"
+      ],
+      "rows": [
+        [
+          "2023-10-26",
+          "Call Center",
+          "Inbound Call",
+          "Inquiry about statement"
+        ],
+        [
+          "2023-10-25",
+          "Email",
+          "Outbound Email",
+          "Marketing for new savings account"
+        ]
+      ]
+    },
+    "parent": "Card_Communication_Log"
+  },
+  {
+    "type": "button",
+    "name": "Button_View_Full_Comm_Log",
+    "x": 840,
+    "y": 740,
+    "width": 120,
+    "height": 30,
+    "content": "View Full Log",
+    "parent": "Card_Communication_Log"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Predictive_Insights",
+    "x": 230,
+    "y": 280,
+    "width": 750,
+    "height": 250,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Insights & Opportunities' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Predictive_Insights",
+    "x": 240,
+    "y": 290,
+    "width": 300,
+    "height": 20,
+    "content": "Next Best Actions / Predictive Insights",
+    "parent": "Card_Predictive_Insights"
+  },
+  {
+    "type": "text",
+    "name": "Text_Recommended_Action_1",
+    "x": 240,
+    "y": 320,
+    "width": 700,
+    "height": 20,
+    "content": "Recommended Action 1: Offer [Product Name] based on [Reason]",
+    "parent": "Card_Predictive_Insights"
+  },
+  {
+    "type": "text",
+    "name": "Text_Recommended_Action_2",
+    "x": 240,
+    "y": 340,
+    "width": 700,
+    "height": 20,
+    "content": "Recommended Action 2: Suggest [Service] based on [Reason]",
+    "parent": "Card_Predictive_Insights"
+  },
+  {
+    "type": "text",
+    "name": "Text_Churn_Risk_Level",
+    "x": 240,
+    "y": 360,
+    "width": 700,
+    "height": 20,
+    "content": "Customer Churn Risk: [High/Medium/Low]",
+    "parent": "Card_Predictive_Insights"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Cross_Sell_Opportunities",
+    "x": 230,
+    "y": 540,
+    "width": 750,
+    "height": 230,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Insights & Opportunities' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Cross_Sell_Opportunities",
+    "x": 240,
+    "y": 550,
+    "width": 300,
+    "height": 20,
+    "content": "Cross-Sell / Up-Sell Opportunities",
+    "parent": "Card_Cross_Sell_Opportunities"
+  },
+  {
+    "type": "button",
+    "name": "Button_Log_New_Opportunity",
+    "x": 780,
+    "y": 550,
+    "width": 180,
+    "height": 30,
+    "content": "Log New Opportunity",
+    "parent": "Card_Cross_Sell_Opportunities"
+  },
+  {
+    "type": "table",
+    "name": "Table_Opportunities",
+    "x": 240,
+    "y": 590,
+    "width": 730,
+    "height": 120,
+    "content": {
+      "headers": [
+        "Product Recommendation",
+        "Reason",
+        "Status",
+        "Date Logged"
+      ],
+      "rows": [
+        [
+          "Investment Account",
+          "High Savings Balance",
+          "Proposed",
+          "2023-10-10"
+        ],
+        [
+          "Premium Credit Card",
+          "Frequent International Travel",
+          "Accepted",
+          "2023-09-01"
+        ]
+      ]
+    },
+    "parent": "Card_Cross_Sell_Opportunities"
+  },
+  {
+    "type": "button",
+    "name": "Button_View_Product_Details",
+    "x": 600,
+    "y": 720,
+    "width": 160,
+    "height": 30,
+    "content": "View Product Details",
+    "parent": "Card_Cross_Sell_Opportunities"
+  },
+  {
+    "type": "button",
+    "name": "Button_Access_Marketing_Collateral",
+    "x": 770,
+    "y": 720,
+    "width": 190,
+    "height": 30,
+    "content": "Access Marketing Collateral",
+    "parent": "Card_Cross_Sell_Opportunities"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Relationships",
+    "x": 230,
+    "y": 280,
+    "width": 750,
+    "height": 490,
+    "content": null,
+    "parent": "Customer_Profile_Content_Area",
+    "notes": "Visible when 'Relationships' tab is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Relationships",
+    "x": 240,
+    "y": 290,
+    "width": 300,
+    "height": 20,
+    "content": "Key Relationships",
+    "parent": "Card_Relationships"
+  },
+  {
+    "type": "table",
+    "name": "Table_Relationships",
+    "x": 240,
+    "y": 320,
+    "width": 730,
+    "height": 200,
+    "content": {
+      "headers": [
+        "Related Person/Account",
+        "Relationship Type",
+        "Customer ID"
+      ],
+      "rows": [
+        [
+          "Spouse Name",
+          "Spouse",
+          "CUST0002"
+        ],
+        [
+          "Business Account Name",
+          "Business Affiliate",
+          "ACCT0001"
+        ]
+      ]
+    },
+    "parent": "Card_Relationships"
+  },
+  {
+    "type": "text",
+    "name": "Page_Title_Opportunities",
+    "x": 220,
+    "y": 20,
+    "width": 250,
+    "height": 30,
+    "content": "Sales Opportunities",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Opportunities' navigation is active"
+  },
+  {
+    "type": "input",
+    "name": "Opportunity_Search_Input",
+    "x": 220,
+    "y": 60,
+    "width": 300,
+    "height": 40,
+    "content": "Search Opportunities",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Opportunities' navigation is active"
+  },
+  {
+    "type": "dropdown",
+    "name": "Opportunity_Filter_Status",
+    "x": 530,
+    "y": 60,
+    "width": 150,
+    "height": 40,
+    "content": "Filter by Status",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Opportunities' navigation is active"
+  },
+  {
+    "type": "button",
+    "name": "Create_New_Opportunity_Button",
+    "x": 800,
+    "y": 60,
+    "width": 180,
+    "height": 40,
+    "content": "Create New Opportunity",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Opportunities' navigation is active"
+  },
+  {
+    "type": "table",
+    "name": "Table_All_Opportunities",
+    "x": 220,
+    "y": 120,
+    "width": 760,
+    "height": 650,
+    "content": {
+      "headers": [
+        "Opportunity ID",
+        "Customer Name",
+        "Recommended Product",
+        "Status",
+        "Value",
+        "Last Update",
+        "Assigned RM"
+      ],
+      "rows": [
+        [
+          "OPP001",
+          "Customer A",
+          "Investment Plan",
+          "Proposed",
+          "$50,000",
+          "2023-10-25",
+          "RM John"
+        ],
+        [
+          "OPP002",
+          "Customer B",
+          "Home Loan",
+          "Closed Won",
+          "$300,000",
+          "2023-09-30",
+          "RM Jane"
+        ]
+      ]
+    },
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Opportunities' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Page_Title_Service",
+    "x": 220,
+    "y": 20,
+    "width": 250,
+    "height": 30,
+    "content": "Service Management",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Service' navigation is active"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Service_Dashboard",
+    "x": 220,
+    "y": 60,
+    "width": 760,
+    "height": 200,
+    "content": null,
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Service' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Service_Dashboard",
+    "x": 230,
+    "y": 70,
+    "width": 250,
+    "height": 20,
+    "content": "Service Request Dashboard",
+    "parent": "Card_Service_Dashboard"
+  },
+  {
+    "type": "chart",
+    "name": "Chart_Open_Closed_Requests",
+    "x": 240,
+    "y": 100,
+    "width": 350,
+    "height": 150,
+    "content": "Bar Chart: Open vs. Closed Service Requests",
+    "parent": "Card_Service_Dashboard"
+  },
+  {
+    "type": "chart",
+    "name": "Chart_Resolution_Times",
+    "x": 600,
+    "y": 100,
+    "width": 350,
+    "height": 150,
+    "content": "Line Chart: Average Service Resolution Times",
+    "parent": "Card_Service_Dashboard"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_All_Service_Requests",
+    "x": 220,
+    "y": 270,
+    "width": 760,
+    "height": 500,
+    "content": null,
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Service' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_All_Service_Requests",
+    "x": 230,
+    "y": 280,
+    "width": 250,
+    "height": 20,
+    "content": "All Service Requests",
+    "parent": "Card_All_Service_Requests"
+  },
+  {
+    "type": "input",
+    "name": "Input_Search_Service_Requests",
+    "x": 230,
+    "y": 310,
+    "width": 200,
+    "height": 30,
+    "content": "Search Requests",
+    "parent": "Card_All_Service_Requests"
+  },
+  {
+    "type": "dropdown",
+    "name": "Dropdown_Filter_SR_Status",
+    "x": 440,
+    "y": 310,
+    "width": 150,
+    "height": 30,
+    "content": "Filter by Status",
+    "parent": "Card_All_Service_Requests"
+  },
+  {
+    "type": "dropdown",
+    "name": "Dropdown_Filter_SR_Customer",
+    "x": 600,
+    "y": 310,
+    "width": 150,
+    "height": 30,
+    "content": "Filter by Customer",
+    "parent": "Card_All_Service_Requests"
+  },
+  {
+    "type": "button",
+    "name": "Button_Create_New_SR_Main",
+    "x": 780,
+    "y": 310,
+    "width": 180,
+    "height": 30,
+    "content": "Create New Request",
+    "parent": "Card_All_Service_Requests"
+  },
+  {
+    "type": "table",
+    "name": "Table_All_SR_List",
+    "x": 230,
+    "y": 350,
+    "width": 730,
+    "height": 400,
+    "content": {
+      "headers": [
+        "Request ID",
+        "Customer Name",
+        "Subject",
+        "Status",
+        "Priority",
+        "Created Date",
+        "Assigned To"
+      ],
+      "rows": [
+        [
+          "SR003",
+          "Customer C",
+          "Loan Inquiry",
+          "Open",
+          "High",
+          "2023-10-24",
+          "RM David"
+        ],
+        [
+          "SR004",
+          "Customer D",
+          "Account Closure",
+          "Pending",
+          "Medium",
+          "2023-10-23",
+          "CSR Emily"
+        ]
+      ]
+    },
+    "parent": "Card_All_Service_Requests"
+  },
+  {
+    "type": "text",
+    "name": "Page_Title_Reports",
+    "x": 220,
+    "y": 20,
+    "width": 250,
+    "height": 30,
+    "content": "Reports & Dashboards",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Reports' navigation is active"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Customer_Engagement_Dashboard",
+    "x": 220,
+    "y": 60,
+    "width": 760,
+    "height": 200,
+    "content": null,
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Reports' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Customer_Engagement_Dashboard",
+    "x": 230,
+    "y": 70,
+    "width": 250,
+    "height": 20,
+    "content": "Customer Engagement Dashboard",
+    "parent": "Card_Customer_Engagement_Dashboard"
+  },
+  {
+    "type": "chart",
+    "name": "Chart_Active_Users_Trend",
+    "x": 240,
+    "y": 100,
+    "width": 350,
+    "height": 150,
+    "content": "Line Chart: Active Users Trend",
+    "parent": "Card_Customer_Engagement_Dashboard"
+  },
+  {
+    "type": "chart",
+    "name": "Chart_Interaction_Volume",
+    "x": 600,
+    "y": 100,
+    "width": 350,
+    "height": 150,
+    "content": "Bar Chart: Interaction Volume by Channel",
+    "parent": "Card_Customer_Engagement_Dashboard"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Product_Penetration_Report",
+    "x": 220,
+    "y": 270,
+    "width": 760,
+    "height": 200,
+    "content": null,
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Reports' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Product_Penetration_Report",
+    "x": 230,
+    "y": 280,
+    "width": 250,
+    "height": 20,
+    "content": "Product Penetration Report",
+    "parent": "Card_Product_Penetration_Report"
+  },
+  {
+    "type": "chart",
+    "name": "Chart_Product_Holding_Distribution",
+    "x": 240,
+    "y": 310,
+    "width": 350,
+    "height": 150,
+    "content": "Pie Chart: Product Holding Distribution",
+    "parent": "Card_Product_Penetration_Report"
+  },
+  {
+    "type": "table",
+    "name": "Table_Top_Products_Segment",
+    "x": 600,
+    "y": 310,
+    "width": 350,
+    "height": 150,
+    "content": {
+      "headers": [
+        "Segment",
+        "Top Product"
+      ],
+      "rows": [
+        [
+          "Young Professionals",
+          "Personal Loan"
+        ],
+        [
+          "High Net Worth",
+          "Wealth Management"
+        ]
+      ]
+    },
+    "parent": "Card_Product_Penetration_Report"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Service_Performance_Report",
+    "x": 220,
+    "y": 480,
+    "width": 760,
+    "height": 200,
+    "content": null,
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Reports' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Service_Performance_Report",
+    "x": 230,
+    "y": 490,
+    "width": 250,
+    "height": 20,
+    "content": "Service Performance Report",
+    "parent": "Card_Service_Performance_Report"
+  },
+  {
+    "type": "chart",
+    "name": "Chart_Average_Resolution_Time",
+    "x": 240,
+    "y": 520,
+    "width": 350,
+    "height": 150,
+    "content": "Bar Chart: Average Resolution Time by Type",
+    "parent": "Card_Service_Performance_Report"
+  },
+  {
+    "type": "table",
+    "name": "Table_Service_Request_Volume",
+    "x": 600,
+    "y": 520,
+    "width": 350,
+    "height": 150,
+    "content": {
+      "headers": [
+        "Request Type",
+        "Volume"
+      ],
+      "rows": [
+        [
+          "Account Inquiry",
+          "150"
+        ],
+        [
+          "Product Support",
+          "120"
+        ]
+      ]
+    },
+    "parent": "Card_Service_Performance_Report"
+  },
+  {
+    "type": "button",
+    "name": "Button_Generate_Custom_Report",
+    "x": 220,
+    "y": 700,
+    "width": 180,
+    "height": 40,
+    "content": "Generate Custom Report",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Reports' navigation is active"
+  },
+  {
+    "type": "button",
+    "name": "Button_Export_Data",
+    "x": 410,
+    "y": 700,
+    "width": 150,
+    "height": 40,
+    "content": "Export Data",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Reports' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Page_Title_Admin",
+    "x": 220,
+    "y": 20,
+    "width": 250,
+    "height": 30,
+    "content": "Administration",
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Admin' navigation is active"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_User_Management",
+    "x": 220,
+    "y": 60,
+    "width": 760,
+    "height": 250,
+    "content": null,
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Admin' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_User_Management",
+    "x": 230,
+    "y": 70,
+    "width": 200,
+    "height": 20,
+    "content": "User Management",
+    "parent": "Card_User_Management"
+  },
+  {
+    "type": "button",
+    "name": "Button_Add_New_User",
+    "x": 780,
+    "y": 70,
+    "width": 180,
+    "height": 30,
+    "content": "Add New User",
+    "parent": "Card_User_Management"
+  },
+  {
+    "type": "table",
+    "name": "Table_Users",
+    "x": 230,
+    "y": 110,
+    "width": 730,
+    "height": 100,
+    "content": {
+      "headers": [
+        "User ID",
+        "Name",
+        "Role",
+        "Status"
+      ],
+      "rows": [
+        [
+          "U001",
+          "John Doe",
+          "Relationship Manager",
+          "Active"
+        ],
+        [
+          "U002",
+          "Jane Smith",
+          "Customer Service Rep",
+          "Active"
+        ]
+      ]
+    },
+    "parent": "Card_User_Management"
+  },
+  {
+    "type": "button",
+    "name": "Button_Edit_User",
+    "x": 230,
+    "y": 220,
+    "width": 100,
+    "height": 30,
+    "content": "Edit User",
+    "parent": "Card_User_Management"
+  },
+  {
+    "type": "button",
+    "name": "Button_Deactivate_User",
+    "x": 340,
+    "y": 220,
+    "width": 150,
+    "height": 30,
+    "content": "Deactivate User",
+    "parent": "Card_User_Management"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_Role_Permissions",
+    "x": 220,
+    "y": 320,
+    "width": 760,
+    "height": 200,
+    "content": null,
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Admin' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_Role_Permissions",
+    "x": 230,
+    "y": 330,
+    "width": 250,
+    "height": 20,
+    "content": "Role & Permissions Management",
+    "parent": "Card_Role_Permissions"
+  },
+  {
+    "type": "table",
+    "name": "Table_Roles",
+    "x": 230,
+    "y": 370,
+    "width": 730,
+    "height": 80,
+    "content": {
+      "headers": [
+        "Role Name",
+        "Description",
+        "Permissions (Summary)"
+      ],
+      "rows": [
+        [
+          "Relationship Manager",
+          "Manage customer portfolio",
+          "Full Profile, Opps, Service"
+        ],
+        [
+          "Customer Service Rep",
+          "Handle customer inquiries",
+          "Basic Profile, Service"
+        ]
+      ]
+    },
+    "parent": "Card_Role_Permissions"
+  },
+  {
+    "type": "button",
+    "name": "Button_Edit_Permissions",
+    "x": 230,
+    "y": 460,
+    "width": 150,
+    "height": 30,
+    "content": "Edit Permissions",
+    "parent": "Card_Role_Permissions"
+  },
+  {
+    "type": "rectangle",
+    "name": "Card_System_Configuration",
+    "x": 220,
+    "y": 530,
+    "width": 760,
+    "height": 150,
+    "content": null,
+    "parent": "Main_Content_Area",
+    "notes": "This view is visible when 'Admin' navigation is active"
+  },
+  {
+    "type": "text",
+    "name": "Heading_System_Configuration",
+    "x": 230,
+    "y": 540,
+    "width": 250,
+    "height": 20,
+    "content": "System Configuration",
+    "parent": "Card_System_Configuration"
+  },
+  {
+    "type": "text",
+    "name": "Text_DataSource_Management",
+    "x": 230,
+    "y": 570,
+    "width": 200,
+    "height": 20,
+    "content": "Data Source Management",
+    "parent": "Card_System_Configuration"
+  },
+  {
+    "type": "button",
+    "name": "Button_Configure_Data_Sources",
+    "x": 230,
+    "y": 600,
+    "width": 200,
+    "height": 30,
+    "content": "Configure Data Sources",
+    "parent": "Card_System_Configuration"
+  },
+  {
+    "type": "text",
+    "name": "Text_Audit_Logs",
+    "x": 450,
+    "y": 570,
+    "width": 200,
+    "height": 20,
+    "content": "Audit Logs",
+    "parent": "Card_System_Configuration"
+  },
+  {
+    "type": "button",
+    "name": "Button_View_Audit_Logs",
+    "x": 450,
+    "y": 600,
+    "width": 150,
+    "height": 30,
+    "content": "View Audit Logs",
+    "parent": "Card_System_Configuration"
+  }
+]

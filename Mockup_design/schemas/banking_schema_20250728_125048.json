@@ -1,0 +1,941 @@
+[
+  {
+    "type": "frame",
+    "name": "Dashboard Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 700,
+    "parent": null
+  },
+  {
+    "type": "rectangle",
+    "name": "Header Bar",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 60,
+    "parent": "Dashboard Screen"
+  },
+  {
+    "type": "image",
+    "name": "Bank Logo",
+    "content": "Bank Logo",
+    "x": 20,
+    "y": 18,
+    "width": 80,
+    "height": 24,
+    "parent": "Header Bar"
+  },
+  {
+    "type": "icon",
+    "name": "Notification Icon",
+    "content": "Bell Icon",
+    "x": 295,
+    "y": 20,
+    "width": 24,
+    "height": 24,
+    "parent": "Header Bar"
+  },
+  {
+    "type": "icon",
+    "name": "User Profile Icon",
+    "content": "User Icon",
+    "x": 330,
+    "y": 20,
+    "width": 24,
+    "height": 24,
+    "parent": "Header Bar"
+  },
+  {
+    "type": "text",
+    "name": "Welcome Message",
+    "content": "Good Morning, User Name!",
+    "x": 20,
+    "y": 80,
+    "width": 300,
+    "height": 24,
+    "parent": "Dashboard Screen"
+  },
+  {
+    "type": "rectangle",
+    "name": "Account Summary Card",
+    "x": 20,
+    "y": 120,
+    "width": 335,
+    "height": 140,
+    "parent": "Dashboard Screen"
+  },
+  {
+    "type": "text",
+    "name": "Account Summary Title",
+    "content": "Your Accounts",
+    "x": 35,
+    "y": 135,
+    "width": 200,
+    "height": 20,
+    "parent": "Account Summary Card"
+  },
+  {
+    "type": "text",
+    "name": "Savings Account Type",
+    "content": "Savings Account",
+    "x": 35,
+    "y": 165,
+    "width": 200,
+    "height": 18,
+    "parent": "Account Summary Card"
+  },
+  {
+    "type": "text",
+    "name": "Savings Account Balance",
+    "content": "Account Balance: $X,XXX.XX",
+    "x": 35,
+    "y": 185,
+    "width": 250,
+    "height": 22,
+    "parent": "Account Summary Card"
+  },
+  {
+    "type": "button",
+    "name": "View All Accounts Button",
+    "content": "View All Accounts",
+    "x": 35,
+    "y": 215,
+    "width": 150,
+    "height": 30,
+    "parent": "Account Summary Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Quick Actions Card",
+    "x": 20,
+    "y": 280,
+    "width": 335,
+    "height": 100,
+    "parent": "Dashboard Screen"
+  },
+  {
+    "type": "text",
+    "name": "Quick Actions Title",
+    "content": "Quick Actions",
+    "x": 35,
+    "y": 295,
+    "width": 200,
+    "height": 20,
+    "parent": "Quick Actions Card"
+  },
+  {
+    "type": "button",
+    "name": "Transfer Funds Button",
+    "content": "Transfer Funds",
+    "x": 35,
+    "y": 330,
+    "width": 100,
+    "height": 30,
+    "parent": "Quick Actions Card"
+  },
+  {
+    "type": "button",
+    "name": "Pay Bills Button",
+    "content": "Pay Bills",
+    "x": 145,
+    "y": 330,
+    "width": 80,
+    "height": 30,
+    "parent": "Quick Actions Card"
+  },
+  {
+    "type": "button",
+    "name": "Credit Card Payment Button",
+    "content": "Credit Card Payment",
+    "x": 235,
+    "y": 330,
+    "width": 100,
+    "height": 30,
+    "parent": "Quick Actions Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Personalized Offers Section",
+    "x": 20,
+    "y": 400,
+    "width": 335,
+    "height": 220,
+    "parent": "Dashboard Screen"
+  },
+  {
+    "type": "text",
+    "name": "Personalized Offers Section Title",
+    "content": "Personalized Offers for You",
+    "x": 35,
+    "y": 415,
+    "width": 280,
+    "height": 20,
+    "parent": "Personalized Offers Section"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan Offer Card 1 - Dashboard",
+    "x": 35,
+    "y": 445,
+    "width": 305,
+    "height": 80,
+    "parent": "Personalized Offers Section"
+  },
+  {
+    "type": "text",
+    "name": "Offer 1 Category Tag",
+    "content": "Pre-Approved",
+    "x": 45,
+    "y": 455,
+    "width": 100,
+    "height": 16,
+    "parent": "Loan Offer Card 1 - Dashboard"
+  },
+  {
+    "type": "text",
+    "name": "Offer 1 Loan Title",
+    "content": "Personal Loan Offer",
+    "x": 45,
+    "y": 475,
+    "width": 200,
+    "height": 20,
+    "parent": "Loan Offer Card 1 - Dashboard"
+  },
+  {
+    "type": "text",
+    "name": "Offer 1 Key Details",
+    "content": "Amount: Up to $XX,XXX | Rate: X.X%",
+    "x": 45,
+    "y": 495,
+    "width": 250,
+    "height": 16,
+    "parent": "Loan Offer Card 1 - Dashboard"
+  },
+  {
+    "type": "button",
+    "name": "View Details Button 1",
+    "content": "View Details",
+    "x": 240,
+    "y": 470,
+    "width": 85,
+    "height": 30,
+    "parent": "Loan Offer Card 1 - Dashboard"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan Offer Card 2 - Dashboard",
+    "x": 35,
+    "y": 535,
+    "width": 305,
+    "height": 80,
+    "parent": "Personalized Offers Section"
+  },
+  {
+    "type": "text",
+    "name": "Offer 2 Category Tag",
+    "content": "Recommended for You",
+    "x": 45,
+    "y": 545,
+    "width": 150,
+    "height": 16,
+    "parent": "Loan Offer Card 2 - Dashboard"
+  },
+  {
+    "type": "text",
+    "name": "Offer 2 Loan Title",
+    "content": "Education Loan Promotion",
+    "x": 45,
+    "y": 565,
+    "width": 200,
+    "height": 20,
+    "parent": "Loan Offer Card 2 - Dashboard"
+  },
+  {
+    "type": "text",
+    "name": "Offer 2 Key Details",
+    "content": "Tailored for your education expenses.",
+    "x": 45,
+    "y": 585,
+    "width": 250,
+    "height": 16,
+    "parent": "Loan Offer Card 2 - Dashboard"
+  },
+  {
+    "type": "button",
+    "name": "View Details Button 2",
+    "content": "View Details",
+    "x": 240,
+    "y": 560,
+    "width": 85,
+    "height": 30,
+    "parent": "Loan Offer Card 2 - Dashboard"
+  },
+  {
+    "type": "rectangle",
+    "name": "Navigation Bar",
+    "x": 0,
+    "y": 640,
+    "width": 375,
+    "height": 60,
+    "parent": "Dashboard Screen"
+  },
+  {
+    "type": "button",
+    "name": "Home Nav Button",
+    "content": "Home",
+    "x": 10,
+    "y": 650,
+    "width": 60,
+    "height": 40,
+    "parent": "Navigation Bar"
+  },
+  {
+    "type": "button",
+    "name": "Accounts Nav Button",
+    "content": "Accounts",
+    "x": 80,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar"
+  },
+  {
+    "type": "button",
+    "name": "Payments Nav Button",
+    "content": "Payments",
+    "x": 160,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar"
+  },
+  {
+    "type": "button",
+    "name": "Services Nav Button",
+    "content": "Services",
+    "x": 240,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar"
+  },
+  {
+    "type": "button",
+    "name": "Offers Nav Button",
+    "content": "Offers",
+    "x": 310,
+    "y": 650,
+    "width": 60,
+    "height": 40,
+    "parent": "Navigation Bar"
+  },
+  {
+    "type": "frame",
+    "name": "All Loan Offers Screen",
+    "x": 400,
+    "y": 0,
+    "width": 375,
+    "height": 700,
+    "parent": null
+  },
+  {
+    "type": "rectangle",
+    "name": "Header Bar - Offers",
+    "x": 400,
+    "y": 0,
+    "width": 375,
+    "height": 60,
+    "parent": "All Loan Offers Screen"
+  },
+  {
+    "type": "icon",
+    "name": "Back Icon - Offers",
+    "content": "Arrow Left Icon",
+    "x": 410,
+    "y": 20,
+    "width": 24,
+    "height": 24,
+    "parent": "Header Bar - Offers"
+  },
+  {
+    "type": "text",
+    "name": "Offers Page Title",
+    "content": "Loan Offers",
+    "x": 450,
+    "y": 20,
+    "width": 200,
+    "height": 24,
+    "parent": "Header Bar - Offers"
+  },
+  {
+    "type": "icon",
+    "name": "Notification Icon - Offers",
+    "content": "Bell Icon",
+    "x": 695,
+    "y": 20,
+    "width": 24,
+    "height": 24,
+    "parent": "Header Bar - Offers"
+  },
+  {
+    "type": "icon",
+    "name": "User Profile Icon - Offers",
+    "content": "User Icon",
+    "x": 730,
+    "y": 20,
+    "width": 24,
+    "height": 24,
+    "parent": "Header Bar - Offers"
+  },
+  {
+    "type": "rectangle",
+    "name": "Filters Section",
+    "x": 420,
+    "y": 80,
+    "width": 335,
+    "height": 50,
+    "parent": "All Loan Offers Screen"
+  },
+  {
+    "type": "text",
+    "name": "Filter Offers Label",
+    "content": "Filter by:",
+    "x": 435,
+    "y": 95,
+    "width": 80,
+    "height": 20,
+    "parent": "Filters Section"
+  },
+  {
+    "type": "button",
+    "name": "Loan Type Filter Button",
+    "content": "Loan Type",
+    "x": 510,
+    "y": 90,
+    "width": 100,
+    "height": 30,
+    "parent": "Filters Section"
+  },
+  {
+    "type": "button",
+    "name": "Eligibility Filter Button",
+    "content": "Eligibility",
+    "x": 620,
+    "y": 90,
+    "width": 100,
+    "height": 30,
+    "parent": "Filters Section"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan Offers List Container",
+    "x": 420,
+    "y": 140,
+    "width": 335,
+    "height": 480,
+    "parent": "All Loan Offers Screen"
+  },
+  {
+    "type": "rectangle",
+    "name": "All Offers Card 1",
+    "x": 435,
+    "y": 155,
+    "width": 305,
+    "height": 120,
+    "parent": "Loan Offers List Container"
+  },
+  {
+    "type": "text",
+    "name": "Offers 1 Category Tag",
+    "content": "Pre-Approved",
+    "x": 445,
+    "y": 165,
+    "width": 100,
+    "height": 16,
+    "parent": "All Offers Card 1"
+  },
+  {
+    "type": "text",
+    "name": "Offers 1 Loan Name",
+    "content": "Personal Loan - Instant Approval",
+    "x": 445,
+    "y": 185,
+    "width": 250,
+    "height": 20,
+    "parent": "All Offers Card 1"
+  },
+  {
+    "type": "text",
+    "name": "Offers 1 Description",
+    "content": "Based on your consistent salary inflow.",
+    "x": 445,
+    "y": 205,
+    "width": 280,
+    "height": 16,
+    "parent": "All Offers Card 1"
+  },
+  {
+    "type": "text",
+    "name": "Offers 1 Key Details",
+    "content": "Amount: $XX,XXX | Rate: X.X% | Term: XX Months",
+    "x": 445,
+    "y": 225,
+    "width": 280,
+    "height": 16,
+    "parent": "All Offers Card 1"
+  },
+  {
+    "type": "button",
+    "name": "View Details Button 3",
+    "content": "View Details",
+    "x": 640,
+    "y": 240,
+    "width": 85,
+    "height": 30,
+    "parent": "All Offers Card 1"
+  },
+  {
+    "type": "rectangle",
+    "name": "All Offers Card 2",
+    "x": 435,
+    "y": 285,
+    "width": 305,
+    "height": 120,
+    "parent": "Loan Offers List Container"
+  },
+  {
+    "type": "text",
+    "name": "Offers 2 Category Tag",
+    "content": "Recommended for You",
+    "x": 445,
+    "y": 295,
+    "width": 150,
+    "height": 16,
+    "parent": "All Offers Card 2"
+  },
+  {
+    "type": "text",
+    "name": "Offers 2 Loan Name",
+    "content": "Education Loan - Study Abroad",
+    "x": 445,
+    "y": 315,
+    "width": 250,
+    "height": 20,
+    "parent": "All Offers Card 2"
+  },
+  {
+    "type": "text",
+    "name": "Offers 2 Description",
+    "content": "Support your child's higher education expenses.",
+    "x": 445,
+    "y": 335,
+    "width": 280,
+    "height": 16,
+    "parent": "All Offers Card 2"
+  },
+  {
+    "type": "text",
+    "name": "Offers 2 Key Details",
+    "content": "Amount: Up to $YY,YYY | Rate: Y.Y% | Term: YY Months",
+    "x": 445,
+    "y": 355,
+    "width": 280,
+    "height": 16,
+    "parent": "All Offers Card 2"
+  },
+  {
+    "type": "button",
+    "name": "View Details Button 4",
+    "content": "View Details",
+    "x": 640,
+    "y": 370,
+    "width": 85,
+    "height": 30,
+    "parent": "All Offers Card 2"
+  },
+  {
+    "type": "rectangle",
+    "name": "All Offers Card 3",
+    "x": 435,
+    "y": 415,
+    "width": 305,
+    "height": 120,
+    "parent": "Loan Offers List Container"
+  },
+  {
+    "type": "text",
+    "name": "Offers 3 Category Tag",
+    "content": "Popular Offer",
+    "x": 445,
+    "y": 425,
+    "width": 100,
+    "height": 16,
+    "parent": "All Offers Card 3"
+  },
+  {
+    "type": "text",
+    "name": "Offers 3 Loan Name",
+    "content": "Home Loan - Your Dream Home",
+    "x": 445,
+    "y": 445,
+    "width": 250,
+    "height": 20,
+    "parent": "All Offers Card 3"
+  },
+  {
+    "type": "text",
+    "name": "Offers 3 Description",
+    "content": "Competitive rates for new home purchases.",
+    "x": 445,
+    "y": 465,
+    "width": 280,
+    "height": 16,
+    "parent": "All Offers Card 3"
+  },
+  {
+    "type": "text",
+    "name": "Offers 3 Key Details",
+    "content": "Starting from $ZZZ,ZZZ | Rate: Z.Z% | Term: ZZ Years",
+    "x": 445,
+    "y": 485,
+    "width": 280,
+    "height": 16,
+    "parent": "All Offers Card 3"
+  },
+  {
+    "type": "button",
+    "name": "View Details Button 5",
+    "content": "View Details",
+    "x": 640,
+    "y": 500,
+    "width": 85,
+    "height": 30,
+    "parent": "All Offers Card 3"
+  },
+  {
+    "type": "rectangle",
+    "name": "Navigation Bar - Offers",
+    "x": 400,
+    "y": 640,
+    "width": 375,
+    "height": 60,
+    "parent": "All Loan Offers Screen"
+  },
+  {
+    "type": "button",
+    "name": "Home Nav Button Offers",
+    "content": "Home",
+    "x": 410,
+    "y": 650,
+    "width": 60,
+    "height": 40,
+    "parent": "Navigation Bar - Offers"
+  },
+  {
+    "type": "button",
+    "name": "Accounts Nav Button Offers",
+    "content": "Accounts",
+    "x": 480,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar - Offers"
+  },
+  {
+    "type": "button",
+    "name": "Payments Nav Button Offers",
+    "content": "Payments",
+    "x": 560,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar - Offers"
+  },
+  {
+    "type": "button",
+    "name": "Services Nav Button Offers",
+    "content": "Services",
+    "x": 640,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar - Offers"
+  },
+  {
+    "type": "button",
+    "name": "Offers Nav Button Offers",
+    "content": "Offers",
+    "x": 710,
+    "y": 650,
+    "width": 60,
+    "height": 40,
+    "parent": "Navigation Bar - Offers"
+  },
+  {
+    "type": "frame",
+    "name": "Loan Detail Screen",
+    "x": 800,
+    "y": 0,
+    "width": 375,
+    "height": 700,
+    "parent": null
+  },
+  {
+    "type": "rectangle",
+    "name": "Header Bar - Detail",
+    "x": 800,
+    "y": 0,
+    "width": 375,
+    "height": 60,
+    "parent": "Loan Detail Screen"
+  },
+  {
+    "type": "icon",
+    "name": "Back Icon - Detail",
+    "content": "Arrow Left Icon",
+    "x": 810,
+    "y": 20,
+    "width": 24,
+    "height": 24,
+    "parent": "Header Bar - Detail"
+  },
+  {
+    "type": "text",
+    "name": "Detail Page Title",
+    "content": "Loan Details",
+    "x": 850,
+    "y": 20,
+    "width": 200,
+    "height": 24,
+    "parent": "Header Bar - Detail"
+  },
+  {
+    "type": "icon",
+    "name": "Notification Icon - Detail",
+    "content": "Bell Icon",
+    "x": 1095,
+    "y": 20,
+    "width": 24,
+    "height": 24,
+    "parent": "Header Bar - Detail"
+  },
+  {
+    "type": "icon",
+    "name": "User Profile Icon - Detail",
+    "content": "User Icon",
+    "x": 1130,
+    "y": 20,
+    "width": 24,
+    "height": 24,
+    "parent": "Header Bar - Detail"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan Product Info Card",
+    "x": 820,
+    "y": 80,
+    "width": 335,
+    "height": 380,
+    "parent": "Loan Detail Screen"
+  },
+  {
+    "type": "text",
+    "name": "Loan Product Name Detail",
+    "content": "Personal Loan Offer",
+    "x": 835,
+    "y": 95,
+    "width": 300,
+    "height": 24,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Pre-Approved Status Detail",
+    "content": "Pre-Approved for You!",
+    "x": 835,
+    "y": 125,
+    "width": 250,
+    "height": 18,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Loan Amount Detail",
+    "content": "Loan Amount: Up to $XX,XXX",
+    "x": 835,
+    "y": 155,
+    "width": 300,
+    "height": 20,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Interest Rate Detail",
+    "content": "Interest Rate: X.X% p.a.",
+    "x": 835,
+    "y": 180,
+    "width": 300,
+    "height": 20,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Loan Term Detail",
+    "content": "Loan Term: XX Months",
+    "x": 835,
+    "y": 205,
+    "width": 300,
+    "height": 20,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Processing Fee Detail",
+    "content": "Processing Fee: X.X%",
+    "x": 835,
+    "y": 230,
+    "width": 300,
+    "height": 20,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Eligibility Criteria Title",
+    "content": "Eligibility Criteria:",
+    "x": 835,
+    "y": 260,
+    "width": 300,
+    "height": 20,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Eligibility Description",
+    "content": "- Min. Age: 21, Max. Age: 60\n- Min. Monthly Income: $X,XXX\n- Good Credit Score",
+    "x": 835,
+    "y": 285,
+    "width": 300,
+    "height": 60,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Required Documents Title",
+    "content": "Required Documents:",
+    "x": 835,
+    "y": 350,
+    "width": 300,
+    "height": 20,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "text",
+    "name": "Documents List",
+    "content": "- Identity Proof\n- Address Proof\n- Income Proof (Pay Slips/Bank Statements)",
+    "x": 835,
+    "y": 375,
+    "width": 300,
+    "height": 60,
+    "parent": "Loan Product Info Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Action Buttons Card",
+    "x": 820,
+    "y": 480,
+    "width": 335,
+    "height": 100,
+    "parent": "Loan Detail Screen"
+  },
+  {
+    "type": "text",
+    "name": "Ready to Apply Text",
+    "content": "Ready to Apply?",
+    "x": 835,
+    "y": 495,
+    "width": 200,
+    "height": 20,
+    "parent": "Action Buttons Card"
+  },
+  {
+    "type": "button",
+    "name": "Initiate Application Button",
+    "content": "Initiate Application",
+    "x": 835,
+    "y": 525,
+    "width": 150,
+    "height": 35,
+    "parent": "Action Buttons Card"
+  },
+  {
+    "type": "button",
+    "name": "Contact Bank Representative Button",
+    "content": "Contact Bank Representative",
+    "x": 835,
+    "y": 565,
+    "width": 200,
+    "height": 35,
+    "parent": "Action Buttons Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Navigation Bar - Detail",
+    "x": 800,
+    "y": 640,
+    "width": 375,
+    "height": 60,
+    "parent": "Loan Detail Screen"
+  },
+  {
+    "type": "button",
+    "name": "Home Nav Button Detail",
+    "content": "Home",
+    "x": 810,
+    "y": 650,
+    "width": 60,
+    "height": 40,
+    "parent": "Navigation Bar - Detail"
+  },
+  {
+    "type": "button",
+    "name": "Accounts Nav Button Detail",
+    "content": "Accounts",
+    "x": 880,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar - Detail"
+  },
+  {
+    "type": "button",
+    "name": "Payments Nav Button Detail",
+    "content": "Payments",
+    "x": 960,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar - Detail"
+  },
+  {
+    "type": "button",
+    "name": "Services Nav Button Detail",
+    "content": "Services",
+    "x": 1040,
+    "y": 650,
+    "width": 70,
+    "height": 40,
+    "parent": "Navigation Bar - Detail"
+  },
+  {
+    "type": "button",
+    "name": "Offers Nav Button Detail",
+    "content": "Offers",
+    "x": 1110,
+    "y": 650,
+    "width": 60,
+    "height": 40,
+    "parent": "Navigation Bar - Detail"
+  }
+]

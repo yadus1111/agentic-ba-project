@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analyst Dashboard - FinTech Loans</title>
+    <!-- Using Google Fonts for a modern, professional look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles & Variables */
+        :root {
+            --primary-blue: #007bff;
+            --secondary-blue: #0056b3;
+            --accent-green: #28a745;
+            --accent-red: #dc3545;
+            --text-dark: #333;
+            --text-light: #f8f9fa;
+            --bg-light: #f4f7f6;
+            --bg-card: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 6px 12px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 250px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            display: flex;
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--text-light);
+            padding: 20px 0;
+            box-shadow: var(--shadow-medium);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100%;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        .sidebar.active { /* Used for mobile to show/hide */
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 15px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.2s ease, padding-left 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding-left: 25px;
+            border-left: 5px solid var(--accent-green);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .main-content.expanded { /* Used when sidebar is collapsed on large screen */
+            margin-left: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 25px;
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--primary-blue);
+            cursor: pointer;
+            display: none; /* Hidden on large screens, shown on smaller */
+        }
+
+        .header .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .header .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .header .search-bar input:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .header .search-bar .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        /* Overview Cards */
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 120px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .card-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .card-trend {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .card-trend.positive {
+            color: var(--accent-green);
+        }
+
+        .card-trend.negative {
+            color: var(--accent-red);
+        }
+
+        .card-trend .icon {
+            margin-right: 5px;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-grid .card {
+            padding: 25px;
+        }
+
+        .chart-container {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f8f8;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            color: #999;
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Customer Table */
+        .customer-table-card {
+            grid-column: 1 / -1; /* Spans full width */
+            padding: 25px;
+            overflow-x: auto;
+        }
+
+        .customer-table-card h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .customer-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .customer-table th,
+        .customer-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .customer-table th {
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .customer-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .customer-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .customer-table .btn-view {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 14px;
+        }
+
+        .customer-table .btn-view:hover {
+            background-color: #218838;
+        }
+
+        /* Utility classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .flex-row { display: flex; flex-direction: row; align-items: center; }
+        .flex-col { display: flex; flex-direction: column; }
+        .gap-10 { gap: 10px; }
+        .gap-20 { gap: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .mt-20 { margin-top: 20px; }
+
+        /* Icons (using unicode characters as placeholders for brevity) */
+        .icon-dashboard::before { content: '📊'; margin-right: 8px; }
+        .icon-customers::before { content: '👥'; margin-right: 8px; }
+        .icon-analytics::before { content: '📈'; margin-right: 8px; }
+        .icon-reports::before { content: '📄'; margin-right: 8px; }
+        .icon-settings::before { content: '⚙️'; margin-right: 8px; }
+        .icon-search::before { content: '🔍'; }
+        .icon-up-arrow::before { content: '⬆️'; }
+        .icon-down-arrow::before { content: '⬇️'; }
+        .icon-menu::before { content: '☰'; }
+        .icon-close::before { content: '✕'; }
+        .icon-info::before { content: 'ℹ️'; }
+        .icon-currency::before { content: '₹'; } /* Using ₹ for Rupees */
+
+        /* Customer Profile Modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-medium);
+            width: 90%;
+            max-width: 900px;
+            position: relative;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+            overflow: hidden; /* For tab content */
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .modal-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-blue);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--primary-blue);
+        }
+        
+        .modal-header p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
+        }
+
+        .tab-nav button {
+            background-color: transparent;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-nav button:hover {
+            color: var(--primary-blue);
+        }
+
+        .tab-nav button.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 10px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h4 {
+            color: var(--primary-blue);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+
+        .detail-item {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 15px;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .detail-item strong {
+            color: #555;
+            flex-basis: 180px; /* Fixed width for labels */
+            flex-shrink: 0;
+        }
+        .detail-item span {
+            flex-grow: 1;
+            color: var(--text-dark);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-left: 10px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--border-color);
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--primary-blue);
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--primary-blue);
+        }
+
+        .timeline-date {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .timeline-description {
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+                transform: translateX(-200px); /* Hide sidebar by default */
+            }
+            .sidebar.active { /* Show sidebar when active */
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0; /* Main content always starts at 0 */
+            }
+            .header .menu-toggle {
+                display: block; /* Show menu toggle button */
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .header .search-bar {
+                margin: 0 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .header h1, .header .menu-toggle {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            .header .search-bar {
+                order: 3; /* Move search bar below */
+                width: 100%;
+                max-width: none;
+                margin: 15px 0 0 0;
+            }
+            .user-profile {
+                order: 2;
+            }
+            .overview-cards {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .customer-table-card {
+                padding: 15px;
+            }
+            .customer-table th, .customer-table td {
+                padding: 10px;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            .modal-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .modal-header img {
+                margin-bottom: 10px;
+            }
+            .tab-nav {
+                flex-direction: column; /* Stack tabs vertically */
+                align-items: stretch;
+            }
+            .tab-nav button {
+                border-bottom: none;
+                border-left: 3px solid transparent; /* New active indicator */
+            }
+            .tab-nav button.active {
+                border-bottom-color: transparent;
+                border-left-color: var(--primary-blue);
+            }
+            .detail-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .detail-item strong {
+                width: 100%;
+                flex-basis: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .header .search-bar input {
+                font-size: 14px;
+                padding: 8px 15px 8px 35px;
+            }
+            .card-value {
+                font-size: 28px;
+            }
+            .modal-header h2 {
+                font-size: 24px;
+            }
+            .customer-table th, .customer-table td {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>FINTECH ANALYTICS</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#" class="active"><span class="icon-dashboard"></span>Dashboard</a></li>
+                <li><a href="#"><span class="icon-customers"></span>Customers</a></li>
+                <li><a href="#"><span class="icon-analytics"></span>Analytics</a></li>
+                <li><a href="#"><span class="icon-reports"></span>Reports</a></li>
+                <li><a href="#"><span class="icon-settings"></span>Settings</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <div class="main-content" id="main-content">
+        <header class="header">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu"><span class="icon-menu"></span></button>
+            <h1><span class="icon-dashboard"></span>Business Analyst Dashboard</h1>
+            <div class="search-bar">
+                <span class="search-icon icon-search"></span>
+                <input type="text" placeholder="Search customers, loans, reports..." id="globalSearchInput">
+            </div>
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/40/007bff/FFFFFF?text=BA" alt="User Avatar">
+                <span>Sarah Sharma</span>
+            </div>
+        </header>
+
+        <section class="overview-cards">
+            <div class="card">
+                <div class="card-title">Total Customers</div>
+                <div class="card-value">1,85,000</div>
+                <div class="card-trend positive"><span class="icon-up-arrow"></span> +1.5% (YoY)</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Active Mobile App Users</div>
+                <div class="card-value">1,20,500</div>
+                <div class="card-trend positive"><span class="icon-up-arrow"></span> +3.2% (MoM)</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Loan Applications (Last 30 Days)</div>
+                <div class="card-value">7,890</div>
+                <div class="card-trend positive"><span class="icon-up-arrow"></span> +12% (Prev. 30 Days)</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Personalized Offer CTR</div>
+                <div class="card-value">18.2%</div>
+                <div class="card-trend positive"><span class="icon-up-arrow"></span> +2.1% (Target: 15%)</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Approved Loan Value (Last 30 Days)</div>
+                <div class="card-value">Rs. 85,70,00,000</div>
+                <div class="card-trend positive"><span class="icon-up-arrow"></span> +15% (YoY)</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Total Loan Portfolio Value</div>
+                <div class="card-value">Rs. 1,85,00,00,000</div>
+                <div class="card-trend positive"><span class="icon-up-arrow"></span> +8% (QoQ)</div>
+            </div>
+        </section>
+
+        <section class="dashboard-grid">
+            <div class="card">
+                <h3>Customer Segmentation Analysis</h3>
+                <div class="chart-container">
+                    <!-- Placeholder for Pie Chart showing customer segments -->
+                    <strong>Customer Segments by Primary Interest</strong>
+                    <br>
+                    <small>Salaried Professionals (45%), Business Owners (25%), Young Graduates (15%), Seniors (10%), Others (5%)</small>
+                    <br><br>
+                    <em>(Visual representation would typically be a Pie Chart)</em>
+                </div>
+                <p class="mt-20"><em>Insights:</em> Salaried segment shows highest interest in personal and home loans. Target young graduates with education and foneloan offers to diversify portfolio.</p>
+            </div>
+
+            <div class="card">
+                <h3>Financial Performance: Loan Application Trends</h3>
+                <div class="chart-container">
+                    <!-- Placeholder for Line Chart showing monthly loan applications -->
+                    <strong>Monthly Loan Applications (Past 6 Months)</strong>
+                    <br>
+                    <small>Jan: 5000, Feb: 5500, Mar: 6200, Apr: 7000, May: 7500, Jun: 7890</small>
+                    <br><br>
+                    <em>(Visual representation would typically be a Line Chart)</em>
+                </div>
+                <p class="mt-20"><em>Insights:</em> Consistent growth in applications, aligning with personalization efforts. Next focus: optimizing conversion rates for submitted applications.</p>
+            </div>
+
+            <div class="card">
+                <h3>Customer Behavior: Offer Engagement</h3>
+                <div class="chart-container">
+                    <!-- Placeholder for Bar Chart or Funnel Chart -->
+                    <strong>Personalized Offer Engagement Funnel</strong>
+                    <br>
+                    <small>Viewed: 60%, Clicked: 18.2%, Started Application: 9.5%, Completed Application: 5.5%</small>
+                    <br><br>
+                    <em>(Visual representation would typically be a Bar or Funnel Chart)</em>
+                </div>
+                <p class="mt-20"><em>Insights:</em> Significant drop-off after 'Clicked'. Investigate application form complexity or clarity of eligibility criteria presentation on the mobile app.</p>
+            </div>
+
+            <div class="card">
+                <h3>Risk & Compliance Summary</h3>
+                <div class="detail-item"><strong>Eligibility Pass Rate:</strong> <span>92.5%</span></div>
+                <div class="detail-item"><strong>Regulatory Flagged Accounts:</strong> <span>7 (<a href="#" style="color: var(--primary-blue); text-decoration: none;">View Details</a>)</span></div>
+                <div class="detail-item"><strong>Opt-out Rate (Personalization):</strong> <span>0.5% (within Central Bank guidelines)</span></div>
+                <div class="detail-item"><strong>Pending Internal Audits:</strong> <span>2 (focused on data privacy adherence)</span></div>
+                <p class="mt-20"><em>Insights:</em> Maintain high eligibility pass rate. Monitor flagged accounts closely to ensure strict adherence to Central Bank regulations and local banking laws.</p>
+            </div>
+        </section>
+
+        <section class="customer-table-card card">
+            <h3>Recent Loan Applicants (Customer Profiles & Interactions)</h3>
+            <div class="mb-20 flex-row gap-10" style="flex-wrap: wrap;">
+                <button class="btn-view">Export Data (CSV)</button>
+                <label for="startDate">From:</label><input type="date" id="startDate" value="2023-05-01" style="padding: 8px; border: 1px solid var(--border-color); border-radius: 5px;">
+                <label for="endDate">To:</label><input type="date" id="endDate" value="2023-06-30" style="padding: 8px; border: 1px solid var(--border-color); border-radius: 5px;">
+                <button class="btn-view">Apply Filter</button>
+            </div>
+            <table class="customer-table" id="customerTable">
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Loan Interest</th>
+                        <th>Status</th>
+                        <th>Offer Type</th>
+                        <th>Last Interaction</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CUST-001234</td>
+                        <td>John Doe</td>
+                        <td>Mumbai, India</td>
+                        <td>Home Loan</td>
+                        <td>Application In Progress</td>
+                        <td>Personalized</td>
+                        <td>2023-06-28</td>
+                        <td><button class="btn-view" data-customer-id="CUST-001234">View Profile</button></td>
+                    </tr>
+                    <tr>
+                        <td>CUST-001235</td>
+                        <td>Sarah Singh</td>
+                        <td>Bengaluru, India</td>
+                        <td>Personal Loan</td>
+                        <td>Approved</td>
+                        <td>Personalized</td>
+                        <td>2023-06-27</td>
+                        <td><button class="btn-view" data-customer-id="CUST-001235">View Profile</button></td>
+                    </tr>
+                    <tr>
+                        <td>CUST-001236</td>
+                        <td>Michael Lee</td>
+                        <td>Singapore</td>
+                        <td>Auto Loan</td>
+                        <td>Declined (Eligibility)</td>
+                        <td>Personalized</td>
+                        <td>2023-06-26</td>
+                        <td><button class="btn-view" data-customer-id="CUST-001236">View Profile</button></td>
+                    </tr>
+                    <tr>
+                        <td>CUST-001237</td>
+                        <td>Priya Patel</td>
+                        <td>London, UK</td>
+                        <td>Education Loan</td>
+                        <td>Offer Viewed</td>
+                        <td>Personalized</td>
+                        <td>2023-06-25</td>
+                        <td><button class="btn-view" data-customer-id="CUST-001237">View Profile</button></td>
+                    </tr>
+                    <tr>
+                        <td>CUST-001238</td>
+                        <td>Ahmed Khan</td>
+                        <td>Dubai, UAE</td>
+                        <td>Business Loan</td>
+                        <td>Application In Progress</td>
+                        <td>Generic Fallback</td>
+                        <td>2023-06-24</td>
+                        <td><button class="btn-view" data-customer-id="CUST-001238">View Profile</button></td>
+                    </tr>
+                    <tr>
+                        <td>CUST-001239</td>
+                        <td>Maria Garcia</td>
+                        <td>New York, USA</td>
+                        <td>Foneloan</td>
+                        <td>Approved</td>
+                        <td>Personalized</td>
+                        <td>2023-06-23</td>
+                        <td><button class="btn-view" data-customer-id="CUST-001239">View Profile</button></td>
+                    </tr>
+                    <tr>
+                        <td>CUST-001240</td>
+                        <td>David Jones</td>
+                        <td>Delhi, India</td>
+                        <td>Home Loan</td>
+                        <td>Application Pending</td>
+                        <td>Personalized</td>
+                        <td>2023-06-22</td>
+                        <td><button class="btn-view" data-customer-id="CUST-001240">View Profile</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+
+    <!-- Customer Profile Modal -->
+    <div id="customerProfileModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalCustomerName">
+        <div class="modal-content">
+            <span class="close-button" role="button" aria-label="Close Profile">&times;</span>
+            <div class="modal-header">
+                <img src="https://via.placeholder.com/80/007bff/FFFFFF?text=JD" alt="Customer Profile Picture" id="modalCustomerImage">
+                <div>
+                    <h2 id="modalCustomerName">John Doe</h2>
+                    <p>Customer ID: <span id="modalCustomerId">CUST-001234</span></p>
+                    <p>Profile Type: <span id="modalCustomerType">Salaried Professional</span></p>
+                </div>
+            </div>
+
+            <div class="tab-nav" role="tablist">
+                <button class="tab-button active" data-tab="general" role="tab" aria-selected="true" aria-controls="general">General Info</button>
+                <button class="tab-button" data-tab="financials" role="tab" aria-selected="false" aria-controls="financials">Financials & Loans</button>
+                <button class="tab-button" data-tab="behavior" role="tab" aria-selected="false" aria-controls="behavior">Behavior & Offers</button>
+                <button class="tab-button" data-tab="interactions" role="tab" aria-selected="false" aria-controls="interactions">Interaction History</button>
+                <button class="tab-button" data-tab="risk" role="tab" aria-selected="false" aria-controls="risk">Risk & Compliance</button>
+                <button class="tab-button" data-tab="satisfaction" role="tab" aria-selected="false" aria-controls="satisfaction">Satisfaction</button>
+            </div>
+
+            <div id="general" class="tab-content active" role="tabpanel" aria-labelledby="general-tab">
+                <h4>Basic Information</h4>
+                <div class="detail-item"><strong>Date of Birth:</strong> <span data-field="dob"></span></div>
+                <div class="detail-item"><strong>Nationality:</strong> <span data-field="nationality"></span></div>
+                <div class="detail-item"><strong>Address:</strong> <span data-field="address"></span></div>
+                <div class="detail-item"><strong>Contact:</strong> <span data-field="contact"></span></div>
+                <div class="detail-item"><strong>Account Since:</strong> <span data-field="accountSince"></span></div>
+                <div class="detail-item"><strong>Primary Banking Service:</strong> <span data-field="primaryService"></span></div>
+            </div>
+
+            <div id="financials" class="tab-content" role="tabpanel" aria-labelledby="financials-tab">
+                <h4>Financial Overview</h4>
+                <div class="detail-item"><strong>Average Monthly Balance:</strong> <span data-field="avgBalance"></span></div>
+                <div class="detail-item"><strong>Total Transactions (Last 90 Days):</strong> <span data-field="totalTransactions"></span></div>
+                <div class="detail-item"><strong>Credit Score (Internal):</strong> <span data-field="creditScore"></span></div>
+                
+                <h4 class="mt-20">Loan Product History</h4>
+                <div class="detail-item"><strong>Current Loans:</strong> <span data-field="currentLoans"></span></div>
+                <div class="detail-item"><strong>Past Loans:</strong> <span data-field="pastLoans"></span></div>
+                <div class="detail-item"><strong>Loan Applications (Past 12 Months):</strong> <span data-field="loanApplications"></span></div>
+                <div class="detail-item"><strong>Eligible Loan Products:</strong> <span data-field="eligibleProducts"></span></div>
+                <div class="detail-item"><strong>Recommended Offer (Current):</strong> <span data-field="recommendedOffer"></span></div>
+            </div>
+
+            <div id="behavior" class="tab-content" role="tabpanel" aria-labelledby="behavior-tab">
+                <h4>Mobile App Behavior</h4>
+                <div class="detail-item"><strong>Last Login:</strong> <span data-field="lastLogin"></span></div>
+                <div class="detail-item"><strong>Avg. Session Duration:</strong> <span data-field="avgSession"></span></div>
+                <div class="detail-item"><strong>Most Used Features:</strong> <span data-field="mostUsedFeatures"></span></div>
+                
+                <h4 class="mt-20">Loan Offer Engagement (Last 90 Days)</h4>
+                <div class="detail-item"><span data-field="offerEngagement"></span></div>
+                <div class="detail-item"><strong>Preferred Communication:</strong> <span data-field="preferredComm"></span></div>
+            </div>
+
+            <div id="interactions" class="tab-content" role="tabpanel" aria-labelledby="interactions-tab">
+                <h4>Recent Interactions</h4>
+                <div class="timeline" data-field="interactions">
+                    <!-- Timeline items will be injected here by JS -->
+                </div>
+            </div>
+
+            <div id="risk" class="tab-content" role="tabpanel" aria-labelledby="risk-tab">
+                <h4>Risk Assessment & Compliance</h4>
+                <div class="detail-item"><strong>KYC Status:</strong> <span data-field="kycStatus"></span></div>
+                <div class="detail-item"><strong>AML Status:</strong> <span data-field="amlStatus"></span></div>
+                <div class="detail-item"><strong>Regulatory Standing:</strong> <span data-field="regulatoryStanding"></span></div>
+                <div class="detail-item"><strong>Opt-out Personalization:</strong> <span data-field="optOutPersonalization"></span></div>
+                <div class="detail-item"><strong>Fraud Alerts (Last 12 Months):</strong> <span data-field="fraudAlerts"></span></div>
+                <div class="detail-item"><strong>High-Risk Profile:</strong> <span data-field="highRiskProfile"></span></div>
+            </div>
+
+            <div id="satisfaction" class="tab-content" role="tabpanel" aria-labelledby="satisfaction-tab">
+                <h4>Customer Satisfaction & Feedback</h4>
+                <div class="detail-item"><strong>Last NPS Score:</strong> <span data-field="npsScore"></span></div>
+                <div class="detail-item"><strong>Last Survey Feedback:</strong> <span data-field="surveyFeedback"></span></div>
+                <div class="detail-item"><strong>Sentiment Analysis (Recent Interactions):</strong> <span data-field="sentimentAnalysis"></span></div>
+                <div class="detail-item"><strong>Service Complaints (Last 12 Months):</strong> <span data-field="serviceComplaints"></span></div>
+                <p class="mt-20"><em>Overall:</em> High satisfaction, keen interest in personalized financial services. Further engagement opportunities exist in investment products based on customer feedback.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const menuToggle = document.getElementById('menu-toggle');
+            const customerProfileModal = document.getElementById('customerProfileModal');
+            const closeButton = customerProfileModal.querySelector('.close-button');
+            const viewProfileButtons = document.querySelectorAll('.customer-table .btn-view');
+            const tabButtons = document.querySelectorAll('.tab-nav button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const globalSearchInput = document.getElementById('globalSearchInput');
+            const customerTableBody = document.querySelector('#customerTable tbody');
+
+            // --- Sidebar Toggle ---
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                // On larger screens, this could collapse the main content for more space.
+                // mainContent.classList.toggle('expanded'); 
+            });
+
+            // Close sidebar when clicking outside on smaller screens
+            mainContent.addEventListener('click', (event) => {
+                if (window.innerWidth <= 992 && sidebar.classList.contains('active') && !sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // --- Customer Profile Mock Data ---
+            const customerData = {
+                "CUST-001234": {
+                    name: "John Doe",
+                    type: "Salaried Professional",
+                    img: "https://via.placeholder.com/80/007bff/FFFFFF?text=JD",
+                    dob: "15/03/1988",
+                    nationality: "Indian",
+                    address: "Flat 4B, Sky Tower, Bandra, Mumbai, India - 400050",
+                    contact: "+91 98765 43210 | john.doe@example.com",
+                    accountSince: "01/01/2015",
+                    primaryService: "Savings & Current Account",
+                    avgBalance: "Rs. 1,25,000",
+                    totalTransactions: "85 (Rs. 5,10,000 value)",
+                    creditScore: "780 (Excellent)",
+                    currentLoans: "None",
+                    pastLoans: "Personal Loan (2018-2021, Paid Off)",
+                    loanApplications: "Home Loan (In Progress, Personalized Offer)",
+                    eligibleProducts: "Home Loan, Personal Loan (High Value), Auto Loan",
+                    recommendedOffer: "Home Loan - Low Interest Offer (Personalized)",
+                    lastLogin: "2023-06-28, 10:30 AM",
+                    avgSession: "4 mins 30 secs",
+                    mostUsedFeatures: "Utility Payments, Fund Transfers, Loan Section",
+                    offerEngagement: "Personalized Home Loan Offer: Viewed (5x), Clicked (3x), Application Started; Personal Loan Offer (Generic): Viewed (1x), Not Clicked; Auto Loan Offer (Personalized): Viewed (2x), Not Clicked",
+                    preferredComm: "In-app notifications, SMS",
+                    interactions: [
+                        { date: "2023-06-28, 10:35 AM", desc: "Initiated Home Loan Application via Mobile App (Personalized offer click)." },
+                        { date: "2023-06-25, 02:15 PM", desc: "Viewed \"Home Loan Guide\" content in app." },
+                        { date: "2023-06-20, 09:00 AM", desc: "Personalized Home Loan offer displayed on dashboard (FR-001 triggered)." },
+                        { date: "2023-06-18, 04:30 PM", desc: "Customer Service Call: Inquiry about loan eligibility." },
+                        { date: "2023-06-10, 07:00 PM", desc: "Transferred large sum for property down payment (trigger for Home Loan personalization)." }
+                    ],
+                    kycStatus: "Completed & Verified (Last updated 2022-03-10)",
+                    amlStatus: "No suspicious activity flagged (Monitored as per Central Bank guidelines)",
+                    regulatoryStanding: "Compliant (GDPR and local banking regulations)",
+                    optOutPersonalization: "No (Customer has not opted out)",
+                    fraudAlerts: "None",
+                    highRiskProfile: "No",
+                    npsScore: "9 (Promoter, March 2023)",
+                    surveyFeedback: "App is easy to use for payments. Would like more personalized financial advice. (April 2023)",
+                    sentimentAnalysis: "Positive",
+                    serviceComplaints: "None"
+                },
+                "CUST-001235": {
+                    name: "Sarah Singh",
+                    type: "Business Owner",
+                    img: "https://via.placeholder.com/80/007bff/FFFFFF?text=SS",
+                    dob: "01/11/1990",
+                    nationality: "Indian",
+                    address: "Block C, Green Heights, Koramangala, Bengaluru, India - 560034",
+                    contact: "+91 99887 76655 | sarah.singh@example.com",
+                    accountSince: "15/05/2017",
+                    primaryService: "Current Account, Business Banking",
+                    avgBalance: "Rs. 3,50,000",
+                    totalTransactions: "120 (Rs. 12,00,000 value)",
+                    creditScore: "750 (Good)",
+                    currentLoans: "Business Loan (Rs. 5,00,000, 1 year remaining)",
+                    pastLoans: "None",
+                    loanApplications: "Personal Loan (Approved, Personalized Offer)",
+                    eligibleProducts: "Business Loan, Personal Loan, Home Loan",
+                    recommendedOffer: "Business Loan - Expansion Capital (Personalized)",
+                    lastLogin: "2023-06-27, 09:00 AM",
+                    avgSession: "3 mins 15 secs",
+                    mostUsedFeatures: "Fund Transfers, Bill Payments, Business Loan Section",
+                    offerEngagement: "Personalized Personal Loan Offer: Viewed (3x), Clicked (2x), Application Completed; Business Loan Offer: Viewed (4x)",
+                    preferredComm: "Email, SMS",
+                    interactions: [
+                        { date: "2023-06-27, 09:30 AM", desc: "Personal Loan Approved." },
+                        { date: "2023-06-26, 11:00 AM", desc: "Completed Personal Loan Application via Mobile App." },
+                        { date: "2023-06-20, 10:00 AM", desc: "Personalized Personal Loan offer displayed." },
+                        { date: "2023-06-15, 03:00 PM", desc: "Large business transaction detected (trigger for business loan recommendation)." }
+                    ],
+                    kycStatus: "Completed & Verified (Last updated 2021-08-01)",
+                    amlStatus: "No suspicious activity flagged",
+                    regulatoryStanding: "Compliant",
+                    optOutPersonalization: "No",
+                    fraudAlerts: "None",
+                    highRiskProfile: "No",
+                    npsScore: "8 (Promoter, April 2023)",
+                    surveyFeedback: "Efficient business banking app. Loan application was smooth. (April 2023)",
+                    sentimentAnalysis: "Positive",
+                    serviceComplaints: "None"
+                },
+                "CUST-001236": {
+                    name: "Michael Lee",
+                    type: "Salaried Professional",
+                    img: "https://via.placeholder.com/80/007bff/FFFFFF?text=ML",
+                    dob: "05/08/1995",
+                    nationality: "Singaporean",
+                    address: "Unit 7, Orchard Towers, Singapore",
+                    contact: "+65 91234567 | michael.lee@example.com",
+                    accountSince: "10/02/2019",
+                    primaryService: "Savings Account",
+                    avgBalance: "Rs. 75,000",
+                    totalTransactions: "60 (Rs. 2,50,000 value)",
+                    creditScore: "620 (Fair)",
+                    currentLoans: "None",
+                    pastLoans: "None",
+                    loanApplications: "Auto Loan (Declined due to Eligibility - low credit score)",
+                    eligibleProducts: "Foneloan (Low Value)",
+                    recommendedOffer: "Foneloan - Quick Cash (Personalized)",
+                    lastLogin: "2023-06-26, 05:00 PM",
+                    avgSession: "2 mins 00 secs",
+                    mostUsedFeatures: "Fund Transfers, Balance Check, Offers Section",
+                    offerEngagement: "Personalized Auto Loan Offer: Viewed (3x), Clicked (1x), Application Declined; Foneloan Offer: Viewed (1x)",
+                    preferredComm: "In-app notifications",
+                    interactions: [
+                        { date: "2023-06-26, 05:30 PM", desc: "Received Auto Loan application decline notification." },
+                        { date: "2023-06-25, 10:00 AM", desc: "Submitted Auto Loan Application." },
+                        { date: "2023-06-24, 09:00 AM", desc: "Personalized Auto Loan offer displayed." }
+                    ],
+                    kycStatus: "Completed & Verified (Last updated 2020-01-05)",
+                    amlStatus: "No suspicious activity flagged",
+                    regulatoryStanding: "Compliant",
+                    optOutPersonalization: "No",
+                    fraudAlerts: "None",
+                    highRiskProfile: "No",
+                    npsScore: "6 (Passive, May 2023)",
+                    surveyFeedback: "Wish there were more options for lower credit scores. (May 2023)",
+                    sentimentAnalysis: "Neutral/Slightly Negative",
+                    serviceComplaints: "None"
+                },
+                 "CUST-001237": {
+                    name: "Priya Patel",
+                    type: "Young Graduate",
+                    img: "https://via.placeholder.com/80/007bff/FFFFFF?text=PP",
+                    dob: "20/07/1999",
+                    nationality: "British",
+                    address: "Apt 2, Student Living, East London, UK",
+                    contact: "+44 71234 56789 | priya.patel@example.com",
+                    accountSince: "05/09/2022",
+                    primaryService: "Savings Account, Student Banking",
+                    avgBalance: "Rs. 25,000",
+                    totalTransactions: "40 (Rs. 80,000 value)",
+                    creditScore: "680 (Good)",
+                    currentLoans: "Student Loan (From Government Body)",
+                    pastLoans: "None",
+                    loanApplications: "Education Loan (Offer Viewed)",
+                    eligibleProducts: "Education Loan, Foneloan",
+                    recommendedOffer: "Education Loan - Study Abroad (Personalized)",
+                    lastLogin: "2023-06-25, 01:00 PM",
+                    avgSession: "3 mins 00 secs",
+                    mostUsedFeatures: "Balance Check, Utility Payments, Offers Section",
+                    offerEngagement: "Personalized Education Loan Offer: Viewed (4x), Not Clicked (yet); Foneloan Offer: Viewed (1x)",
+                    preferredComm: "Email",
+                    interactions: [
+                        { date: "2023-06-25, 01:30 PM", desc: "Viewed personalized Education Loan offer." },
+                        { date: "2023-06-20, 11:00 AM", desc: "Searched for 'Study Loan' in app." },
+                        { date: "2023-06-18, 10:00 AM", desc: "Attended bank's 'Study Abroad' webinar (online)." }
+                    ],
+                    kycStatus: "Completed & Verified (Last updated 2022-09-05)",
+                    amlStatus: "No suspicious activity flagged",
+                    regulatoryStanding: "Compliant",
+                    optOutPersonalization: "No",
+                    fraudAlerts: "None",
+                    highRiskProfile: "No",
+                    npsScore: "7 (Promoter, March 2023)",
+                    surveyFeedback: "Good student features. Hoping for a simple education loan process. (March 2023)",
+                    sentimentAnalysis: "Positive",
+                    serviceComplaints: "None"
+                },
+                 "CUST-001238": {
+                    name: "Ahmed Khan",
+                    type: "Business Owner",
+                    img: "https://via.placeholder.com/80/007bff/FFFFFF?text=AK",
+                    dob: "10/04/1975",
+                    nationality: "Emirati",
+                    address: "Villa 10, Arabian Ranches, Dubai, UAE",
+                    contact: "+971 50 1234567 | ahmed.khan@example.com",
+                    accountSince: "01/01/2010",
+                    primaryService: "Business Current Account, Wealth Management",
+                    avgBalance: "Rs. 10,00,000",
+                    totalTransactions: "150 (Rs. 25,00,000 value)",
+                    creditScore: "810 (Excellent)",
+                    currentLoans: "Business Overdraft (Rs. 2,00,000)",
+                    pastLoans: "Business Loan (2015-2020, Paid Off)",
+                    loanApplications: "Business Loan (In Progress, Generic Fallback - no specific personalized offer available yet)",
+                    eligibleProducts: "Business Loan (High Value), Commercial Property Loan",
+                    recommendedOffer: "Commercial Property Loan (Generic)",
+                    lastLogin: "2023-06-24, 08:00 AM",
+                    avgSession: "5 mins 00 secs",
+                    mostUsedFeatures: "Fund Transfers, Trade Finance, Loan Section",
+                    offerEngagement: "Business Loan Offer (Generic): Viewed (2x), Application Started",
+                    preferredComm: "Email, Relationship Manager",
+                    interactions: [
+                        { date: "2023-06-24, 08:30 AM", desc: "Started Business Loan application via app." },
+                        { date: "2023-06-20, 09:00 AM", desc: "Called Relationship Manager for loan inquiry." },
+                        { date: "2023-06-15, 04:00 PM", desc: "Viewed Generic Business Loan offers in app." }
+                    ],
+                    kycStatus: "Completed & Verified (Last updated 2023-01-20)",
+                    amlStatus: "No suspicious activity flagged",
+                    regulatoryStanding: "Compliant",
+                    optOutPersonalization: "No",
+                    fraudAlerts: "None",
+                    highRiskProfile: "No",
+                    npsScore: "10 (Promoter, Feb 2023)",
+                    surveyFeedback: "Excellent service, especially my Relationship Manager. (Feb 2023)",
+                    sentimentAnalysis: "Highly Positive",
+                    serviceComplaints: "None"
+                },
+                 "CUST-001239": {
+                    name: "Maria Garcia",
+                    type: "Salaried Professional",
+                    img: "https://via.placeholder.com/80/007bff/FFFFFF?text=MG",
+                    dob: "03/11/1985",
+                    nationality: "American",
+                    address: "123 Broadway, Manhattan, New York, USA",
+                    contact: "+1 212-555-0100 | maria.garcia@example.com",
+                    accountSince: "01/03/2012",
+                    primaryService: "Savings Account, Credit Cards",
+                    avgBalance: "Rs. 80,000",
+                    totalTransactions: "70 (Rs. 3,50,000 value)",
+                    creditScore: "720 (Good)",
+                    currentLoans: "None",
+                    pastLoans: "None",
+                    loanApplications: "Foneloan (Approved)",
+                    eligibleProducts: "Foneloan, Personal Loan (Medium Value)",
+                    recommendedOffer: "Foneloan - Emergency Cash (Personalized)",
+                    lastLogin: "2023-06-23, 11:00 AM",
+                    avgSession: "2 mins 30 secs",
+                    mostUsedFeatures: "Balance Check, Credit Card Payments, Foneloan",
+                    offerEngagement: "Personalized Foneloan Offer: Viewed (2x), Clicked (2x), Application Completed & Approved",
+                    preferredComm: "In-app notifications, Email",
+                    interactions: [
+                        { date: "2023-06-23, 11:15 AM", desc: "Foneloan Approved and Disbursed." },
+                        { date: "2023-06-22, 09:00 AM", desc: "Completed Foneloan Application via Mobile App." },
+                        { date: "2023-06-20, 03:00 PM", desc: "Personalized Foneloan offer displayed due to low balance." }
+                    ],
+                    kycStatus: "Completed & Verified (Last updated 2021-05-10)",
+                    amlStatus: "No suspicious activity flagged",
+                    regulatoryStanding: "Compliant",
+                    optOutPersonalization: "No",
+                    fraudAlerts: "None",
+                    highRiskProfile: "No",
+                    npsScore: "9 (Promoter, April 2023)",
+                    surveyFeedback: "Quick and easy foneloan! Very helpful in a pinch. (April 2023)",
+                    sentimentAnalysis: "Positive",
+                    serviceComplaints: "None"
+                },
+                 "CUST-001240": {
+                    name: "David Jones",
+                    type: "Salaried Professional",
+                    img: "https://via.placeholder.com/80/007bff/FFFFFF?text=DJ",
+                    dob: "12/09/1980",
+                    nationality: "Indian",
+                    address: "Sector 18, Gurugram, Delhi NCR, India - 122008",
+                    contact: "+91 90123 45678 | david.jones@example.com",
+                    accountSince: "10/04/2016",
+                    primaryService: "Savings Account, Investments",
+                    avgBalance: "Rs. 2,00,000",
+                    totalTransactions: "90 (Rs. 7,00,000 value)",
+                    creditScore: "790 (Excellent)",
+                    currentLoans: "None",
+                    pastLoans: "None",
+                    loanApplications: "Home Loan (Application Pending)",
+                    eligibleProducts: "Home Loan, Personal Loan (High Value), Investment Loans",
+                    recommendedOffer: "Home Loan - Prime Rate (Personalized)",
+                    lastLogin: "2023-06-22, 02:00 PM",
+                    avgSession: "6 mins 00 secs",
+                    mostUsedFeatures: "Investment Portfolio, Fund Transfers, Loan Section",
+                    offerEngagement: "Personalized Home Loan Offer: Viewed (6x), Clicked (4x), Application Pending; Investment Loan Offer: Viewed (2x)",
+                    preferredComm: "Email, In-app notifications",
+                    interactions: [
+                        { date: "2023-06-22, 02:30 PM", desc: "Submitted Home Loan Application via Mobile App." },
+                        { date: "2023-06-20, 01:00 PM", desc: "Uploaded required documents for Home Loan." },
+                        { date: "2023-06-15, 10:00 AM", desc: "Personalized Home Loan offer displayed based on property search behavior." }
+                    ],
+                    kycStatus: "Completed & Verified (Last updated 2022-07-01)",
+                    amlStatus: "No suspicious activity flagged",
+                    regulatoryStanding: "Compliant",
+                    optOutPersonalization: "No",
+                    fraudAlerts: "None",
+                    highRiskProfile: "No",
+                    npsScore: "9 (Promoter, March 2023)",
+                    surveyFeedback: "Great app for managing finances. Hope to get home loan approved soon! (March 2023)",
+                    sentimentAnalysis: "Positive",
+                    serviceComplaints: "None"
+                }
+            };
+
+            function showCustomerProfile(customerId) {
+                const customer = customerData[customerId];
+                if (!customer) {
+                    console.error("Customer data not found for ID:", customerId);
+                    return;
+                }
+
+                // Update Header
+                document.getElementById('modalCustomerName').textContent = customer.name;
+                document.getElementById('modalCustomerId').textContent = customerId;
+                document.getElementById('modalCustomerType').textContent = customer.type;
+                document.getElementById('modalCustomerImage').src = customer.img;
+
+                // Loop through all detail items and populate based on data-field attribute
+                tabContents.forEach(tabContent => {
+                    const fields = tabContent.querySelectorAll('[data-field]');
+                    fields.forEach(field => {
+                        const fieldName = field.dataset.field;
+                        if (fieldName === 'interactions') {
+                            // Special handling for timeline
+                            const timelineContainer = field;
+                            timelineContainer.innerHTML = ''; // Clear previous interactions
+                            customer.interactions.forEach(interaction => {
+                                const item = document.createElement('div');
+                                item.classList.add('timeline-item');
+                                item.innerHTML = `
+                                    <div class="timeline-date">${interaction.date}</div>
+                                    <div class="timeline-description">${interaction.desc}</div>
+                                `;
+                                timelineContainer.appendChild(item);
+                            });
+                        } else if (customer[fieldName] !== undefined) {
+                            field.textContent = customer[fieldName];
+                        } else {
+                            field.textContent = 'N/A'; // Or leave empty
+                        }
+                    });
+                });
+
+                // Show the modal
+                customerProfileModal.style.display = 'flex';
+                // Trigger reflow to apply transition
+                setTimeout(() => customerProfileModal.classList.add('active'), 10);
+                
+                // Reset to first tab
+                tabButtons[0].click();
+            }
+
+            // --- Event Listeners ---
+            viewProfileButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const customerId = event.target.dataset.customerId;
+                    showCustomerProfile(customerId);
+                });
+            });
+
+            closeButton.addEventListener('click', () => {
+                customerProfileModal.classList.remove('active');
+                setTimeout(() => customerProfileModal.style.display = 'none', 300); // Hide after transition
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', (event) => {
+                if (event.target == customerProfileModal) {
+                    customerProfileModal.classList.remove('active');
+                    setTimeout(() => customerProfileModal.style.display = 'none', 300);
+                }
+            });
+
+            // --- Modal Tab Logic ---
+            tabButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    // Remove active class from all buttons and content
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button and corresponding content
+                    event.target.classList.add('active');
+                    event.target.setAttribute('aria-selected', 'true');
+                    const targetTabId = event.target.dataset.tab;
+                    document.getElementById(targetTabId).classList.add('active');
+                });
+            });
+
+            // --- Basic Search Filter for Customer Table (Client-side) ---
+            globalSearchInput.addEventListener('keyup', function() {
+                const filter = globalSearchInput.value.toLowerCase();
+                const rows = customerTableBody.getElementsByTagName('tr');
+
+                for (let i = 0; i < rows.length; i++) {
+                    let row = rows[i];
+                    let cells = row.getElementsByTagName('td');
+                    let textContent = '';
+                    // Iterate over columns that should be searchable (excluding the "Action" column)
+                    for (let j = 0; j < cells.length - 1; j++) { 
+                        textContent += cells[j].textContent || cells[j].innerText;
+                    }
+                    if (textContent.toLowerCase().includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

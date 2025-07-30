@@ -18,6 +18,9 @@ import markdown
 from playwright.sync_api import sync_playwright
 import random
 import subprocess
+import sys
+sys.path.append("c:/Users/acer/OneDrive/Desktop/BA Agentic AI pro/mockup_design/python-agent")
+from enhanced_agent import EnhancedBRDAgent
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 # --- Gemini Model Setup (NEW SDK) ---
@@ -353,6 +356,9 @@ def main():
         st.session_state['report_data'] = {"html": "", "business_problem": ""}
     if 'pdf_path' not in st.session_state:
         st.session_state['pdf_path'] = None
+    # Initialize BA agent only once
+    if 'ba_agent' not in st.session_state:
+        st.session_state['ba_agent'] = EnhancedBRDAgent()
 
     if st.button("Generate Report", type="primary"):
         with st.spinner("Generating report... (this may take a moment)"):
@@ -396,6 +402,25 @@ def main():
                     )
         st.markdown("### Generated Report")
         st.components.v1.html(st.session_state['report_data']['html'], height=900, scrolling=True)
+
+        # --- Mockup Generation Integration ---
+        if st.button("Generate Mockup"):
+            with st.spinner("Generating HTML mockup..."):
+                brd_text = st.session_state['report_data']['business_problem']
+                agent = st.session_state['ba_agent']
+                app_type = agent.analyze_brd_content(brd_text)
+                schema = agent.generate_ui_schema(brd_text, app_type)
+                html_content = agent.convert_schema_to_html(schema, app_type, brd_text)
+                timestamp = time.strftime("%Y%m%d_%H%M%S")
+                outputs = agent.save_outputs(schema, html_content, app_type, timestamp)
+                st.success(f"Mockup generated and saved: {outputs['html']}")
+                with open(outputs['html'], "r", encoding="utf-8") as f:
+                    st.download_button(
+                        label="Download HTML Mockup",
+                        data=f,
+                        file_name=f"{app_type}_mockup_{timestamp}.html",
+                        mime="text/html"
+                    )
 
 if __name__ == "__main__":
     main() 

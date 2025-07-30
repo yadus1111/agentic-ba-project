@@ -1,0 +1,609 @@
+[
+  {
+    "type": "frame",
+    "name": "DashboardScreen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 812,
+    "content": "User Dashboard with Personalized Offers"
+  },
+  {
+    "type": "rectangle",
+    "name": "HeaderBar",
+    "parent": "DashboardScreen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 60,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "AppName",
+    "parent": "HeaderBar",
+    "x": 20,
+    "y": 18,
+    "width": 150,
+    "height": 24,
+    "content": "Bank Name"
+  },
+  {
+    "type": "icon",
+    "name": "NotificationIcon",
+    "parent": "HeaderBar",
+    "x": 290,
+    "y": 18,
+    "width": 24,
+    "height": 24,
+    "content": "Bell Icon"
+  },
+  {
+    "type": "icon",
+    "name": "ProfileIcon",
+    "parent": "HeaderBar",
+    "x": 330,
+    "y": 18,
+    "width": 24,
+    "height": 24,
+    "content": "User Profile Icon"
+  },
+  {
+    "type": "rectangle",
+    "name": "AccountSummaryCard",
+    "parent": "DashboardScreen",
+    "x": 20,
+    "y": 80,
+    "width": 335,
+    "height": 150,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "MyAccountsTitle",
+    "parent": "AccountSummaryCard",
+    "x": 40,
+    "y": 95,
+    "width": 200,
+    "height": 20,
+    "content": "My Accounts"
+  },
+  {
+    "type": "text",
+    "name": "AccountBalanceText",
+    "parent": "AccountSummaryCard",
+    "x": 40,
+    "y": 125,
+    "width": 280,
+    "height": 24,
+    "content": "Account Balance: $X,XXX.XX"
+  },
+  {
+    "type": "text",
+    "name": "AvailableCreditText",
+    "parent": "AccountSummaryCard",
+    "x": 40,
+    "y": 155,
+    "width": 280,
+    "height": 24,
+    "content": "Available Credit: $X,XXX.XX"
+  },
+  {
+    "type": "button",
+    "name": "ViewAccountDetailsButton",
+    "parent": "AccountSummaryCard",
+    "x": 40,
+    "y": 190,
+    "width": 120,
+    "height": 30,
+    "content": "View Details"
+  },
+  {
+    "type": "text",
+    "name": "OffersSectionHeading",
+    "parent": "DashboardScreen",
+    "x": 20,
+    "y": 250,
+    "width": 335,
+    "height": 24,
+    "content": "Offers Tailored For You"
+  },
+  {
+    "type": "rectangle",
+    "name": "PreApprovedLoanCard",
+    "parent": "DashboardScreen",
+    "x": 20,
+    "y": 290,
+    "width": 335,
+    "height": 140,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "PreApprovedTag",
+    "parent": "PreApprovedLoanCard",
+    "x": 40,
+    "y": 305,
+    "width": 100,
+    "height": 20,
+    "content": "Pre-Approved"
+  },
+  {
+    "type": "text",
+    "name": "PreApprovedLoanTitle",
+    "parent": "PreApprovedLoanCard",
+    "x": 40,
+    "y": 335,
+    "width": 280,
+    "height": 24,
+    "content": "Personal Loan"
+  },
+  {
+    "type": "text",
+    "name": "PreApprovedLoanSubtitle",
+    "parent": "PreApprovedLoanCard",
+    "x": 40,
+    "y": 365,
+    "width": 280,
+    "height": 20,
+    "content": "Up to $X,XXX.XX at Y% interest"
+  },
+  {
+    "type": "button",
+    "name": "ApplyNowButtonPreApproved",
+    "parent": "PreApprovedLoanCard",
+    "x": 40,
+    "y": 395,
+    "width": 120,
+    "height": 30,
+    "content": "Apply Now"
+  },
+  {
+    "type": "rectangle",
+    "name": "EducationLoanCard",
+    "parent": "DashboardScreen",
+    "x": 20,
+    "y": 440,
+    "width": 335,
+    "height": 140,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "RecommendedTagEducation",
+    "parent": "EducationLoanCard",
+    "x": 40,
+    "y": 455,
+    "width": 180,
+    "height": 20,
+    "content": "Recommended for You"
+  },
+  {
+    "type": "text",
+    "name": "EducationLoanTitle",
+    "parent": "EducationLoanCard",
+    "x": 40,
+    "y": 485,
+    "width": 280,
+    "height": 24,
+    "content": "Education Loan"
+  },
+  {
+    "type": "text",
+    "name": "EducationLoanSubtitle",
+    "parent": "EducationLoanCard",
+    "x": 40,
+    "y": 515,
+    "width": 280,
+    "height": 20,
+    "content": "Finance your studies with flexible terms"
+  },
+  {
+    "type": "button",
+    "name": "ViewDetailsButtonEducation",
+    "parent": "EducationLoanCard",
+    "x": 40,
+    "y": 545,
+    "width": 120,
+    "height": 30,
+    "content": "View Details"
+  },
+  {
+    "type": "rectangle",
+    "name": "HomeLoanCard",
+    "parent": "DashboardScreen",
+    "x": 20,
+    "y": 590,
+    "width": 335,
+    "height": 140,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "HomeLoanTitle",
+    "parent": "HomeLoanCard",
+    "x": 40,
+    "y": 605,
+    "width": 280,
+    "height": 24,
+    "content": "Home Loan"
+  },
+  {
+    "type": "text",
+    "name": "HomeLoanSubtitle",
+    "parent": "HomeLoanCard",
+    "x": 40,
+    "y": 635,
+    "width": 280,
+    "height": 20,
+    "content": "Your dream home awaits!"
+  },
+  {
+    "type": "button",
+    "name": "ViewDetailsButtonHome",
+    "parent": "HomeLoanCard",
+    "x": 40,
+    "y": 665,
+    "width": 120,
+    "height": 30,
+    "content": "View Details"
+  },
+  {
+    "type": "rectangle",
+    "name": "BottomNavBar",
+    "parent": "DashboardScreen",
+    "x": 0,
+    "y": 742,
+    "width": 375,
+    "height": 70,
+    "content": ""
+  },
+  {
+    "type": "button",
+    "name": "HomeNavButton",
+    "parent": "BottomNavBar",
+    "x": 0,
+    "y": 742,
+    "width": 75,
+    "height": 70,
+    "content": "Home"
+  },
+  {
+    "type": "button",
+    "name": "AccountsNavButton",
+    "parent": "BottomNavBar",
+    "x": 75,
+    "y": 742,
+    "width": 75,
+    "height": 70,
+    "content": "Accounts"
+  },
+  {
+    "type": "button",
+    "name": "PayTransferNavButton",
+    "parent": "BottomNavBar",
+    "x": 150,
+    "y": 742,
+    "width": 75,
+    "height": 70,
+    "content": "Pay & Transfer"
+  },
+  {
+    "type": "button",
+    "name": "OffersNavButton",
+    "parent": "BottomNavBar",
+    "x": 225,
+    "y": 742,
+    "width": 75,
+    "height": 70,
+    "content": "Offers"
+  },
+  {
+    "type": "button",
+    "name": "MoreNavButton",
+    "parent": "BottomNavBar",
+    "x": 300,
+    "y": 742,
+    "width": 75,
+    "height": 70,
+    "content": "More"
+  },
+  {
+    "type": "frame",
+    "name": "LoanDetailScreen",
+    "x": 400,
+    "y": 0,
+    "width": 375,
+    "height": 812,
+    "content": "Detailed Loan Product Information"
+  },
+  {
+    "type": "rectangle",
+    "name": "DetailHeaderBar",
+    "parent": "LoanDetailScreen",
+    "x": 400,
+    "y": 0,
+    "width": 375,
+    "height": 60,
+    "content": ""
+  },
+  {
+    "type": "icon",
+    "name": "BackArrowIcon",
+    "parent": "DetailHeaderBar",
+    "x": 410,
+    "y": 18,
+    "width": 24,
+    "height": 24,
+    "content": "Back Arrow"
+  },
+  {
+    "type": "text",
+    "name": "DetailScreenTitle",
+    "parent": "DetailHeaderBar",
+    "x": 450,
+    "y": 18,
+    "width": 250,
+    "height": 24,
+    "content": "Loan Product Details"
+  },
+  {
+    "type": "text",
+    "name": "LoanProductNameDetail",
+    "parent": "LoanDetailScreen",
+    "x": 420,
+    "y": 80,
+    "width": 335,
+    "height": 30,
+    "content": "Education Loan"
+  },
+  {
+    "type": "rectangle",
+    "name": "KeyInfoCard",
+    "parent": "LoanDetailScreen",
+    "x": 420,
+    "y": 130,
+    "width": 335,
+    "height": 120,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "InterestRateText",
+    "parent": "KeyInfoCard",
+    "x": 440,
+    "y": 145,
+    "width": 295,
+    "height": 20,
+    "content": "Interest Rate: X.XX% p.a."
+  },
+  {
+    "type": "text",
+    "name": "LoanTermText",
+    "parent": "KeyInfoCard",
+    "x": 440,
+    "y": 175,
+    "width": 295,
+    "height": 20,
+    "content": "Loan Term: Up to X Years"
+  },
+  {
+    "type": "text",
+    "name": "MaxAmountText",
+    "parent": "KeyInfoCard",
+    "x": 440,
+    "y": 205,
+    "width": 295,
+    "height": 20,
+    "content": "Max Amount: $X,XXX.XX"
+  },
+  {
+    "type": "rectangle",
+    "name": "EligibilityCard",
+    "parent": "LoanDetailScreen",
+    "x": 420,
+    "y": 270,
+    "width": 335,
+    "height": 150,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "EligibilityTitle",
+    "parent": "EligibilityCard",
+    "x": 440,
+    "y": 285,
+    "width": 295,
+    "height": 20,
+    "content": "Eligibility Criteria"
+  },
+  {
+    "type": "text",
+    "name": "EligibilityAge",
+    "parent": "EligibilityCard",
+    "x": 440,
+    "y": 315,
+    "width": 295,
+    "height": 20,
+    "content": "\u2022 Age: X to Y Years"
+  },
+  {
+    "type": "text",
+    "name": "EligibilityIncome",
+    "parent": "EligibilityCard",
+    "x": 440,
+    "y": 340,
+    "width": 295,
+    "height": 20,
+    "content": "\u2022 Minimum Monthly Income: $X,XXX"
+  },
+  {
+    "type": "text",
+    "name": "EligibilityCredit",
+    "parent": "EligibilityCard",
+    "x": 440,
+    "y": 365,
+    "width": 295,
+    "height": 20,
+    "content": "\u2022 Good Credit Score"
+  },
+  {
+    "type": "rectangle",
+    "name": "DocumentsCard",
+    "parent": "LoanDetailScreen",
+    "x": 420,
+    "y": 440,
+    "width": 335,
+    "height": 150,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "DocumentsTitle",
+    "parent": "DocumentsCard",
+    "x": 440,
+    "y": 455,
+    "width": 295,
+    "height": 20,
+    "content": "Required Documents"
+  },
+  {
+    "type": "text",
+    "name": "DocumentID",
+    "parent": "DocumentsCard",
+    "x": 440,
+    "y": 485,
+    "width": 295,
+    "height": 20,
+    "content": "\u2022 Proof of Identity (e.g., National ID)"
+  },
+  {
+    "type": "text",
+    "name": "DocumentAddress",
+    "parent": "DocumentsCard",
+    "x": 440,
+    "y": 510,
+    "width": 295,
+    "height": 20,
+    "content": "\u2022 Proof of Address (e.g., Utility Bill)"
+  },
+  {
+    "type": "text",
+    "name": "DocumentIncome",
+    "parent": "DocumentsCard",
+    "x": 440,
+    "y": 535,
+    "width": 295,
+    "height": 20,
+    "content": "\u2022 Proof of Income (e.g., Salary Slips)"
+  },
+  {
+    "type": "button",
+    "name": "InitiateApplicationButton",
+    "parent": "LoanDetailScreen",
+    "x": 420,
+    "y": 620,
+    "width": 335,
+    "height": 45,
+    "content": "Initiate Application"
+  },
+  {
+    "type": "button",
+    "name": "ContactLoanOfficerButton",
+    "parent": "LoanDetailScreen",
+    "x": 420,
+    "y": 675,
+    "width": 335,
+    "height": 45,
+    "content": "Contact Loan Officer"
+  },
+  {
+    "type": "frame",
+    "name": "ApplicationConfirmationScreen",
+    "x": 800,
+    "y": 0,
+    "width": 375,
+    "height": 812,
+    "content": "Application Initiation Confirmation"
+  },
+  {
+    "type": "rectangle",
+    "name": "ConfirmHeaderBar",
+    "parent": "ApplicationConfirmationScreen",
+    "x": 800,
+    "y": 0,
+    "width": 375,
+    "height": 60,
+    "content": ""
+  },
+  {
+    "type": "icon",
+    "name": "ConfirmBackArrowIcon",
+    "parent": "ConfirmHeaderBar",
+    "x": 810,
+    "y": 18,
+    "width": 24,
+    "height": 24,
+    "content": "Back Arrow"
+  },
+  {
+    "type": "text",
+    "name": "ConfirmScreenTitle",
+    "parent": "ConfirmHeaderBar",
+    "x": 850,
+    "y": 18,
+    "width": 250,
+    "height": 24,
+    "content": "Application Confirmation"
+  },
+  {
+    "type": "rectangle",
+    "name": "ConfirmationCard",
+    "parent": "ApplicationConfirmationScreen",
+    "x": 820,
+    "y": 100,
+    "width": 335,
+    "height": 200,
+    "content": ""
+  },
+  {
+    "type": "text",
+    "name": "ConfirmationText1",
+    "parent": "ConfirmationCard",
+    "x": 840,
+    "y": 120,
+    "width": 295,
+    "height": 60,
+    "content": "You are about to begin your application for the [Loan Product Name]."
+  },
+  {
+    "type": "text",
+    "name": "ConfirmationText2",
+    "parent": "ConfirmationCard",
+    "x": 840,
+    "y": 190,
+    "width": 295,
+    "height": 60,
+    "content": "This will take you to a secure external portal to complete your application."
+  },
+  {
+    "type": "text",
+    "name": "ConfirmationText3",
+    "parent": "ConfirmationCard",
+    "x": 840,
+    "y": 260,
+    "width": 295,
+    "height": 40,
+    "content": "Please ensure you have your required documents ready."
+  },
+  {
+    "type": "button",
+    "name": "ProceedToApplicationButton",
+    "parent": "ApplicationConfirmationScreen",
+    "x": 820,
+    "y": 350,
+    "width": 335,
+    "height": 45,
+    "content": "Proceed to Secure Application"
+  }
+]

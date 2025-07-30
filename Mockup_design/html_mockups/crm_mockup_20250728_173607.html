@@ -1,0 +1,1234 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTech Business Analyst Dashboard - 360 CRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A90E2; /* Blue */
+            --secondary-color: #50E3C2; /* Teal */
+            --accent-color: #F5A623; /* Orange */
+            --danger-color: #D0021B; /* Red */
+            --background-light: #F8F9FA;
+            --background-dark: #2C3E50; /* Dark blue/grey */
+            --card-background: #FFFFFF;
+            --text-color-dark: #333333;
+            --text-color-light: #ECEFF1;
+            --border-color: #E0E0E0;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 250px;
+            background-color: var(--background-dark);
+            color: var(--text-color-light);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-light);
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            position: sticky;
+            top: 0;
+            left: 0;
+            height: 100vh;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--secondary-color);
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar nav ul li a {
+            color: var(--text-color-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .sidebar nav ul li a:hover,
+        .sidebar nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar nav ul li a svg {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* --- Main Content Area --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* --- Header --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--text-color-dark);
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .header .user-info span {
+            margin-right: 15px;
+            font-weight: 400;
+            color: #555;
+        }
+
+        .header .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* --- Dashboard Sections --- */
+        .dashboard-section {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-section:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .dashboard-section h2 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* --- Grid Layout for Cards --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-card {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-card .title {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color-dark);
+            margin-bottom: 5px;
+        }
+
+        .metric-card .change {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            color: #4CAF50; /* Green for positive */
+        }
+
+        .metric-card .change.negative {
+            color: var(--danger-color); /* Red for negative */
+        }
+
+        /* --- Chart Placeholders --- */
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            background-color: var(--background-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 1.2rem;
+            border: 1px dashed var(--border-color);
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '📊 Chart Placeholder';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+        }
+
+        .chart-container.pie-chart::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--primary-color) 0% 30%,
+                var(--secondary-color) 30% 65%,
+                var(--accent-color) 65% 85%,
+                #dcdcdc 85% 100%
+            );
+            z-index: 1;
+            opacity: 0.8;
+        }
+        .chart-container.bar-chart {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: flex-end;
+            padding: 20px;
+        }
+        .chart-container.bar-chart .bar {
+            width: 40px;
+            background-color: var(--primary-color);
+            margin: 0 5px;
+            border-radius: 5px 5px 0 0;
+            transition: height 0.5s ease;
+            position: relative;
+        }
+        .chart-container.bar-chart .bar.alt { background-color: var(--secondary-color); }
+        .chart-container.bar-chart .bar:nth-child(2) { height: 70%; }
+        .chart-container.bar-chart .bar:nth-child(3) { height: 50%; }
+        .chart-container.bar-chart .bar:nth-child(4) { height: 90%; }
+        .chart-container.bar-chart .bar:nth-child(5) { height: 60%; }
+        .chart-container.bar-chart .bar span {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: #666;
+        }
+        .chart-container.line-chart {
+            background: linear-gradient(to top right, #add8e6 0%, #87ceeb 25%, #6495ed 50%, #4682b4 75%, #367cbe 100%);
+            background-size: 200% 200%;
+            animation: pan-background 10s linear infinite alternate;
+        }
+        @keyframes pan-background {
+            from { background-position: 0% 0%; }
+            to { background-position: 100% 100%; }
+        }
+        .chart-container.line-chart::before {
+            content: '📈 Line Chart Placeholder';
+        }
+
+        /* --- Table Styling --- */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .data-table tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        /* --- Buttons --- */
+        .button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .button:hover {
+            background-color: #3a7bd5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .button.secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .button.secondary:hover {
+            background-color: #40c9ae;
+        }
+
+        .button svg {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* --- Input Fields --- */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-group input[type="text"],
+        .input-group select {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-group input[type="text"]:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
+        /* --- Customer Profile Detail --- */
+        .profile-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .profile-detail-grid .profile-section {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--background-light);
+            border: 1px solid var(--border-color);
+        }
+        .profile-detail-grid .profile-section h3 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 5px;
+        }
+        .profile-detail-grid .profile-section p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .profile-detail-grid .profile-section strong {
+            color: var(--text-color-dark);
+            min-width: 120px;
+            display: inline-block;
+        }
+
+        /* --- Interaction Timeline --- */
+        .timeline {
+            position: relative;
+            padding: 20px 0 0 50px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            width: 2px;
+            background-color: var(--primary-color);
+            height: 100%;
+        }
+
+        .timeline-event {
+            position: relative;
+            margin-bottom: 25px;
+            padding-left: 30px;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            left: -38px;
+            top: 5px;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .timeline-event .date {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .timeline-event .description {
+            font-size: 1rem;
+            color: var(--text-color-dark);
+        }
+        .timeline-event .description strong {
+            color: var(--primary-color);
+        }
+
+        /* --- Risk and Compliance --- */
+        .risk-compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .risk-compliance-card {
+            background-color: var(--background-light);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-top: 5px solid;
+            display: flex;
+            flex-direction: column;
+        }
+        .risk-compliance-card.critical { border-top-color: var(--danger-color); }
+        .risk-compliance-card.warning { border-top-color: var(--accent-color); }
+        .risk-compliance-card.success { border-top-color: var(--secondary-color); }
+        .risk-compliance-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-color-dark);
+        }
+        .risk-compliance-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .risk-compliance-card .status-indicator {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            font-size: 0.85rem;
+        }
+        .risk-compliance-card.critical .status-indicator { background-color: rgba(208, 2, 27, 0.1); color: var(--danger-color); }
+        .risk-compliance-card.warning .status-indicator { background-color: rgba(245, 166, 35, 0.1); color: var(--accent-color); }
+        .risk-compliance-card.success .status-indicator { background-color: rgba(80, 227, 194, 0.1); color: var(--secondary-color); }
+
+        /* --- Utility Classes --- */
+        .flex-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .text-center { text-align: center; }
+        .text-primary { color: var(--primary-color); }
+        .text-danger { color: var(--danger-color); }
+        .text-success { color: #4CAF50; } /* Green */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* At the top of the tooltip */
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+
+        /* --- Responsive Design --- */
+        @media (max-width: 1200px) {
+            .card-grid, .risk-compliance-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                padding: 20px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header h1 {
+                margin-bottom: 15px;
+            }
+            .sidebar {
+                width: 70px; /* Collapse sidebar */
+                padding: 15px 10px;
+            }
+            .sidebar h2 {
+                font-size: 1.2rem;
+                margin-bottom: 20px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .sidebar nav ul li a {
+                justify-content: center;
+                padding: 10px;
+            }
+            .sidebar nav ul li a span {
+                display: none; /* Hide text */
+            }
+            .sidebar nav ul li a:hover span {
+                display: block;
+                position: absolute;
+                left: 70px;
+                background-color: var(--background-dark);
+                padding: 5px 10px;
+                border-radius: 5px;
+                white-space: nowrap;
+                box-shadow: var(--shadow-hover);
+                z-index: 1001;
+            }
+            .sidebar nav ul li a svg {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .sidebar h2 {
+                text-align: left;
+            }
+            .sidebar nav ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .sidebar nav ul li {
+                margin: 5px 10px;
+            }
+            .sidebar nav ul li a {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            .sidebar nav ul li a span {
+                display: inline;
+                margin-left: 8px;
+            }
+            .sidebar nav ul li a:hover span {
+                position: static;
+                box-shadow: none;
+            }
+            .card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+            .profile-detail-grid {
+                grid-template-columns: 1fr;
+            }
+            .timeline::before {
+                left: 10px;
+            }
+            .timeline-event::before {
+                left: -10px;
+            }
+            .timeline-event {
+                padding-left: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metric-card .value {
+                font-size: 1.6rem;
+            }
+            .dashboard-section h2 {
+                font-size: 1.4rem;
+            }
+            .button {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>FinTech BA Dashboard</h2>
+        <nav>
+            <ul>
+                <li>
+                    <a href="#overview" class="active">
+                        <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V7h-8v14zm0-18v4h8V3h-8z"/></svg>
+                        <span>Dashboard Overview</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#customer-profiles">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        <span>Customer Profiles</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#segmentation">
+                        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                        <span>Segmentation Analysis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#financials">
+                        <svg viewBox="0 0 24 24"><path d="M11 3.5L14 7H8l3-3.5zM20 18l-1.4-1.4-2.6 2.6V10h-2v9.2l-2.6-2.6L12 18l4 4 4-4zM8 12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+                        <span>Financial Analysis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#behavior">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        <span>Behavior Patterns</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#risk-compliance">
+                        <svg viewBox="0 0 24 24"><path d="M14 17H10v-2h4v2zm2-12v-2h-2V3h-2v2h-2v-2h-2v2H8c-1.11 0-1.99.9-1.99 2L6 19c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 14H8V7h8v12z"/></svg>
+                        <span>Risk & Compliance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#interactions">
+                        <svg viewBox="0 0 24 24"><path d="M21 6h-7.59L12 3.41 10.59 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 14H3V8h18v12zM9 10H7v5h2v-5zm4 0h-2v5h2v-5zm4 0h-2v5h2v-5z"/></svg>
+                        <span>Interaction History</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div style="font-size: 0.85rem; text-align: center; color: rgba(255,255,255,0.7); margin-top: auto;">
+            <p>360 Degree CRM Solution</p>
+            <p>Version 1.0 - FinTech Beta</p>
+            <p style="margin-top: 10px;">&copy; 2023 [Your Bank Name]</p>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>Business Analyst Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, John Doe (BA Lead)</span>
+                <div class="avatar">JD</div>
+            </div>
+        </header>
+
+        <!-- Section: Customer Overview & Key Business Metrics -->
+        <section id="overview" class="dashboard-section">
+            <h2>Customer Overview & Key Business Metrics (KPIs)</h2>
+            <div class="card-grid">
+                <div class="metric-card">
+                    <div class="title">Total Active Customers</div>
+                    <div class="value">1,50,000</div>
+                    <div class="change text-success">+3.5% (YoY)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">New Account Openings (Last 30 Days)</div>
+                    <div class="value">2,500</div>
+                    <div class="change text-success">+8.2% (MoM)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Total Assets Under Management (AUM)</div>
+                    <div class="value">Rs. 50,00,00,00,000</div>
+                    <div class="change text-success">+15.1% (YoY)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Average Products per Customer</div>
+                    <div class="value">2.7</div>
+                    <div class="change text-success">+0.1 (QoQ)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Churn Rate (Last 12 Months)</div>
+                    <div class="value">5.2%</div>
+                    <div class="change negative">-0.5% (YoY)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Cross-Sell Conversion Rate</div>
+                    <div class="value">18.5%</div>
+                    <div class="change text-success">+1.0% (QoQ)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Customer Segmentation and Analysis -->
+        <section id="segmentation" class="dashboard-section">
+            <h2>Customer Segmentation and Analysis</h2>
+            <div class="input-group">
+                <select id="segmentFilter">
+                    <option value="all">Filter by Segment...</option>
+                    <option value="HNWI">High Net Worth Individuals (HNWI)</option>
+                    <option value="Mass Affluent">Mass Affluent</option>
+                    <option value="Retail">Retail</option>
+                    <option value="SME">Small & Medium Enterprises</option>
+                </select>
+                <button class="button secondary" onclick="applySegmentationFilter()">Apply Filter</button>
+            </div>
+            <div class="chart-container pie-chart">
+                <div style="position: absolute; display: flex; flex-direction: column; justify-content: space-around; width: 80%; height: 80%; z-index: 2;">
+                    <div style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
+                        <div style="text-align: center;">
+                            <div style="width:15px; height:15px; border-radius:3px; background-color: var(--primary-color); display: inline-block; margin-right: 5px;"></div>
+                            HNWI (10%)
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="width:15px; height:15px; border-radius:3px; background-color: var(--secondary-color); display: inline-block; margin-right: 5px;"></div>
+                            Mass Affluent (30%)
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-around; align-items: center; width: 100%; margin-top: 10px;">
+                        <div style="text-align: center;">
+                            <div style="width:15px; height:15px; border-radius:3px; background-color: var(--accent-color); display: inline-block; margin-right: 5px;"></div>
+                            Retail (45%)
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="width:15px; height:15px; border-radius:3px; background-color: #dcdcdc; display: inline-block; margin-right: 5px;"></div>
+                            SME/Other (15%)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mt-20">Top Segments by Revenue Contribution</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Segment</th>
+                        <th>Customers</th>
+                        <th>Avg. Relationship Value</th>
+                        <th>Total Revenue Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>High Net Worth Individuals</td>
+                        <td>15,000</td>
+                        <td>Rs. 25,00,000</td>
+                        <td>35%</td>
+                    </tr>
+                    <tr>
+                        <td>Mass Affluent</td>
+                        <td>45,000</td>
+                        <td>Rs. 8,00,000</td>
+                        <td>30%</td>
+                    </tr>
+                    <tr>
+                        <td>Retail</td>
+                        <td>70,000</td>
+                        <td>Rs. 1,50,000</td>
+                        <td>25%</td>
+                    </tr>
+                    <tr>
+                        <td>SME & Others</td>
+                        <td>20,000</td>
+                        <td>Rs. 5,00,000</td>
+                        <td>10%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section: Financial Analysis and Trends -->
+        <section id="financials" class="dashboard-section">
+            <h2>Financial Analysis and Trends</h2>
+            <div class="flex-row mb-20">
+                <select id="financialMetric">
+                    <option value="revenue">Revenue Growth</option>
+                    <option value="profit">Profitability Trends</option>
+                    <option value="aum">AUM Over Time</option>
+                </select>
+                <button class="button secondary" onclick="updateFinancialChart()">View Trend</button>
+            </div>
+            <div class="chart-container line-chart"></div>
+
+            <h3 class="mt-20">Product-Wise Performance (Last Quarter)</h3>
+            <div class="chart-container bar-chart">
+                <div class="bar" style="height: 80%;"><span>Savings</span></div>
+                <div class="bar alt" style="height: 65%;"><span>Loans</span></div>
+                <div class="bar" style="height: 75%;"><span>Cards</span></div>
+                <div class="bar alt" style="height: 40%;"><span>Investments</span></div>
+                <div class="bar" style="height: 55%;"><span>Digital Banking</span></div>
+            </div>
+            <table class="data-table mt-20">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Revenue (QoQ)</th>
+                        <th>Customer Penetration</th>
+                        <th>Growth (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Savings Accounts</td>
+                        <td>Rs. 1,20,00,00,000</td>
+                        <td>85%</td>
+                        <td class="text-success">+5.2%</td>
+                    </tr>
+                    <tr>
+                        <td>Personal Loans</td>
+                        <td>Rs. 75,00,00,000</td>
+                        <td>30%</td>
+                        <td class="text-success">+10.1%</td>
+                    </tr>
+                    <tr>
+                        <td>Credit Cards</td>
+                        <td>Rs. 40,00,00,000</td>
+                        <td>25%</td>
+                        <td class="text-success">+7.8%</td>
+                    </tr>
+                    <tr>
+                        <td>Investment Products</td>
+                        <td>Rs. 30,00,00,000</td>
+                        <td>15%</td>
+                        <td class="text-success">+15.5%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section: Customer Behavior Patterns -->
+        <section id="behavior" class="dashboard-section">
+            <h2>Customer Behavior Patterns</h2>
+            <div class="card-grid">
+                <div class="metric-card">
+                    <div class="title">Top Cross-Sell Opportunity</div>
+                    <div class="value">Loans to Savings Customers</div>
+                    <div class="change">Potential: Rs. 50 Cr</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Up-Sell Potential Product</div>
+                    <div class="value">Premium Credit Cards</div>
+                    <div class="change">Eligible: 10,000 Customers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">High-Value Transaction Alerts</div>
+                    <div class="value">12 (Last 24 Hrs)</div>
+                    <div class="change text-danger">Review Required</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Digital Channel Adoption</div>
+                    <div class="value">75%</div>
+                    <div class="change text-success">+2.1% (MoM)</div>
+                </div>
+            </div>
+
+            <h3 class="mt-20">Recent Customer Activity Insights</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Activity Type</th>
+                        <th>Product Affected</th>
+                        <th>Amount/Details</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CUST0012345</td>
+                        <td>Sarah Khan</td>
+                        <td>Large Deposit</td>
+                        <td>Savings Account</td>
+                        <td>Rs. 15,00,000</td>
+                        <td>2023-10-26 10:30 IST</td>
+                    </tr>
+                    <tr>
+                        <td>CUST0012346</td>
+                        <td>Michael Lee</td>
+                        <td>Loan Inquiry</td>
+                        <td>Personal Loan</td>
+                        <td>-</td>
+                        <td>2023-10-26 09:15 IST</td>
+                    </tr>
+                    <tr>
+                        <td>CUST0012347</td>
+                        <td>Priya Sharma</td>
+                        <td>Credit Card Usage Spike</td>
+                        <td>Credit Card</td>
+                        <td>Rs. 1,20,000</td>
+                        <td>2023-10-25 18:00 IST</td>
+                    </tr>
+                    <tr>
+                        <td>CUST0012348</td>
+                        <td>David Wong</td>
+                        <td>Digital Login (New Device)</td>
+                        <td>Mobile Banking</td>
+                        <td>Location: Singapore</td>
+                        <td>2023-10-25 11:45 IST</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section: Customer Profiles (Detailed Information) -->
+        <section id="customer-profiles" class="dashboard-section">
+            <h2>Customer Profiles (360 Degree View)</h2>
+            <div class="input-group">
+                <input type="text" id="customerSearchInput" placeholder="Search by Customer ID or Name (e.g., John Doe)">
+                <button class="button" onclick="searchCustomer()">Search Customer</button>
+            </div>
+
+            <div id="customerProfileDetails" class="profile-detail-grid" style="display: none;">
+                <div class="profile-section">
+                    <h3>Customer Basic Information</h3>
+                    <p><strong>Customer ID:</strong> CUST001001</p>
+                    <p><strong>Name:</strong> John Doe</p>
+                    <p><strong>Email:</strong> john.doe@example.com</p>
+                    <p><strong>Phone:</strong> +91 98765 43210</p>
+                    <p><strong>Date of Birth:</strong> 1985-05-15</p>
+                    <p><strong>Address:</strong> Flat 101, Palm Apartments, Bandra, Mumbai, India</p>
+                    <p><strong>Relationship Manager:</strong> Sarah Green (RM-001)</p>
+                </div>
+                <div class="profile-section">
+                    <h3>Account & Product Holdings</h3>
+                    <p><strong>Savings Account:</strong> ACC-001234 (Balance: Rs. 12,50,000)</p>
+                    <p><strong>Current Account:</strong> ACC-005678 (Balance: Rs. 5,00,000)</p>
+                    <p><strong>Credit Card:</strong> CC-9876 (Limit: Rs. 5,00,000, Outstanding: Rs. 80,000)</p>
+                    <p><strong>Personal Loan:</strong> PL-0098 (Outstanding: Rs. 2,50,000)</p>
+                    <p><strong>Investment Portfolio:</strong> Mutual Funds (Value: Rs. 3,00,000)</p>
+                    <p><strong>Total Products Held:</strong> 5</p>
+                </div>
+                <div class="profile-section">
+                    <h3>Recent Transactions</h3>
+                    <p><strong>2023-10-25:</strong> Debit - Online Shopping, Rs. 15,000</p>
+                    <p><strong>2023-10-24:</strong> Credit - Salary Deposit, Rs. 1,20,000</p>
+                    <p><strong>2023-10-23:</strong> Debit - ATM Withdrawal, Rs. 10,000</p>
+                    <p><strong>2023-10-20:</strong> Debit - Loan EMI, Rs. 15,000</p>
+                </div>
+                <div class="profile-section">
+                    <h3>Identified Opportunities</h3>
+                    <p class="text-primary"><strong>Cross-Sell:</strong> Home Loan (based on property search history)</p>
+                    <p class="text-primary"><strong>Up-Sell:</strong> Premium Savings Account (based on high balance)</p>
+                    <p class="text-danger"><strong>Risk Alert:</strong> High Credit Card Utilization (Potential for default)</p>
+                    <p class="text-success"><strong>Next Best Action:</strong> RM to propose Home Loan consultation.</p>
+                </div>
+            </div>
+            <p id="customerSearchMessage" class="text-center mt-20" style="color: #888;">Enter a customer ID or name to view their 360-degree profile.</p>
+        </section>
+
+        <!-- Section: Customer Interaction History -->
+        <section id="interactions" class="dashboard-section">
+            <h2>Customer Interaction History</h2>
+            <div class="input-group">
+                <input type="text" id="interactionSearchInput" placeholder="Filter interactions (e.g., call, email, branch)">
+                <button class="button secondary" onclick="filterInteractions()">Apply Filter</button>
+            </div>
+            <div class="timeline">
+                <div class="timeline-event">
+                    <div class="date">2023-10-26, 11:30 IST</div>
+                    <div class="description"><strong>Call:</strong> Customer (John Doe) inquired about Credit Card statement. Resolved by Agent.</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="date">2023-10-20, 16:00 IST</div>
+                    <div class="description"><strong>Branch Visit (Mumbai Branch):</strong> Customer met RM Sarah Green for investment portfolio review.</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="date">2023-10-15, 09:00 IST</div>
+                    <div class="description"><strong>Email:</strong> Sent promotional email for new Fixed Deposit rates.</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="date">2023-10-10, 14:15 IST</div>
+                    <div class="description"><strong>Chat:</strong> Customer initiated chat regarding failed UPI transaction. Issue resolved.</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="date">2023-09-30, 10:00 IST</div>
+                    <div class="description"><strong>System Alert:</strong> High-value transaction alert triggered. RM reviewed and closed.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Risk Assessment and Compliance Data -->
+        <section id="risk-compliance" class="dashboard-section">
+            <h2>Risk Assessment and Compliance Data</h2>
+            <p style="font-size: 0.9em; color: #777;">Monitoring adherence to Central Bank regulations, GDPR, and internal security policies.</p>
+            <div class="risk-compliance-grid mt-20">
+                <div class="risk-compliance-card critical">
+                    <h3>AML Alert Count (Last 7 Days)</h3>
+                    <div class="value text-danger">15</div>
+                    <span class="status-indicator">Critical: 3 / Warning: 12</span>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">Requires immediate review by Compliance Officer.</p>
+                </div>
+                <div class="risk-compliance-card warning">
+                    <h3>Data Quality Score (360 CRM)</h3>
+                    <div class="value text-accent">88%</div>
+                    <span class="status-indicator">Warning: Incomplete PII on 5% records</span>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">Identified data discrepancies from legacy systems.</p>
+                </div>
+                <div class="risk-compliance-card success">
+                    <h3>Regulatory Compliance Status</h3>
+                    <div class="value text-success">98.5%</div>
+                    <span class="status-indicator">Compliant (Minor Gaps Identified)</span>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">Adherence to RBI guidelines and local banking regulations.</p>
+                </div>
+                <div class="risk-compliance-card warning">
+                    <h3>Fraud Incidents (Last 90 Days)</h3>
+                    <div class="value text-accent">7</div>
+                    <span class="status-indicator">Under Investigation</span>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">Includes card fraud and unauthorized access attempts.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Customer Satisfaction Metrics -->
+        <section id="customer-satisfaction" class="dashboard-section">
+            <h2>Customer Satisfaction Metrics</h2>
+            <div class="card-grid">
+                <div class="metric-card">
+                    <div class="title">Net Promoter Score (NPS)</div>
+                    <div class="value text-success">+45</div>
+                    <div class="change">Benchmark: +30</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Customer Satisfaction (CSAT)</div>
+                    <div class="value text-success">4.2/5.0</div>
+                    <div class="change">Target: 4.0/5.0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Service Resolution Rate</div>
+                    <div class="value">92%</div>
+                    <div class="change text-success">+1.5% (QoQ)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="title">Feedback Volume (Last 30 Days)</div>
+                    <div class="value">1,200</div>
+                    <div class="change">Positive: 80%, Negative: 20%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <div class="dashboard-section text-center">
+            <h2>Data Management & Reporting</h2>
+            <p class="mb-20">Last Data Refresh: 2023-10-26 13:45 IST (via ETL Process)</p>
+            <button class="button" onclick="refreshData()">
+                <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                Refresh Data
+            </button>
+            <button class="button secondary" onclick="exportReport()">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Export Report (CSV)
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // --- Sidebar Navigation Active State ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.sidebar nav ul li a');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default anchor link behavior
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Scroll to section (smoothly)
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Set active link based on scroll position (basic implementation)
+            const sections = document.querySelectorAll('.dashboard-section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= sectionTop - 100 && pageYOffset < sectionTop + sectionHeight - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // --- Simulated JavaScript Functions ---
+
+        function applySegmentationFilter() {
+            const selectedSegment = document.getElementById('segmentFilter').value;
+            console.log(`Filtering segmentation for: ${selectedSegment}`);
+            alert(`Applying filter for segment: ${selectedSegment}. (Mock function)`);
+            // In a real application, this would update the chart and table data
+        }
+
+        function updateFinancialChart() {
+            const selectedMetric = document.getElementById('financialMetric').value;
+            console.log(`Updating financial chart for: ${selectedMetric}`);
+            alert(`Updating chart for: ${selectedMetric} (Mock function)`);
+            // This would fetch and render new chart data
+        }
+
+        function searchCustomer() {
+            const customerIdOrName = document.getElementById('customerSearchInput').value.trim();
+            const profileDetailsDiv = document.getElementById('customerProfileDetails');
+            const searchMessage = document.getElementById('customerSearchMessage');
+
+            if (customerIdOrName) {
+                console.log(`Searching for customer: ${customerIdOrName}`);
+                // Simulate fetching and displaying data
+                searchMessage.style.display = 'none';
+                profileDetailsDiv.style.display = 'grid'; // Show the pre-defined customer profile
+                alert(`Displaying mock profile for: "${customerIdOrName}". In a real system, data for this customer would be loaded.`);
+            } else {
+                profileDetailsDiv.style.display = 'none';
+                searchMessage.style.display = 'block';
+                alert('Please enter a customer ID or name to search.');
+            }
+        }
+
+        function filterInteractions() {
+            const filterText = document.getElementById('interactionSearchInput').value.trim();
+            console.log(`Filtering interactions by: ${filterText}`);
+            alert(`Applying filter for interactions containing: "${filterText}" (Mock function)`);
+            // In a real system, this would filter the timeline events
+        }
+
+        function refreshData() {
+            console.log("Refreshing dashboard data...");
+            alert("Dashboard data refresh initiated! This simulates an ETL process update. (Mock function)");
+            // In a real application, this would trigger a data refresh or update status
+        }
+
+        function exportReport() {
+            console.log("Exporting dashboard report to CSV...");
+            alert("Report exported successfully as CSV! (Mock function)");
+            // In a real application, this would trigger a file download
+        }
+    </script>
+</body>
+</html>

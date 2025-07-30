@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NRB Fintech Insights - नेपाल बैंकिङ विश्लेषण पोर्टल</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        :root {
+            --primary-color: #004d40; /* Dark Teal - inspired by banking stability */
+            --secondary-color: #00897b; /* Medium Teal */
+            --accent-color: #ffd700; /* Gold/Amber for highlights */
+            --text-color: #333;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.2rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .header .app-title {
+            font-size: 1.6rem;
+            font-weight: 500;
+            margin-left: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info span {
+            margin-right: 15px;
+            font-size: 0.95rem;
+        }
+
+        .user-info button {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .user-info button:hover {
+            background-color: #e6c200;
+            transform: translateY(-2px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px; /* Slightly wider for Nepali text */
+            background-color: var(--primary-color);
+            color: white;
+            padding-top: 20px;
+            box-shadow: var(--shadow-medium);
+            flex-shrink: 0;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav ul li a {
+            display: block;
+            padding: 15px 25px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.05rem;
+            transition: background-color 0.3s ease, padding-left 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+
+        .sidebar nav ul li a:hover,
+        .sidebar nav ul li a.active {
+            background-color: var(--secondary-color);
+            border-left-color: var(--accent-color);
+            padding-left: 30px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem;
+            overflow-y: auto;
+        }
+
+        .main-content h1 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        
+        .main-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow-light);
+            padding: 1.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .card ul li {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .card .amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 1rem;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-actions button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 1rem 1.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-actions button:hover {
+            background-color: #00695c;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow-light);
+            padding: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .table-container h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f0f4f7;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-failed {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.2);
+            outline: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-secondary {
+            background-color: #607d8b; /* Greyish Blue */
+        }
+
+        .btn-secondary:hover {
+            background-color: #546e7a;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: var(--card-bg);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.2);
+            outline: none;
+        }
+
+        .search-bar button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #00695c;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            margin-top: auto;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 0;
+                box-shadow: none;
+            }
+
+            .sidebar nav ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .sidebar nav ul li a {
+                padding: 12px 20px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .sidebar nav ul li a:hover,
+            .sidebar nav ul li a.active {
+                padding-left: 20px;
+                border-bottom-color: var(--accent-color);
+                border-left-color: transparent; /* Ensure it's off for small screens */
+            }
+
+            .header {
+                flex-direction: column;
+                padding: 1.2rem 1.5rem;
+            }
+
+            .header .logo, .header .app-title {
+                margin-bottom: 10px;
+                text-align: center;
+            }
+
+            .user-info {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .search-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-bar input, .search-bar button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header .logo {
+                font-size: 1.5rem;
+            }
+            .header .app-title {
+                font-size: 1.3rem;
+            }
+            .main-content h1 {
+                font-size: 1.8rem;
+            }
+            .card h3 {
+                font-size: 1.2rem;
+            }
+            .card .amount {
+                font-size: 1.6rem;
+            }
+            .quick-actions button {
+                font-size: 1rem;
+                padding: 0.8rem 1.5rem;
+            }
+            .sidebar {
+                width: 100%; /* Ensure sidebar takes full width on small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div style="display: flex; align-items: center;">
+            <span class="logo">NRB Fintech</span>
+            <span class="app-title">बिजनेस एनालिस्ट पोर्टल</span>
+        </div>
+        <div class="user-info">
+            <span>नमस्ते, Bikash Thapa</span>
+            <button onclick="alert('तपाईं लगआउट हुनुभयो। (You have been logged out.)')">लगआउट (Logout)</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" onclick="showSection('dashboard')">ड्यासबोर्ड (Dashboard)</a></li>
+                    <li><a href="#" onclick="showSection('accounts')">खाता व्यवस्थापन (Account Management)</a></li>
+                    <li><a href="#" onclick="showSection('transactions')">लेनदेन विवरण (Transaction History)</a></li>
+                    <li><a href="#" onclick="showSection('loans')">कर्जा सेवा (Loan Services)</a></li>
+                    <li><a href="#" onclick="showSection('payments')">भुक्तानी तथा ट्रान्सफर (Payments & Transfers)</a></li>
+                    <li><a href="#" onclick="showSection('nrb-compliance')">नेपाल राष्ट्र बैंक नियमन (NRB Compliance)</a></li>
+                    <li><a href="#" onclick="showSection('analytics')">विश्लेषण तथा रिपोर्ट (Analytics & Reports)</a></li>
+                    <li><a href="#" onclick="showSection('user-management')">प्रयोगकर्ता व्यवस्थापन (User Management)</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <section id="dashboard" class="current-section">
+                <h1>ड्यासबोर्ड (Dashboard)</h1>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>कुल खाता शेष (Total Khata Balance)</h3>
+                        <p>सबै बैंक खाताहरूमा जम्मा रकम</p>
+                        <p class="amount">Rs. 2,75,45,678</p>
+                    </div>
+                    <div class="card">
+                        <h3>बक्यौता कर्जा (Outstanding Loans)</h3>
+                        <p>कुल बक्यौता कर्जा रकम</p>
+                        <p class="amount">Rs. 1,20,50,000</p>
+                    </div>
+                    <div class="card">
+                        <h3>पछिल्लो २४ घण्टाको लेनदेन (Last 24 Hrs Transactions)</h3>
+                        <p>जम्मा आएको/गएको रकम</p>
+                        <p class="amount">Rs. 18,34,500 <span style="font-size: 0.9em; color: green;">(जमा)</span> / Rs. 15,20,000 <span style="font-size: 0.9em; color: red;">(खर्च)</span></p>
+                    </div>
+                    <div class="card">
+                        <h3>पेन्डिङ्ग NRB रिपोर्टहरू (Pending NRB Reports)</h3>
+                        <p>आजको मिति सम्मका पेन्डिङ्ग रिपोर्टहरू</p>
+                        <p class="amount">३</p>
+                    </div>
+                </div>
+
+                <h2>द्रुत कार्यहरू (Quick Actions)</h2>
+                <div class="quick-actions">
+                    <button onclick="showSection('payments')">नयाँ भुक्तानी (New Payment)</button>
+                    <button onclick="showSection('loans')">कर्जा आवेदन (Loan Application)</button>
+                    <button onclick="showSection('transactions')">लेनदेन खोज्नुहोस् (Search Transactions)</button>
+                    <button onclick="alert('नयाँ KYC समीक्षा सुरु गरियो। (New KYC review initiated.)')">KYC समीक्षा (KYC Review)</button>
+                </div>
+
+                <div class="table-container">
+                    <h3>हालसालका लेनदेनहरू (Recent Transactions)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>मिति (Date)</th>
+                                <th>विवरण (Description)</th>
+                                <th>रकम (Amount)</th>
+                                <th>खाता (Khata)</th>
+                                <th>स्थिति (Status)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>२०८०/०७/२५</td>
+                                <td>विद्युत बिल भुक्तानी (Electricity Bill Payment)</td>
+                                <td>Rs. 12,500</td>
+                                <td>Nabil Bank - बचत (Savings)</td>
+                                <td><span class="status-success">सफल (Success)</span></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/०७/२४</td>
+                                <td>सप्लाईयर भुक्तानी (Supplier Payment) - Kathmandu Traders</td>
+                                <td>Rs. 1,50,000</td>
+                                <td>Nepal Bank - चल्ती (Current)</td>
+                                <td><span class="status-success">सफल (Success)</span></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/०७/२४</td>
+                                <td>वेतन भुक्तानी (Salary Transfer) - Ram Sharma</td>
+                                <td>Rs. 85,000</td>
+                                <td>Global IME Bank - बचत (Savings)</td>
+                                <td><span class="status-success">सफल (Success)</span></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/०७/२३</td>
+                                <td>कर्जा किस्ता भुक्तानी (Loan Installment)</td>
+                                <td>Rs. 25,000</td>
+                                <td>Nabil Bank - बचत (Savings)</td>
+                                <td><span class="status-pending">पेन्डिङ्ग (Pending)</span></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/०७/२३</td>
+                                <td>अन्तर-बैंक ट्रान्सफर (Inter-Bank Transfer) - Sita Devi</td>
+                                <td>Rs. 50,000</td>
+                                <td>Prabhu Bank - चल्ती (Current)</td>
+                                <td><span class="status-success">सफल (Success)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="accounts" style="display: none;">
+                <h1>खाता व्यवस्थापन (Account Management)</h1>
+                <div class="search-bar">
+                    <input type="text" id="accountSearch" placeholder="खाता नम्बर वा ग्राहकको नाम खोज्नुहोस् (Search Khata No. or Customer Name)...">
+                    <button onclick="searchAccounts()">खोज्नुहोस् (Search)</button>
+                </div>
+
+                <div class="table-container">
+                    <h3>बैंक खाताहरूको सूची (List of Bank Khata)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>खाता नम्बर (Khata No.)</th>
+                                <th>खाताको प्रकार (Khata Type)</th>
+                                <th>बैंक (Bank)</th>
+                                <th>खाता धारक (Account Holder)</th>
+                                <th>उपलब्ध शेष (Available Balance)</th>
+                                <th>सहर (Location)</th>
+                                <th>कार्यहरू (Actions)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accountTableBody">
+                            <tr>
+                                <td>12345678901</td>
+                                <td>बचत (Savings)</td>
+                                <td>Nabil Bank</td>
+                                <td>Ram Bahadur KC</td>
+                                <td>Rs. 5,20,500</td>
+                                <td>Kathmandu</td>
+                                <td><button class="btn btn-secondary">विवरण (Details)</button></td>
+                            </tr>
+                            <tr>
+                                <td>09876543210</td>
+                                <td>चल्ती (Current)</td>
+                                <td>Nepal Bank</td>
+                                <td>Sita Devi Gurung</td>
+                                <td>Rs. 15,00,000</td>
+                                <td>Pokhara</td>
+                                <td><button class="btn btn-secondary">विवरण (Details)</button></td>
+                            </tr>
+                            <tr>
+                                <td>11223344556</td>
+                                <td>मुद्दती (Fixed Deposit)</td>
+                                <td>Global IME Bank</td>
+                                <td>Bikash Rai & Sons</td>
+                                <td>Rs. 50,00,000</td>
+                                <td>Biratnagar</td>
+                                <td><button class="btn btn-secondary">विवरण (Details)</button></td>
+                            </tr>
+                            <tr>
+                                <td>65432109876</td>
+                                <td>बचत (Savings)</td>
+                                <td>Prabhu Bank</td>
+                                <td>Anjali Limbu</td>
+                                <td>Rs. 8,75,000</td>
+                                <td>Dharan</td>
+                                <td><button class="btn btn-secondary">विवरण (Details)</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="transactions" style="display: none;">
+                <h1>लेनादेन विवरण (Transaction History)</h1>
+                <div class="search-bar">
+                    <input type="text" id="transactionSearch" placeholder="लेनदेन ID, विवरण वा रकम खोज्नुहोस् (Search Transaction ID, Description or Amount)...">
+                    <button onclick="searchTransactions()">खोज्नुहोस् (Search)</button>
+                </div>
+
+                <div class="table-container">
+                    <h3>सबै लेनदेनहरू (All Transactions)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>मिति (Date)</th>
+                                <th>लेनदेन ID (Transaction ID)</th>
+                                <th>विवरण (Description)</th>
+                                <th>रकम (Amount)</th>
+                                <th>खाता (Khata)</th>
+                                <th>स्थिति (Status)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionTableBody">
+                            <tr>
+                                <td>२०८०/०७/२५</td>
+                                <td>TXN-20801025-001</td>
+                                <td>मोबाइल रिचार्ज (Mobile Top-up) - Ncell</td>
+                                <td>Rs. 500</td>
+                                <td>Nabil Bank - बचत (Savings)</td>
+                                <td><span class="status-success">सफल (Success)</span></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/०७/२५</td>
+                                <td>TXN-20801025-002</td>
+                                <td>QR भुक्तानी (QR Payment) - Bhatbhateni</td>
+                                <td>Rs. 8,750</td>
+                                <td>Nepal Bank - चल्ती (Current)</td>
+                                <td><span class="status-success">सफल (Success)</span></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/०७/२४</td>
+                                <td>TXN-20801024-003</td>
+                                <td>eSewa मा रकम ट्रान्सफर (Transfer to eSewa)</td>
+                                <td>Rs. 10,000</td>
+                                <td>Global IME Bank - बचत (Savings)</td>
+                                <td><span class="status-success">सफल (Success)</span></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/०७/२३</td>
+                                <td>TXN-20801023-004</td>
+                                <td>Khalti मा रकम ट्रान्सफर (Transfer to Khalti)</td>
+                                <td>Rs. 5,000</td>
+                                <td>Prabhu Bank - बचत (Savings)</td>
+                                <td><span class="status-success">सफल (Success)</span></td>
+                            </tr>
+                            <tr>
+                                <td>२०८०/०७/२२</td>
+                                <td>TXN-20801022-005</td>
+                                <td>NRB जरिवाना भुक्तानी (NRB Fine Payment)</td>
+                                <td>Rs. 50,000</td>
+                                <td>Nabil Bank - चल्ती (Current)</td>
+                                <td><span class="status-failed">असफल (Failed)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="loans" style="display: none;">
+                <h1>कर्जा सेवा (Loan Services)</h1>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>कर्जा उत्पादनहरू (Loan Products)</h3>
+                        <p>हाम्रो बैंकद्वारा प्रस्तावित विभिन्न कर्जा उत्पादनहरू।</p>
+                        <ul>
+                            <li>आवास कर्जा (Home Loan)</li>
+                            <li>व्यवसायिक कर्जा (Business Loan)</li>
+                            <li>शैक्षिक कर्जा (Education Loan)</li>
+                            <li>साना कर्जा (Micro Loan)</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>नयाँ कर्जा आवेदन (New Loan Application)</h3>
+                        <p>यहाँ नयाँ कर्जाको लागि आवेदन दिनुहोस्।</p>
+                        <button class="btn" onclick="alert('नयाँ कर्जा आवेदन फारम खुल्दैछ। (New loan application form opening.)')">आवेदन दिनुहोस् (Apply Now)</button>
+                    </div>
+                    <div class="card">
+                        <h3>कर्जा स्थिति हेर्नुहोस् (View Loan Status)</h3>
+                        <p>तपाईंको पेन्डिङ्ग वा सक्रिय कर्जाको स्थिति जाँच गर्नुहोस्।</p>
+                        <button class="btn" onclick="alert('कर्जा स्थिति हेर्ने पृष्ठ खुल्दैछ। (Loan status page opening.)')">स्थिति हेर्नुहोस् (View Status)</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3>सक्रिय कर्जा विवरण (Active Loan Details)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>कर्जा ID (Loan ID)</th>
+                                <th>ग्राहक (Customer)</th>
+                                <th>कर्जाको प्रकार (Loan Type)</th>
+                                <th>मूल रकम (Principal Amount)</th>
+                                <th>बक्यौता रकम (Outstanding Amount)</th>
+                                <th>अन्तिम किस्ता मिति (Last Installment Date)</th>
+                                <th>स्थिति (Status)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>LN-NB-001</td>
+                                <td>Ram Bahadur KC</td>
+                                <td>आवास कर्जा (Home Loan)</td>
+                                <td>Rs. 50,00,000</td>
+                                <td>Rs. 35,50,000</td>
+                                <td>२०८०/०७/२०</td>
+                                <td><span class="status-success">सक्रिय (Active)</span></td>
+                            </tr>
+                            <tr>
+                                <td>LN-NL-002</td>
+                                <td>Sita Devi Gurung</td>
+                                <td>व्यवसायिक कर्जा (Business Loan)</td>
+                                <td>Rs. 25,00,000</td>
+                                <td>Rs. 18,20,000</td>
+                                <td>२०८०/०७/२२</td>
+                                <td><span class="status-success">सक्रिय (Active)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="payments" style="display: none;">
+                <h1>भुक्तानी तथा ट्रान्सफर (Payments & Transfers)</h1>
+                <div class="quick-actions">
+                    <button onclick="alert('फन्ड ट्रान्सफर फारम खुल्दैछ। (Fund Transfer form opening.)')">फन्ड ट्रान्सफर (Fund Transfer)</button>
+                    <button onclick="alert('बिल भुक्तानी फारम खुल्दैछ। (Bill Payment form opening.)')">बिल भुक्तानी (Bill Payment)</button>
+                    <button onclick="alert('QR स्क्यानर सक्रिय भयो। (QR Scanner activated.)')">QR भुक्तानी (QR Payment)</button>
+                </div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>स्थानीय बैंकहरूमा ट्रान्सफर (Transfer to Local Banks)</h3>
+                        <p>Nabil Bank, Nepal Bank, Global IME Bank, Prabhu Bank आदिमा रकम ट्रान्सफर गर्नुहोस्।</p>
+                        <div class="form-group">
+                            <label for="bankSelect">बैंक छान्नुहोस् (Select Bank):</label>
+                            <select id="bankSelect">
+                                <option value="">--- बैंक छान्नुहोस् ---</option>
+                                <option value="Nabil Bank">Nabil Bank</option>
+                                <option value="Nepal Bank">Nepal Bank</option>
+                                <option value="Global IME Bank">Global IME Bank</option>
+                                <option value="Prabhu Bank">Prabhu Bank</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipientAcc">प्राप्तकर्ताको खाता नम्बर (Recipient's Account No.):</label>
+                            <input type="text" id="recipientAcc" placeholder="खाता नम्बर प्रविष्ट गर्नुहोस्">
+                        </div>
+                        <div class="form-group">
+                            <label for="transferAmount">रकम (Amount):</label>
+                            <input type="number" id="transferAmount" placeholder="रु. मा रकम प्रविष्ट गर्नुहोस्">
+                        </div>
+                        <button class="btn" onclick="alert('Rs. ' + document.getElementById('transferAmount').value + ' ' + document.getElementById('bankSelect').value + ' बैंकमा खाता नम्बर ' + document.getElementById('recipientAcc').value + ' मा ट्रान्सफर गरियो। (Transferred Rs. ' + document.getElementById('transferAmount').value + ' to account ' + document.getElementById('recipientAcc').value + ' in ' + document.getElementById('bankSelect').value + '.)')">ट्रान्सफर गर्नुहोस् (Transfer)</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>फिनटेक एकीकरण (Fintech Integrations)</h3>
+                        <p>eSewa र Khalti मार्फत भुक्तानी तथा ट्रान्सफर गर्नुहोस्।</p>
+                        <div class="form-group">
+                            <label for="fintechSelect">प्लेटफर्म छान्नुहोस् (Select Platform):</label>
+                            <select id="fintechSelect">
+                                <option value="">--- प्लेटफर्म छान्नुहोस् ---</option>
+                                <option value="eSewa">eSewa</option>
+                                <option value="Khalti">Khalti</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fintechMobile">मोबाइल नम्बर (Mobile Number):</label>
+                            <input type="text" id="fintechMobile" placeholder="मोबाइल नम्बर प्रविष्ट गर्नुहोस्">
+                        </div>
+                        <div class="form-group">
+                            <label for="fintechAmount">रकम (Amount):</label>
+                            <input type="number" id="fintechAmount" placeholder="रु. मा रकम प्रविष्ट गर्नुहोस्">
+                        </div>
+                        <button class="btn" onclick="alert('Rs. ' + document.getElementById('fintechAmount').value + ' ' + document.getElementById('fintechSelect').value + ' मा मोबाइल नम्बर ' + document.getElementById('fintechMobile').value + ' मा ट्रान्सफर गरियो। (Transferred Rs. ' + document.getElementById('fintechAmount').value + ' to mobile ' + document.getElementById('fintechMobile').value + ' via ' + document.getElementById('fintechSelect').value + '.)')">भुक्तानी गर्नुहोस् (Pay)</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nrb-compliance" style="display: none;">
+                <h1>नेपाल राष्ट्र बैंक नियमन (NRB Compliance)</h1>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>NRB दिशानिर्देशहरू (NRB Guidelines)</h3>
+                        <p>NRB द्वारा जारी गरिएका नवीनतम नियमन र दिशानिर्देशहरू हेर्नुहोस्।</p>
+                        <button class="btn" onclick="alert('NRB दिशानिर्देश पोर्टल खुल्दैछ। (NRB Guidelines portal opening.)')">हेर्नुहोस् (View)</button>
+                    </div>
+                    <div class="card">
+                        <h3>AML/CFT रिपोर्टिङ्ग (AML/CFT Reporting)</h3>
+                        <p>सम्पत्ति शुद्धीकरण निवारण र आतंकवाद वित्तपोषण विरुद्धको प्रतिवेदनहरू बुझाउनुहोस्।</p>
+                        <button class="btn" onclick="alert('AML/CFT रिपोर्टिङ्ग फारम खुल्दैछ। (AML/CFT reporting form opening.)')">रिपोर्ट गर्नुहोस् (Report)</button>
+                    </div>
+                    <div class="card">
+                        <h3>KYC समीक्षा (KYC Review)</h3>
+                        <p>ग्राहक पहिचान (KYC) कागजातहरूको समीक्षा र अद्यावधिक गर्नुहोस्।</p>
+                        <button class="btn" onclick="alert('KYC समीक्षा पृष्ठ खुल्दैछ। (KYC review page opening.)')">समीक्षा गर्नुहोस् (Review)</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3>पेन्डिङ्ग NRB रिपोर्टहरू (Pending NRB Reports)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>रिपोर्ट प्रकार (Report Type)</th>
+                                <th>बुझाउने मिति (Due Date)</th>
+                                <th>स्थिति (Status)</th>
+                                <th>कार्यहरू (Actions)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>मासिक लेनदेन रिपोर्ट (Monthly Transaction Report)</td>
+                                <td>२०८०/०८/०५</td>
+                                <td><span class="status-pending">पेन्डिङ्ग (Pending)</span></td>
+                                <td><button class="btn btn-secondary" onclick="alert('रिपोर्ट बुझाउनुहोस् (Submit Report)')">बुझाउनुहोस् (Submit)</button></td>
+                            </tr>
+                            <tr>
+                                <td>त्रैमासिक वित्तीय विवरण (Quarterly Financial Statement)</td>
+                                <td>२०८०/०९/१५</td>
+                                <td><span class="status-pending">पेन्डिङ्ग (Pending)</span></td>
+                                <td><button class="btn btn-secondary" onclick="alert('रिपोर्ट बुझाउनुहोस् (Submit Report)')">बुझाउनुहोस् (Submit)</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="analytics" style="display: none;">
+                <h1>विश्लेषण तथा रिपोर्ट (Analytics & Reports)</h1>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>खाता वृद्धि विश्लेषण (Account Growth Analysis)</h3>
+                        <p>नयाँ खाता खोल्ने दर र ग्राहक विस्तारको प्रवृत्ति हेर्नुहोस्।</p>
+                        <button class="btn" onclick="alert('खाता वृद्धि रिपोर्ट खुल्दैछ। (Account growth report opening.)')">रिपोर्ट हेर्नुहोस् (View Report)</button>
+                    </div>
+                    <div class="card">
+                        <h3>कर्जा पोर्टफोलियो समीक्षा (Loan Portfolio Review)</h3>
+                        <p>कर्जा वितरण, डिफल्ट दर र लाभप्रदताको विश्लेषण गर्नुहोस्।</p>
+                        <button class="btn" onclick="alert('कर्जा पोर्टफोलियो रिपोर्ट खुल्दैछ। (Loan portfolio report opening.)')">रिपोर्ट हेर्नुहोस् (View Report)</button>
+                    </div>
+                    <div class="card">
+                        <h3>लेनदेन प्रवृत्ति (Transaction Trends)</h3>
+                        <p>भुक्तानी प्रकार, समय र रकम अनुसार लेनदेनको प्रवृत्ति पत्ता लगाउनुहोस्।</p>
+                        <button class="btn" onclick="alert('लेनदेन प्रवृत्ति रिपोर्ट खुल्दैछ। (Transaction trends report opening.)')">रिपोर्ट हेर्नुहोस् (View Report)</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3>उत्पन्न रिपोर्टहरू (Generated Reports)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>रिपोर्टको नाम (Report Name)</th>
+                                <th>उत्पन्न मिति (Generated Date)</th>
+                                <th>प्रकार (Type)</th>
+                                <th>कार्यहरू (Actions)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>मासिक ग्राहक अधिग्रहण (Monthly Customer Acquisition)</td>
+                                <td>२०८०/०७/०१</td>
+                                <td>PDF</td>
+                                <td><button class="btn btn-secondary" onclick="alert('रिपोर्ट डाउनलोड गरियो। (Report downloaded.)')">डाउनलोड (Download)</button></td>
+                            </tr>
+                            <tr>
+                                <td>त्रैमासिक NPA रिपोर्ट (Quarterly NPA Report)</td>
+                                <td>२०८०/०७/१५</td>
+                                <td>Excel</td>
+                                <td><button class="btn btn-secondary" onclick="alert('रिपोर्ट डाउनलोड गरियो। (Report downloaded.)')">डाउनलोड (Download)</button></td>
+                            </tr>
+                            <tr>
+                                <td>दैनिक नगद प्रवाह अनुमान (Daily Cash Flow Forecast)</td>
+                                <td>२०८०/०७/२५</td>
+                                <td>CSV</td>
+                                <td><button class="btn btn-secondary" onclick="alert('रिपोर्ट डाउनलोड गरियो। (Report downloaded.)')">डाउनलोड (Download)</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="user-management" style="display: none;">
+                <h1>प्रयोगकर्ता व्यवस्थापन (User Management)</h1>
+                <div class="search-bar">
+                    <input type="text" id="userSearch" placeholder="प्रयोगकर्ता नाम वा भूमिका खोज्नुहोस् (Search Username or Role)...">
+                    <button onclick="searchUsers()">खोज्नुहोस् (Search)</button>
+                </div>
+
+                <div class="table-container">
+                    <h3>सिस्टम प्रयोगकर्ताहरूको सूची (List of System Users)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>प्रयोगकर्ता ID (User ID)</th>
+                                <th>नाम (Name)</th>
+                                <th>इमेल (Email)</th>
+                                <th>भूमिका (Role)</th>
+                                <th>पछिल्लो लगइन (Last Login)</th>
+                                <th>स्थिति (Status)</th>
+                                <th>कार्यहरू (Actions)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <tr>
+                                <td>U001</td>
+                                <td>Anjali Adhikari</td>
+                                <td>anjali.a@bank.com.np</td>
+                                <td>व्यवस्थापक (Admin)</td>
+                                <td>२०८०/०७/२५, १०:३० बजे (10:30 AM)</td>
+                                <td><span class="status-success">सक्रिय (Active)</span></td>
+                                <td><button class="btn btn-secondary">सम्पादन (Edit)</button></td>
+                            </tr>
+                            <tr>
+                                <td>U002</td>
+                                <td>Bikash Thapa</td>
+                                <td>bikash.t@bank.com.np</td>
+                                <td>बिजनेस एनालिस्ट (Business Analyst)</td>
+                                <td>२०८०/०७/२५, ०९:४५ बजे (09:45 AM)</td>
+                                <td><span class="status-success">सक्रिय (Active)</span></td>
+                                <td><button class="btn btn-secondary">सम्पादन (Edit)</button></td>
+                            </tr>
+                            <tr>
+                                <td>U003</td>
+                                <td>Prakash Sharma</td>
+                                <td>prakash.s@bank.com.np</td>
+                                <td>रिपोर्टिङ्ग (Reporting)</td>
+                                <td>२०८०/०७/२४, १५:०० बजे (03:00 PM)</td>
+                                <td><span class="status-success">सक्रिय (Active)</span></td>
+                                <td><button class="btn btn-secondary">सम्पादन (Edit)</button></td>
+                            </tr>
+                            <tr>
+                                <td>U004</td>
+                                <td>Samjhana Basnet</td>
+                                <td>samjhana.b@bank.com.np</td>
+                                <td>अडिट (Audit)</td>
+                                <td>२०८०/०७/२०, १२:०० बजे (12:00 PM)</td>
+                                <td><span class="status-pending">निष्क्रिय (Inactive)</span></td>
+                                <td><button class="btn btn-secondary">सक्रिय गर्नुहोस् (Activate)</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; २०८० NRB Fintech | सबै अधिकार सुरक्षित | नेपाल राष्ट्र बैंकको नियमन अन्तर्गत (All rights reserved | Under the regulation of Nepal Rastra Bank)</p>
+        <p>कार्यालय समय: बिहान १०:०० बजे - बेलुका ५:०० बजे (आइतबार - शुक्रबार) | Office Hours: 10:00 AM - 5:00 PM (Sunday - Friday)</p>
+    </footer>
+
+    <script>
+        // JavaScript for tab-like navigation and search functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.main-content section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Show the selected section
+            document.getElementById(sectionId).style.display = 'block';
+
+            // Update active link in sidebar
+            document.querySelectorAll('.sidebar nav ul li a').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`.sidebar nav ul li a[onclick*="${sectionId}"]`).classList.add('active');
+        }
+
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('dashboard');
+        });
+
+        // Generic search function for tables
+        function performTableSearch(inputId, tableBodyId) {
+            const input = document.getElementById(inputId);
+            const filter = input.value.toLowerCase();
+            const tableBody = document.getElementById(tableBodyId);
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                let rowText = rows[i].textContent || rows[i].innerText;
+                if (rowText.toLowerCase().indexOf(filter) > -1) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+
+        function searchAccounts() {
+            performTableSearch('accountSearch', 'accountTableBody');
+        }
+
+        function searchTransactions() {
+            performTableSearch('transactionSearch', 'transactionTableBody');
+        }
+
+        function searchUsers() {
+            performTableSearch('userSearch', 'userTableBody');
+        }
+    </script>
+</body>
+</html>

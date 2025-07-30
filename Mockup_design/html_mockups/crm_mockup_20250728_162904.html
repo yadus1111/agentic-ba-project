@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonepoints - Business Analyst Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variables for easy theme management */
+        :root {
+            --primary-color: #2c3e50; /* Dark blue/grey for background and sidebar */
+            --secondary-color: #3498db; /* Bright blue for accents and headings */
+            --accent-color: #2ecc71; /* Green for positive values and success */
+            --danger-color: #e74c3c; /* Red for alerts and negative values */
+            --text-color: #ecf0f1; /* Light text for dark backgrounds */
+            --card-bg: #34495e; /* Slightly lighter than primary for content cards */
+            --hover-bg: #4a667b; /* Background for hover states */
+            --border-color: #4a667b; /* Border color for subtle separation */
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+            --gradient-start: #2c3e50; /* Start color for body background gradient */
+            --gradient-end: #1a242d; /* End color for body background gradient */
+        }
+
+        /* Base styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: var(--text-color);
+            display: flex; /* Use flexbox for main layout (sidebar + content) */
+            min-height: 100vh; /* Full viewport height */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            position: sticky; /* Sticky sidebar */
+            top: 0;
+            height: 100vh; /* Full height */
+            overflow-y: auto; /* Enable scrolling for long content */
+            z-index: 10; /* Ensure it stays above other content */
+        }
+
+        .sidebar h2 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            text-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Subtle text shadow */
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar nav ul li a {
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .sidebar nav ul li a:hover,
+        .sidebar nav ul li a.active {
+            background-color: var(--hover-bg);
+            transform: translateX(5px); /* Slight slide effect on hover/active */
+        }
+
+        .sidebar nav ul li a .icon {
+            font-size: 1.2em;
+            /* Placeholder for icon, could use Font Awesome here */
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1; /* Takes remaining space */
+            padding: 30px;
+            overflow-y: auto; /* Enable scrolling for main content */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+            color: var(--secondary-color);
+            text-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info span {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2em;
+            border: 2px solid var(--secondary-color);
+            box-shadow: var(--shadow);
+        }
+
+        /* Dashboard Section Styling */
+        .dashboard-section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            opacity: 0; /* Initial state for animation */
+            transform: translateY(20px); /* Initial state for animation */
+            animation: fadeInSlideUp 0.8s forwards; /* Animation on load */
+        }
+        /* Fade-in and slide-up animation */
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard-section h2 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* KPI Cards */
+        .kpi-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background-color: var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            border-left: 5px solid var(--secondary-color); /* Highlight border */
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            background-color: var(--hover-bg);
+        }
+
+        .kpi-card .value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--accent-color); /* Green for positive values */
+            margin-bottom: 5px;
+        }
+        .kpi-card.negative .value {
+            color: var(--danger-color); /* Red for negative values/alerts */
+        }
+
+        .kpi-card .label {
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Charts & Tables */
+        .chart-container {
+            width: 100%;
+            height: 350px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3); /* Inner shadow for depth */
+            display: flex; /* For centering placeholder text */
+            justify-content: center;
+            align-items: center;
+            color: #ccc; /* Placeholder text color */
+            font-style: italic;
+        }
+        .chart-container canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Remove double borders */
+            margin-top: 20px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners for content */
+            box-shadow: var(--shadow);
+        }
+
+        table thead {
+            background-color: var(--secondary-color);
+            color: var(--primary-color); /* Dark text on bright blue header */
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table tbody tr:hover {
+            background-color: var(--hover-bg); /* Highlight row on hover */
+        }
+
+        table tbody tr:last-child td {
+            border-bottom: none; /* No border for the last row */
+        }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background-color: #5dade2; /* Lighter secondary on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        .btn-outline:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        /* Forms/Inputs */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-bar input[type="text"] {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            font-size: 1em;
+        }
+        .search-bar input[type="text"]::placeholder {
+            color: #888;
+        }
+        .search-bar input[type="text"]:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5); /* Focus highlight */
+        }
+
+        /* Modals */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top of everything */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.6); /* Black background with opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transform: scale(0.9); /* Initial scale for animation */
+            opacity: 0; /* Initial opacity for animation */
+            animation: modalFadeIn 0.3s forwards; /* Modal entry animation */
+        }
+        @keyframes modalFadeIn {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--secondary-color);
+            font-size: 1.8em;
+        }
+
+        .close-button {
+            color: var(--text-color);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--danger-color);
+            text-decoration: none;
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns for details */
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .profile-details div {
+            padding: 10px;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+        .profile-details div strong {
+            color: var(--secondary-color);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .interaction-timeline {
+            margin-top: 20px;
+        }
+        .interaction-timeline h4 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            font-size: 1.3em;
+        }
+        .timeline-item {
+            display: flex;
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px; /* Space for the timeline dot and line */
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            border: 2px solid var(--card-bg); /* Border matches card background for pop-out effect */
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 15px;
+            bottom: -5px;
+            width: 2px;
+            background-color: var(--border-color); /* The timeline line */
+        }
+        .timeline-item:last-child::after {
+            display: none; /* No line after the last item */
+        }
+        .timeline-item .date {
+            font-weight: bold;
+            color: var(--accent-color);
+            min-width: 120px;
+            flex-shrink: 0; /* Prevent date from shrinking */
+        }
+        .timeline-item .description {
+            flex-grow: 1;
+            color: var(--text-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+                padding: 15px;
+            }
+            .main-content {
+                padding: 20px;
+            }
+            .kpi-cards {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+            .profile-details {
+                grid-template-columns: 1fr; /* Single column for profile details on smaller screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stack sidebar and main content vertically */
+            }
+            .sidebar {
+                width: 100%;
+                height: auto; /* Auto height for collapsed sidebar */
+                position: relative;
+                box-shadow: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .sidebar h2 {
+                display: none; /* Hide logo on small screens */
+            }
+            .sidebar nav ul {
+                display: flex;
+                flex-wrap: wrap; /* Allow navigation items to wrap */
+                justify-content: center;
+                gap: 5px;
+            }
+            .sidebar nav ul li {
+                margin-bottom: 0;
+            }
+            .sidebar nav ul li a {
+                padding: 8px 10px;
+                font-size: 0.9em;
+                gap: 5px;
+            }
+            .main-content {
+                padding: 15px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .kpi-cards {
+                grid-template-columns: 1fr; /* Single column for KPI cards */
+            }
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            .search-bar {
+                flex-direction: column; /* Stack search elements vertically */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <h2>Fonepoints BA Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a href="#" class="active" data-section="overview"><span class="icon">📊</span> Overview</a></li>
+                <li><a href="#" data-section="customer-analytics"><span class="icon">👥</span> Customer Analytics</a></li>
+                <li><a href="#" data-section="customer-profiles"><span class="icon">👤</span> Customer Profiles</a></li>
+                <li><a href="#" data-section="financial-trends"><span class="icon">💰</span> Financial Trends</a></li>
+                <li><a href="#" data-section="behavior-patterns"><span class="icon">🚶</span> Behavior Patterns</a></li>
+                <li><a href="#" data-section="risk-compliance"><span class="icon">⚖️</span> Risk & Compliance</a></li>
+                <li><a href="#" data-section="satisfaction-feedback"><span class="icon">😊</span> Satisfaction</a></li>
+                <li><a href="#" data-section="settings"><span class="icon">⚙️</span> Settings</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <header class="header">
+            <h1>Business Analyst Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, Sarah!</span>
+                <div class="user-avatar">S</div>
+            </div>
+        </header>
+
+        <!-- Section 1: Overview - Customer Overview Cards, Business Metrics & KPIs -->
+        <section id="overview" class="dashboard-section">
+            <h2>Overall Fonepoints Performance</h2>
+            <div class="kpi-cards">
+                <div class="kpi-card">
+                    <div class="value">2.5M</div>
+                    <div class="label">Total Active Fonepoints Users</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="value">18.5%</div>
+                    <div class="label">Fonepoints Redemption Rate (YoY +X%)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="value">Rs. 1,25,000</div>
+                    <div class="label">Avg. Redemption Value (Monthly)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="value">72%</div>
+                    <div class="label">Campaign Uptake Rate (Last Qtr)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="value">9.2K</div>
+                    <div class="label">New Loyalty Enrollments (Monthly)</div>
+                </div>
+                <div class="kpi-card negative">
+                    <div class="value">3.2%</div>
+                    <div class="label">Points Expiring Soon (Next 30 Days)</div>
+                </div>
+            </div>
+
+            <h2>Key Business Objectives Progress</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="chart-container">
+                    <canvas id="redemptionRateChart"></canvas>
+                    <p>Redemption Rate Trend (Target: X% within 6 months)</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="engagementRateChart"></canvas>
+                    <p>Loyalty Engagement (Offer Views, Challenge Participations - Target: Y% within 6 months)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Customer Analytics & Segmentation -->
+        <section id="customer-analytics" class="dashboard-section" style="display: none;">
+            <h2>Customer Segmentation Analysis</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="chart-container">
+                    <canvas id="segmentDistributionChart"></canvas>
+                    <p>Customer Segments Distribution</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="segmentValueChart"></canvas>
+                    <p>Average Fonepoints Value by Segment</p>
+                </div>
+            </div>
+
+            <h3>Segment Insights</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Segment</th>
+                        <th># Users</th>
+                        <th>Avg. Points Earned</th>
+                        <th>Avg. Redemptions</th>
+                        <th>Engagement Score</th>
+                        <th>Recommended Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>High-Value Earners</td>
+                        <td>250,000</td>
+                        <td>Rs. 5,000</td>
+                        <td>3</td>
+                        <td>85%</td>
+                        <td>Exclusive premium offers, early access to rewards.</td>
+                    </tr>
+                    <tr>
+                        <td>Frequent Redeemers</td>
+                        <td>180,000</td>
+                        <td>Rs. 2,500</td>
+                        <td>8</td>
+                        <td>92%</td>
+                        <td>Gamified challenges, micro-rewards.</td>
+                    </tr>
+                    <tr>
+                        <td>Dormant Users</td>
+                        <td>800,000</td>
+                        <td>Rs. 1,200</td>
+                        <td>0</td>
+                        <td>15%</td>
+                        <td>Reactivation campaigns, personalized expiry notifications.</td>
+                    </tr>
+                    <tr>
+                        <td>New Joiners (Last 30 Days)</td>
+                        <td>9,200</td>
+                        <td>Rs. 150</td>
+                        <td>0</td>
+                        <td>30%</td>
+                        <td>Onboarding drip campaigns, first redemption bonus.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 3: Customer Profiles (with search and detail view) -->
+        <section id="customer-profiles" class="dashboard-section" style="display: none;">
+            <h2>Customer Profiles & Search</h2>
+            <div class="search-bar">
+                <input type="text" id="customerSearch" placeholder="Search by Customer ID, Name, or Phone...">
+                <button class="btn" onclick="filterCustomers()">Search</button>
+                <button class="btn btn-outline" onclick="exportCustomers()">Export Data</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Total Fonepoints</th>
+                        <th>Last Activity</th>
+                        <th>Segment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="customerTableBody">
+                    <tr>
+                        <td>CUST001</td>
+                        <td>John Doe</td>
+                        <td>Kathmandu, Nepal</td>
+                        <td>Rs. 1,250</td>
+                        <td>2024-07-20</td>
+                        <td>Frequent Redeemer</td>
+                        <td><button class="btn btn-outline" onclick="openCustomerProfile('John Doe', 'CUST001', '9812345678', 'john.doe@email.com', 'Kathmandu, Nepal', '2022-01-15', 'Frequent Redeemer', 'Active', '1,250', '5,500', 8, '5%', 'Tier 2', '2024-07-20', [
+                            {date: '2024-07-20', desc: 'Redeemed 100 Fonepoints for Rs. 50 voucher (eSewa).'},
+                            {date: '2024-07-18', desc: 'Earned 50 Fonepoints from Merchant X transaction.'},
+                            {date: '2024-07-15', desc: 'Viewed "Weekend Flash Sale" offer.'},
+                            {date: '2024-07-10', desc: 'Received Fonepoints balance notification.'},
+                            {date: '2024-06-25', desc: 'Participated in "Spend & Earn" challenge.'}
+                        ])">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>CUST002</td>
+                        <td>Sarah Chen</td>
+                        <td>Mumbai, India</td>
+                        <td>Rs. 5,800</td>
+                        <td>2024-07-22</td>
+                        <td>High-Value Earner</td>
+                        <td><button class="btn btn-outline" onclick="openCustomerProfile('Sarah Chen', 'CUST002', '9823456789', 'sarah.c@email.com', 'Mumbai, India', '2023-03-01', 'High-Value Earner', 'Active', '5,800', '15,000', 5, '2%', 'Tier 3', '2024-07-22', [
+                            {date: '2024-07-22', desc: 'Earned 300 Fonepoints from large bill payment.'},
+                            {date: '2024-07-20', desc: 'Viewed personalized "Travel Offer".'},
+                            {date: '2024-07-10', desc: 'Redeemed 500 Fonepoints for Rs. 250 travel discount.'},
+                            {date: '2024-06-15', desc: 'Participated in \'Big Spender\' gamified challenge.'}
+                        ])">View Details</button></td>
+                    </tr>
+                     <tr>
+                        <td>CUST003</td>
+                        <td>Michael Lee</td>
+                        <td>Dhaka, Bangladesh</td>
+                        <td>Rs. 300</td>
+                        <td>2024-06-01</td>
+                        <td>Dormant User</td>
+                        <td><button class="btn btn-outline" onclick="openCustomerProfile('Michael Lee', 'CUST003', '9834567890', 'michael.l@email.com', 'Dhaka, Bangladesh', '2021-08-01', 'Dormant User', 'Inactive', '300', '1,500', 1, '15%', 'Tier 1', '2024-06-01', [
+                            {date: '2024-06-01', desc: 'Last login to Fonepay App.'},
+                            {date: '2024-05-10', desc: 'Received Fonepoints expiry reminder (no action).'},
+                            {date: '2023-12-15', desc: 'Earned 50 Fonepoints from small transaction.'},
+                            {date: '2023-01-20', desc: 'Initial Fonepoints earning.'}
+                        ])">View Details</button></td>
+                    </tr>
+                     <tr>
+                        <td>CUST004</td>
+                        <td>Aisha Khan</td>
+                        <td>Lahore, Pakistan</td>
+                        <td>Rs. 850</td>
+                        <td>2024-07-19</td>
+                        <td>New Joiner</td>
+                        <td><button class="btn btn-outline" onclick="openCustomerProfile('Aisha Khan', 'CUST004', '9845678901', 'aisha.k@email.com', 'Lahore, Pakistan', '2024-07-05', 'New Joiner', 'Active', '850', '850', 0, '0%', 'Tier 1', '2024-07-19', [
+                            {date: '2024-07-19', desc: 'Earned 100 Fonepoints on first large transaction.'},
+                            {date: '2024-07-10', desc: 'Completed onboarding challenge, earned 200 Fonepoints bonus.'},
+                            {date: '2024-07-05', desc: 'Fonepoints Loyalty Program enrollment.'}
+                        ])">View Details</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Customer Profile Modal -->
+        <div id="customerProfileModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalCustomerName"></h3>
+                    <span class="close-button" onclick="closeCustomerProfileModal()">&times;</span>
+                </div>
+                <div class="profile-details">
+                    <div><strong>Customer ID:</strong> <span id="profileId"></span></div>
+                    <div><strong>Phone:</strong> <span id="profilePhone"></span></div>
+                    <div><strong>Email:</strong> <span id="profileEmail"></span></div>
+                    <div><strong>Location:</strong> <span id="profileLocation"></span></div>
+                    <div><strong>Enrollment Date:</strong> <span id="profileEnrollment"></span></div>
+                    <div><strong>Current Segment:</strong> <span id="profileSegment"></span></div>
+                    <div><strong>Status:</strong> <span id="profileStatus"></span></div>
+                    <div><strong>Current Fonepoints:</strong> <span id="profileCurrentPoints"></span></div>
+                    <div><strong>Total Points Earned:</strong> <span id="profileTotalEarned"></span></div>
+                    <div><strong>Total Redemptions:</strong> <span id="profileTotalRedemptions"></span></div>
+                    <div><strong>Points Expiring (Next 30D):</strong> <span id="profileExpiringPoints"></span></div>
+                    <div><strong>Loyalty Tier:</strong> <span id="profileLoyaltyTier"></span></div>
+                    <div><strong>Last Activity:</strong> <span id="profileLastActivity"></span></div>
+                </div>
+
+                <div class="interaction-timeline">
+                    <h4>Customer Interaction & Redemption History</h4>
+                    <div id="timelineEvents">
+                        <!-- Events will be populated here by JS -->
+                    </div>
+                </div>
+                <button class="btn" style="margin-top: 20px;">Generate Behavior Report</button>
+            </div>
+        </div>
+
+
+        <!-- Section 4: Financial Analysis and Trends -->
+        <section id="financial-trends" class="dashboard-section" style="display: none;">
+            <h2>Financial Analysis & Fonepoints Trends</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="chart-container">
+                    <canvas id="fonepointsValueTrend"></canvas>
+                    <p>Total Fonepoints Value Earned & Redeemed (Monthly)</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="redemptionCategoryChart"></canvas>
+                    <p>Redemption Value by Category</p>
+                </div>
+            </div>
+
+            <h3>Fonepoints Financial Metrics</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current Value</th>
+                        <th>Change (Last Month)</th>
+                        <th>YoY Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Fonepoints Outstanding Value</td>
+                        <td>Rs. 5,20,00,000</td>
+                        <td>+Rs. 15,00,000</td>
+                        <td>+12.5%</td>
+                    </tr>
+                    <tr>
+                        <td>Total Redeemed Value (Monthly)</td>
+                        <td>Rs. 85,00,000</td>
+                        <td>+Rs. 5,00,000</td>
+                        <td>+18.0%</td>
+                    </tr>
+                    <tr>
+                        <td>Average Cost Per Point Redeemed</td>
+                        <td>Rs. 0.50</td>
+                        <td>-Rs. 0.02</td>
+                        <td>-4.0%</td>
+                    </tr>
+                    <tr>
+                        <td>Lifetime Value (LTV) Contribution from Loyalty</td>
+                        <td>Rs. 2,500/user</td>
+                        <td>+Rs. 100</td>
+                        <td>+5.5%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 5: Customer Behavior Patterns -->
+        <section id="behavior-patterns" class="dashboard-section" style="display: none;">
+            <h2>Customer Behavior Patterns</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="chart-container">
+                    <canvas id="transactionFrequencyChart"></canvas>
+                    <p>Transaction Frequency by User Segment</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="offerInteractionChart"></canvas>
+                    <p>Offer Views vs. Redemptions</p>
+                </div>
+            </div>
+
+            <h3>Top Engaging Campaigns & Rewards</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campaign Name</th>
+                        <th>Type</th>
+                        <th>Participation Rate</th>
+                        <th>Conversion Rate</th>
+                        <th>Total Fonepoints Redeemed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Weekend Flash Sale (July)</td>
+                        <td>Flash Sale</td>
+                        <td>65%</td>
+                        <td>12%</td>
+                        <td>Rs. 12,00,000</td>
+                    </tr>
+                    <tr>
+                        <td>Pay Bill, Earn Double</td>
+                        <td>Bonus Earn</td>
+                        <td>45%</td>
+                        <td>-</td>
+                        <td>N/A (Earning)</td>
+                    </tr>
+                    <tr>
+                        <td>Fonepoints Challenge: 5 Txns</td>
+                        <td>Gamified Challenge</td>
+                        <td>30%</td>
+                        <td>80% (Completion)</td>
+                        <td>Rs. 8,00,000 (Bonus)</td>
+                    </tr>
+                    <tr>
+                        <td>Travel Voucher Discount</td>
+                        <td>Offer</td>
+                        <td>20%</td>
+                        <td>5%</td>
+                        <td>Rs. 5,00,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 6: Risk Assessment and Compliance -->
+        <section id="risk-compliance" class="dashboard-section" style="display: none;">
+            <h2>Risk Assessment & Compliance Monitoring</h2>
+            <div class="kpi-cards">
+                <div class="kpi-card negative">
+                    <div class="value">2</div>
+                    <div class="label">High-Risk Transactions (Past 24H)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="value">99.8%</div>
+                    <div class="label">Data Privacy Compliance Score</div>
+                </div>
+                <div class="kpi-card negative">
+                    <div class="value">1</div>
+                    <div class="label">Pending NRB Guideline Review</div>
+                </div>
+                 <div class="kpi-card">
+                    <div class="value">Green</div>
+                    <div class="label">AML Checks Status (Last Update)</div>
+                </div>
+            </div>
+
+            <h3>Recent Compliance Alerts</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Alert Type</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-07-22 14:30</td>
+                        <td>Data Access Violation</td>
+                        <td>Unauthorized attempt to access customer PII by internal user.</td>
+                        <td>Investigating</td>
+                        <td><button class="btn btn-outline">View Log</button></td>
+                    </tr>
+                    <tr>
+                        <td>2024-07-21 10:00</td>
+                        <td>Unusual Redemption Pattern</td>
+                        <td>Single user redeeming large points from multiple devices.</td>
+                        <td>Monitoring</td>
+                        <td><button class="btn btn-outline">Flag Account</button></td>
+                    </tr>
+                    <tr>
+                        <td>2024-07-15 09:00</td>
+                        <td>Policy Deviation</td>
+                        <td>Campaign offer deployed without standard compliance review.</td>
+                        <td>Resolved</td>
+                        <td><button class="btn btn-outline">View Report</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn" style="margin-top: 20px;">Generate Compliance Report</button>
+        </section>
+
+        <!-- Section 7: Customer Satisfaction Metrics -->
+        <section id="satisfaction-feedback" class="dashboard-section" style="display: none;">
+            <h2>Customer Satisfaction & Feedback</h2>
+            <div class="kpi-cards">
+                <div class="kpi-card">
+                    <div class="value">7.8</div>
+                    <div class="label">NPS Score (Loyalty Program)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="value">85%</div>
+                    <div class="label">Problem Resolution Rate</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="value">4.2/5</div>
+                    <div class="label">App Store Rating (Loyalty Features)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="value">350</div>
+                    <div class="label">New Feedback Submissions (Last 7D)</div>
+                </div>
+            </div>
+
+            <h3>Recent Customer Feedback Highlights</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Customer ID</th>
+                        <th>Category</th>
+                        <th>Feedback Summary</th>
+                        <th>Sentiment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-07-22</td>
+                        <td>CUST008</td>
+                        <td>Redemption Process</td>
+                        <td>"Redemption was fast and easy, very happy with the voucher."</td>
+                        <td>Positive 😊</td>
+                    </tr>
+                    <tr>
+                        <td>2024-07-21</td>
+                        <td>CUST015</td>
+                        <td>Points Awareness</td>
+                        <td>"Still not sure how many points I have, notifications are sometimes missed."</td>
+                        <td>Neutral 😐</td>
+                    </tr>
+                    <tr>
+                        <td>2024-07-20</td>
+                        <td>CUST003</td>
+                        <td>Offer Relevance</td>
+                        <td>"Offers are not relevant to my spending habits."</td>
+                        <td>Negative 😠</td>
+                    </tr>
+                    <tr>
+                        <td>2024-07-19</td>
+                        <td>CUST022</td>
+                        <td>New Features</td>
+                        <td>"Love the new gamified challenges, keeps me engaged!"</td>
+                        <td>Positive 😄</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 8: Settings (Placeholder) -->
+        <section id="settings" class="dashboard-section" style="display: none;">
+            <h2>Dashboard Settings</h2>
+            <p>Configure dashboard preferences, data sources, and reporting schedules here.</p>
+            <button class="btn">Save Settings</button>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarLinks = document.querySelectorAll('.sidebar nav ul li a');
+            const sections = document.querySelectorAll('.dashboard-section');
+
+            // Function to show/hide sections and update active link
+            function showSection(targetId) {
+                sections.forEach(section => {
+                    section.style.display = 'none'; // Hide all sections
+                });
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.style.display = 'block'; // Show the target section
+                    targetSection.style.animation = 'fadeInSlideUp 0.8s forwards'; // Re-apply animation
+                }
+
+                // Update active link in sidebar
+                sidebarLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                document.querySelector(`[data-section="${targetId}"]`).classList.add('active');
+            }
+
+            // Add click listeners to sidebar links
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('data-section');
+                    showSection(targetId);
+                });
+            });
+
+            // Initial load: show overview section
+            showSection('overview');
+
+            // --- Dummy Chart.js Placeholder ---
+            // In a real application, you would include Chart.js library:
+            // <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            // and then initialize actual charts here using the provided canvas IDs.
+            const createDummyChart = (canvasId, type, label, data, labels) => {
+                const ctx = document.getElementById(canvasId);
+                if (ctx) {
+                    // This creates a visual placeholder for the chart
+                    ctx.innerHTML = `<p style="text-align: center; color: #888; font-style: italic;">[${label} ${type} Chart Placeholder]</p>`;
+                    ctx.style.display = 'flex'; /* To center placeholder text */
+                    ctx.style.justifyContent = 'center';
+                    ctx.style.alignItems = 'center';
+
+                    // Actual Chart.js initialization would look like this (commented out):
+                    /*
+                    new Chart(ctx.getContext('2d'), {
+                        type: type,
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: label,
+                                data: data,
+                                backgroundColor: type === 'bar' ? 'rgba(52, 152, 219, 0.7)' : 'rgba(52, 152, 219, 0.5)',
+                                borderColor: 'rgba(52, 152, 219, 1)',
+                                borderWidth: 1,
+                                fill: type === 'line' ? true : false,
+                                tension: 0.3 // For smoother lines
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'var(--text-color)' } },
+                                x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'var(--text-color)' } }
+                            },
+                            plugins: {
+                                legend: { labels: { color: 'var(--text-color)' } },
+                                tooltip: { enabled: true }
+                            }
+                        }
+                    });
+                    */
+                }
+            };
+
+            // Call dummy chart creation for all canvas elements
+            // Note: Data is illustrative; actual data would come from APIs/backend
+            createDummyChart('redemptionRateChart', 'line', 'Redemption Rate', [10, 12, 15, 18, 18.5, 19], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
+            createDummyChart('engagementRateChart', 'line', 'Engagement Rate', [50, 55, 60, 65, 70, 72], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
+            createDummyChart('segmentDistributionChart', 'doughnut', 'Segment Distribution', [25, 18, 80, 9], ['High-Value', 'Frequent', 'Dormant', 'New']);
+            createDummyChart('segmentValueChart', 'bar', 'Avg. Fonepoints Value', [5000, 2500, 1200, 150], ['High-Value', 'Frequent', 'Dormant', 'New']);
+            createDummyChart('fonepointsValueTrend', 'line', 'Fonepoints Value (Earned vs Redeemed)', [
+                {label: 'Earned', data: [10000000, 12000000, 11000000, 13000000, 14000000, 15000000]},
+                {label: 'Redeemed', data: [5000000, 6000000, 7000000, 8000000, 8500000, 9000000]}
+            ], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
+            createDummyChart('redemptionCategoryChart', 'pie', 'Redemption Categories', [30, 25, 20, 15, 10], ['Utilities', 'Retail', 'Travel', 'Dining', 'Others']);
+            createDummyChart('transactionFrequencyChart', 'bar', 'Transaction Frequency', [10, 15, 8, 5], ['Daily', 'Weekly', 'Monthly', 'Quarterly']);
+            createDummyChart('offerInteractionChart', 'bar', 'Offer Interaction', [500, 300, 150, 100], ['Viewed', 'Clicked', 'Saved', 'Redeemed']);
+
+
+            // --- Customer Profile Modal Logic ---
+            const customerProfileModal = document.getElementById('customerProfileModal');
+            const profileId = document.getElementById('profileId');
+            const profilePhone = document.getElementById('profilePhone');
+            const profileEmail = document.getElementById('profileEmail');
+            const profileLocation = document.getElementById('profileLocation');
+            const profileEnrollment = document.getElementById('profileEnrollment');
+            const profileSegment = document.getElementById('profileSegment');
+            const profileStatus = document.getElementById('profileStatus');
+            const profileCurrentPoints = document.getElementById('profileCurrentPoints');
+            const profileTotalEarned = document.getElementById('profileTotalEarned');
+            const profileTotalRedemptions = document.getElementById('profileTotalRedemptions');
+            const profileExpiringPoints = document.getElementById('profileExpiringPoints');
+            const profileLoyaltyTier = document.getElementById('profileLoyaltyTier');
+            const profileLastActivity = document.getElementById('profileLastActivity');
+            const modalCustomerName = document.getElementById('modalCustomerName');
+            const timelineEvents = document.getElementById('timelineEvents');
+
+            // Helper function to format currency as Rs. 1,23,456
+            function formatRupees(amount) {
+                if (typeof amount !== 'string') {
+                    amount = String(amount);
+                }
+                const parts = amount.split('.');
+                let integerPart = parts[0];
+                let lastThree = integerPart.substring(integerPart.length - 3);
+                let otherNumbers = integerPart.substring(0, integerPart.length - 3);
+                if (otherNumbers !== '') {
+                    lastThree = ',' + lastThree;
+                }
+                let formatted = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+                return `Rs. ${formatted}${parts.length > 1 ? '.' + parts[1] : ''}`;
+            }
+
+            window.openCustomerProfile = (name, id, phone, email, location, enrollment, segment, status, currentPoints, totalEarned, totalRedemptions, expiringPoints, loyaltyTier, lastActivity, interactions) => {
+                modalCustomerName.textContent = `Customer Profile: ${name}`;
+                profileId.textContent = id;
+                profilePhone.textContent = phone;
+                profileEmail.textContent = email;
+                profileLocation.textContent = location;
+                profileEnrollment.textContent = enrollment;
+                profileSegment.textContent = segment;
+                profileStatus.textContent = status;
+                profileCurrentPoints.textContent = formatRupees(currentPoints);
+                profileTotalEarned.textContent = formatRupees(totalEarned);
+                profileTotalRedemptions.textContent = totalRedemptions;
+                profileExpiringPoints.textContent = expiringPoints;
+                profileLoyaltyTier.textContent = loyaltyTier;
+                profileLastActivity.textContent = lastActivity;
+
+                timelineEvents.innerHTML = '';
+                interactions.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add('timeline-item');
+                    div.innerHTML = `<span class="date">${item.date}:</span> <span class="description">${item.desc}</span>`;
+                    timelineEvents.appendChild(div);
+                });
+
+                customerProfileModal.style.display = 'flex';
+            };
+
+            window.closeCustomerProfileModal = () => {
+                customerProfileModal.style.display = 'none';
+            };
+
+            // Close modal when clicking outside of it
+            window.onclick = (event) => {
+                if (event.target == customerProfileModal) {
+                    customerProfileModal.style.display = 'none';
+                }
+            };
+
+            // --- Dummy Search & Export for Customer Profiles ---
+            window.filterCustomers = () => {
+                const searchText = document.getElementById('customerSearch').value.toLowerCase();
+                const tableBody = document.getElementById('customerTableBody');
+                const rows = tableBody.getElementsByTagName('tr');
+
+                for (let i = 0; i < rows.length; i++) {
+                    let row = rows[i];
+                    let cells = row.getElementsByTagName('td');
+                    let found = false;
+                    for (let j = 0; j < cells.length - 1; j++) { // Exclude the last 'Action' cell
+                        let cellText = cells[j].textContent.toLowerCase();
+                        if (cellText.includes(searchText)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            };
+
+            window.exportCustomers = () => {
+                alert('Exporting customer data to CSV... (This is a dummy function)');
+            };
+        });
+    </script>
+</body>
+</html>

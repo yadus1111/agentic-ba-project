@@ -1,0 +1,952 @@
+[
+  {
+    "type": "frame",
+    "name": "Dashboard_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "type": "rectangle",
+    "name": "Header_Area",
+    "parent": "Dashboard_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 60
+  },
+  {
+    "type": "text",
+    "content": "Bank Name",
+    "parent": "Header_Area",
+    "x": 20,
+    "y": 18,
+    "width": 100,
+    "height": 24
+  },
+  {
+    "type": "icon",
+    "name": "User_Profile_Icon",
+    "parent": "Header_Area",
+    "x": 280,
+    "y": 18,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "icon",
+    "name": "Notifications_Icon",
+    "parent": "Header_Area",
+    "x": 320,
+    "y": 18,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "rectangle",
+    "name": "AccountSummary_Card",
+    "parent": "Dashboard_Screen",
+    "x": 20,
+    "y": 80,
+    "width": 335,
+    "height": 160
+  },
+  {
+    "type": "text",
+    "content": "Primary Savings Account",
+    "parent": "AccountSummary_Card",
+    "x": 40,
+    "y": 100,
+    "width": 200,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "Account Number: XXXX-XXXX",
+    "parent": "AccountSummary_Card",
+    "x": 40,
+    "y": 125,
+    "width": 200,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "Account Balance",
+    "parent": "AccountSummary_Card",
+    "x": 40,
+    "y": 155,
+    "width": 150,
+    "height": 16
+  },
+  {
+    "type": "text",
+    "content": "$X,XXX.XX",
+    "parent": "AccountSummary_Card",
+    "x": 40,
+    "y": 175,
+    "width": 200,
+    "height": 28
+  },
+  {
+    "type": "button",
+    "content": "View Account Details",
+    "parent": "AccountSummary_Card",
+    "x": 40,
+    "y": 205,
+    "width": 180,
+    "height": 30
+  },
+  {
+    "type": "rectangle",
+    "name": "QuickActions_Container",
+    "parent": "Dashboard_Screen",
+    "x": 20,
+    "y": 260,
+    "width": 335,
+    "height": 80
+  },
+  {
+    "type": "button",
+    "content": "Transfer Funds",
+    "parent": "QuickActions_Container",
+    "x": 30,
+    "y": 280,
+    "width": 100,
+    "height": 40
+  },
+  {
+    "type": "button",
+    "content": "Pay Bills",
+    "parent": "QuickActions_Container",
+    "x": 140,
+    "y": 280,
+    "width": 100,
+    "height": 40
+  },
+  {
+    "type": "button",
+    "content": "View Statements",
+    "parent": "QuickActions_Container",
+    "x": 250,
+    "y": 280,
+    "width": 100,
+    "height": 40
+  },
+  {
+    "type": "text",
+    "content": "Offers Tailored for You",
+    "parent": "Dashboard_Screen",
+    "x": 20,
+    "y": 360,
+    "width": 250,
+    "height": 24
+  },
+  {
+    "type": "rectangle",
+    "name": "PersonalizedOffers_Container",
+    "parent": "Dashboard_Screen",
+    "x": 0,
+    "y": 390,
+    "width": 375,
+    "height": 240
+  },
+  {
+    "type": "rectangle",
+    "name": "OfferCard_PreApproved",
+    "parent": "PersonalizedOffers_Container",
+    "x": 20,
+    "y": 400,
+    "width": 160,
+    "height": 180
+  },
+  {
+    "type": "text",
+    "content": "Pre-Approved",
+    "parent": "OfferCard_PreApproved",
+    "x": 30,
+    "y": 415,
+    "width": 100,
+    "height": 16
+  },
+  {
+    "type": "text",
+    "content": "Personal Loan",
+    "parent": "OfferCard_PreApproved",
+    "x": 30,
+    "y": 440,
+    "width": 130,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "Up to $X,XXX at Y% APR",
+    "parent": "OfferCard_PreApproved",
+    "x": 30,
+    "y": 465,
+    "width": 130,
+    "height": 34
+  },
+  {
+    "type": "button",
+    "content": "View Details",
+    "parent": "OfferCard_PreApproved",
+    "x": 30,
+    "y": 505,
+    "width": 110,
+    "height": 30
+  },
+  {
+    "type": "rectangle",
+    "name": "OfferCard_Recommended",
+    "parent": "PersonalizedOffers_Container",
+    "x": 195,
+    "y": 400,
+    "width": 160,
+    "height": 180
+  },
+  {
+    "type": "text",
+    "content": "Recommended for You",
+    "parent": "OfferCard_Recommended",
+    "x": 205,
+    "y": 415,
+    "width": 140,
+    "height": 16
+  },
+  {
+    "type": "text",
+    "content": "Education Loan",
+    "parent": "OfferCard_Recommended",
+    "x": 205,
+    "y": 440,
+    "width": 130,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "Funds for your future",
+    "parent": "OfferCard_Recommended",
+    "x": 205,
+    "y": 465,
+    "width": 130,
+    "height": 34
+  },
+  {
+    "type": "button",
+    "content": "View Details",
+    "parent": "OfferCard_Recommended",
+    "x": 205,
+    "y": 505,
+    "width": 110,
+    "height": 30
+  },
+  {
+    "type": "button",
+    "content": "View All Offers",
+    "parent": "Dashboard_Screen",
+    "x": 20,
+    "y": 600,
+    "width": 150,
+    "height": 40
+  },
+  {
+    "type": "rectangle",
+    "name": "BottomNav_Frame",
+    "parent": "Dashboard_Screen",
+    "x": 0,
+    "y": 742,
+    "width": 375,
+    "height": 70
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Home_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 35,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Home",
+    "parent": "BottomNav_Frame",
+    "x": 30,
+    "y": 778,
+    "width": 40,
+    "height": 16
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Accounts_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 105,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Accounts",
+    "parent": "BottomNav_Frame",
+    "x": 90,
+    "y": 778,
+    "width": 60,
+    "height": 16
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Transactions_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 175,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Transactions",
+    "parent": "BottomNav_Frame",
+    "x": 155,
+    "y": 778,
+    "width": 80,
+    "height": 16
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Payments_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 245,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Payments",
+    "parent": "BottomNav_Frame",
+    "x": 230,
+    "y": 778,
+    "width": 60,
+    "height": 16
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Offers_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 315,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Offers",
+    "parent": "BottomNav_Frame",
+    "x": 310,
+    "y": 778,
+    "width": 50,
+    "height": 16
+  },
+  {
+    "type": "frame",
+    "name": "AllOffers_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "type": "rectangle",
+    "name": "OffersHeader_Area",
+    "parent": "AllOffers_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 60
+  },
+  {
+    "type": "icon",
+    "name": "Back_Button_Offers",
+    "parent": "OffersHeader_Area",
+    "x": 20,
+    "y": 18,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Loan Offers",
+    "parent": "OffersHeader_Area",
+    "x": 60,
+    "y": 18,
+    "width": 150,
+    "height": 24
+  },
+  {
+    "type": "icon",
+    "name": "Filter_Icon_Offers",
+    "parent": "OffersHeader_Area",
+    "x": 320,
+    "y": 18,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "rectangle",
+    "name": "OffersList_Container",
+    "parent": "AllOffers_Screen",
+    "x": 0,
+    "y": 60,
+    "width": 375,
+    "height": 680
+  },
+  {
+    "type": "text",
+    "content": "Pre-Approved Offers",
+    "parent": "OffersList_Container",
+    "x": 20,
+    "y": 80,
+    "width": 200,
+    "height": 20
+  },
+  {
+    "type": "rectangle",
+    "name": "OfferCard_PreApproved_Full",
+    "parent": "OffersList_Container",
+    "x": 20,
+    "y": 110,
+    "width": 335,
+    "height": 140
+  },
+  {
+    "type": "text",
+    "content": "Pre-Approved Personal Loan",
+    "parent": "OfferCard_PreApproved_Full",
+    "x": 40,
+    "y": 125,
+    "width": 250,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "Offer Details: Up to $X,XXX.00 at Y% APR. No collateral required.",
+    "parent": "OfferCard_PreApproved_Full",
+    "x": 40,
+    "y": 150,
+    "width": 300,
+    "height": 36
+  },
+  {
+    "type": "button",
+    "content": "Review Pre-Approval",
+    "parent": "OfferCard_PreApproved_Full",
+    "x": 40,
+    "y": 195,
+    "width": 180,
+    "height": 40
+  },
+  {
+    "type": "text",
+    "content": "Recommended for You",
+    "parent": "OffersList_Container",
+    "x": 20,
+    "y": 280,
+    "width": 200,
+    "height": 20
+  },
+  {
+    "type": "rectangle",
+    "name": "OfferCard_Education_Full",
+    "parent": "OffersList_Container",
+    "x": 20,
+    "y": 310,
+    "width": 335,
+    "height": 140
+  },
+  {
+    "type": "text",
+    "content": "Education Loan for Higher Studies",
+    "parent": "OfferCard_Education_Full",
+    "x": 40,
+    "y": 325,
+    "width": 280,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "Offer Details: Flexible repayment terms, competitive interest rates for your academic journey.",
+    "parent": "OfferCard_Education_Full",
+    "x": 40,
+    "y": 350,
+    "width": 300,
+    "height": 36
+  },
+  {
+    "type": "button",
+    "content": "Learn More",
+    "parent": "OfferCard_Education_Full",
+    "x": 40,
+    "y": 395,
+    "width": 150,
+    "height": 40
+  },
+  {
+    "type": "text",
+    "content": "General Loan Products",
+    "parent": "OffersList_Container",
+    "x": 20,
+    "y": 480,
+    "width": 200,
+    "height": 20
+  },
+  {
+    "type": "rectangle",
+    "name": "OfferCard_HomeLoan_Full",
+    "parent": "OffersList_Container",
+    "x": 20,
+    "y": 510,
+    "width": 335,
+    "height": 100
+  },
+  {
+    "type": "text",
+    "content": "Home Loan",
+    "parent": "OfferCard_HomeLoan_Full",
+    "x": 40,
+    "y": 525,
+    "width": 200,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "Description: Realize your dream home with our flexible home loans.",
+    "parent": "OfferCard_HomeLoan_Full",
+    "x": 40,
+    "y": 550,
+    "width": 280,
+    "height": 20
+  },
+  {
+    "type": "button",
+    "content": "Explore",
+    "parent": "OfferCard_HomeLoan_Full",
+    "x": 250,
+    "y": 540,
+    "width": 80,
+    "height": 40
+  },
+  {
+    "type": "rectangle",
+    "name": "BottomNav_Frame",
+    "parent": "AllOffers_Screen",
+    "x": 0,
+    "y": 742,
+    "width": 375,
+    "height": 70
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Home_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 35,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Home",
+    "parent": "BottomNav_Frame",
+    "x": 30,
+    "y": 778,
+    "width": 40,
+    "height": 16
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Accounts_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 105,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Accounts",
+    "parent": "BottomNav_Frame",
+    "x": 90,
+    "y": 778,
+    "width": 60,
+    "height": 16
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Transactions_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 175,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Transactions",
+    "parent": "BottomNav_Frame",
+    "x": 155,
+    "y": 778,
+    "width": 80,
+    "height": 16
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Payments_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 245,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Payments",
+    "parent": "BottomNav_Frame",
+    "x": 230,
+    "y": 778,
+    "width": 60,
+    "height": 16
+  },
+  {
+    "type": "icon",
+    "name": "Nav_Offers_Icon",
+    "parent": "BottomNav_Frame",
+    "x": 315,
+    "y": 752,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Offers",
+    "parent": "BottomNav_Frame",
+    "x": 310,
+    "y": 778,
+    "width": 50,
+    "height": 16
+  },
+  {
+    "type": "frame",
+    "name": "LoanDetail_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "type": "rectangle",
+    "name": "LoanDetailHeader_Area",
+    "parent": "LoanDetail_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 60
+  },
+  {
+    "type": "icon",
+    "name": "Back_Button_LoanDetail",
+    "parent": "LoanDetailHeader_Area",
+    "x": 20,
+    "y": 18,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Loan Product Details",
+    "parent": "LoanDetailHeader_Area",
+    "x": 60,
+    "y": 18,
+    "width": 250,
+    "height": 24
+  },
+  {
+    "type": "rectangle",
+    "name": "LoanDetails_Container",
+    "parent": "LoanDetail_Screen",
+    "x": 0,
+    "y": 60,
+    "width": 375,
+    "height": 682
+  },
+  {
+    "type": "text",
+    "content": "Pre-Approved Personal Loan",
+    "parent": "LoanDetails_Container",
+    "x": 20,
+    "y": 80,
+    "width": 335,
+    "height": 28
+  },
+  {
+    "type": "text",
+    "content": "Get quick funds for your personal needs with our pre-approved offer. Simple process, fast disbursal.",
+    "parent": "LoanDetails_Container",
+    "x": 20,
+    "y": 115,
+    "width": 335,
+    "height": 50
+  },
+  {
+    "type": "rectangle",
+    "name": "KeyFeatures_Card",
+    "parent": "LoanDetails_Container",
+    "x": 20,
+    "y": 180,
+    "width": 335,
+    "height": 180
+  },
+  {
+    "type": "text",
+    "content": "Key Features",
+    "parent": "KeyFeatures_Card",
+    "x": 40,
+    "y": 195,
+    "width": 150,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "Annual Interest Rate: X.XX% onwards",
+    "parent": "KeyFeatures_Card",
+    "x": 40,
+    "y": 225,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "Maximum Loan Term: XX Months",
+    "parent": "KeyFeatures_Card",
+    "x": 40,
+    "y": 250,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "Processing Fee: X% of Loan Amount",
+    "parent": "KeyFeatures_Card",
+    "x": 40,
+    "y": 275,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "Pre-Approved Amount: Up to $X,XXX.XX",
+    "parent": "KeyFeatures_Card",
+    "x": 40,
+    "y": 300,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "button",
+    "content": "View All Eligibility Criteria",
+    "parent": "KeyFeatures_Card",
+    "x": 40,
+    "y": 330,
+    "width": 200,
+    "height": 30
+  },
+  {
+    "type": "rectangle",
+    "name": "Eligibility_Section",
+    "parent": "LoanDetails_Container",
+    "x": 20,
+    "y": 380,
+    "width": 335,
+    "height": 150
+  },
+  {
+    "type": "text",
+    "content": "Are you eligible?",
+    "parent": "Eligibility_Section",
+    "x": 40,
+    "y": 395,
+    "width": 200,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "- Minimum Age: 21 Years",
+    "parent": "Eligibility_Section",
+    "x": 40,
+    "y": 425,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "- Minimum Monthly Income: $X,XXX",
+    "parent": "Eligibility_Section",
+    "x": 40,
+    "y": 445,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "- Consistent Salary Inflow (Past 6 months)",
+    "parent": "Eligibility_Section",
+    "x": 40,
+    "y": 465,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "- Good Credit History",
+    "parent": "Eligibility_Section",
+    "x": 40,
+    "y": 485,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "button",
+    "content": "Check My Eligibility",
+    "parent": "Eligibility_Section",
+    "x": 40,
+    "y": 505,
+    "width": 180,
+    "height": 30
+  },
+  {
+    "type": "rectangle",
+    "name": "Documents_Section",
+    "parent": "LoanDetails_Container",
+    "x": 20,
+    "y": 545,
+    "width": 335,
+    "height": 120
+  },
+  {
+    "type": "text",
+    "content": "Documents Required",
+    "parent": "Documents_Section",
+    "x": 40,
+    "y": 560,
+    "width": 200,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "- Identity Proof (e.g., National ID, Passport)",
+    "parent": "Documents_Section",
+    "x": 40,
+    "y": 590,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "- Address Proof (e.g., Utility Bill, Bank Statement)",
+    "parent": "Documents_Section",
+    "x": 40,
+    "y": 610,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "text",
+    "content": "- Income Statements (Last 3 Months)",
+    "parent": "Documents_Section",
+    "x": 40,
+    "y": 630,
+    "width": 280,
+    "height": 18
+  },
+  {
+    "type": "button",
+    "content": "Apply Now",
+    "parent": "LoanDetail_Screen",
+    "x": 20,
+    "y": 750,
+    "width": 335,
+    "height": 50
+  },
+  {
+    "type": "frame",
+    "name": "Preferences_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "type": "rectangle",
+    "name": "PreferencesHeader_Area",
+    "parent": "Preferences_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 60
+  },
+  {
+    "type": "icon",
+    "name": "Back_Button_Preferences",
+    "parent": "PreferencesHeader_Area",
+    "x": 20,
+    "y": 18,
+    "width": 24,
+    "height": 24
+  },
+  {
+    "type": "text",
+    "content": "Privacy & Preferences",
+    "parent": "PreferencesHeader_Area",
+    "x": 60,
+    "y": 18,
+    "width": 250,
+    "height": 24
+  },
+  {
+    "type": "rectangle",
+    "name": "PreferenceToggle_Card",
+    "parent": "Preferences_Screen",
+    "x": 20,
+    "y": 80,
+    "width": 335,
+    "height": 100
+  },
+  {
+    "type": "text",
+    "content": "Personalized Recommendations",
+    "parent": "PreferenceToggle_Card",
+    "x": 40,
+    "y": 95,
+    "width": 250,
+    "height": 20
+  },
+  {
+    "type": "text",
+    "content": "Allow us to tailor offers based on your activity and data.",
+    "parent": "PreferenceToggle_Card",
+    "x": 40,
+    "y": 120,
+    "width": 280,
+    "height": 36
+  },
+  {
+    "type": "toggle",
+    "name": "Personalization_OptOut_Toggle",
+    "parent": "PreferenceToggle_Card",
+    "x": 290,
+    "y": 105,
+    "width": 50,
+    "height": 24
+  }
+]

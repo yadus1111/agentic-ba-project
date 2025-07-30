@@ -1,0 +1,861 @@
+[
+  {
+    "type": "frame",
+    "name": "Dashboard View",
+    "x": 0,
+    "y": 0,
+    "width": "100%",
+    "height": "100%",
+    "parent": null
+  },
+  {
+    "type": "rectangle",
+    "name": "Top Navigation Bar",
+    "x": 0,
+    "y": 0,
+    "width": "100%",
+    "height": "8%",
+    "parent": "Dashboard View"
+  },
+  {
+    "type": "text",
+    "content": "App Name",
+    "x": "5%",
+    "y": "2%",
+    "width": "30%",
+    "height": "4%",
+    "parent": "Top Navigation Bar"
+  },
+  {
+    "type": "icon",
+    "name": "User Profile Icon",
+    "x": "80%",
+    "y": "2%",
+    "width": "5%",
+    "height": "4%",
+    "parent": "Top Navigation Bar"
+  },
+  {
+    "type": "icon",
+    "name": "Notifications Icon",
+    "x": "88%",
+    "y": "2%",
+    "width": "5%",
+    "height": "4%",
+    "parent": "Top Navigation Bar"
+  },
+  {
+    "type": "rectangle",
+    "name": "Main Content Area",
+    "x": 0,
+    "y": "8%",
+    "width": "100%",
+    "height": "84%",
+    "parent": "Dashboard View"
+  },
+  {
+    "type": "card",
+    "name": "Account Overview Card",
+    "x": "5%",
+    "y": "2%",
+    "width": "90%",
+    "height": "20%",
+    "parent": "Main Content Area"
+  },
+  {
+    "type": "text",
+    "content": "Account Balance",
+    "x": "5%",
+    "y": "10%",
+    "width": "40%",
+    "height": "3%",
+    "parent": "Account Overview Card"
+  },
+  {
+    "type": "text",
+    "content": "$XXXX.XX",
+    "x": "5%",
+    "y": "14%",
+    "width": "50%",
+    "height": "5%",
+    "parent": "Account Overview Card"
+  },
+  {
+    "type": "text",
+    "content": "Primary Account Nickname",
+    "x": "5%",
+    "y": "20%",
+    "width": "70%",
+    "height": "3%",
+    "parent": "Account Overview Card"
+  },
+  {
+    "type": "button",
+    "name": "View All Accounts Button",
+    "content": "View All Accounts",
+    "x": "60%",
+    "y": "15%",
+    "width": "35%",
+    "height": "5%",
+    "parent": "Account Overview Card"
+  },
+  {
+    "type": "card",
+    "name": "Quick Actions Card",
+    "x": "5%",
+    "y": "25%",
+    "width": "90%",
+    "height": "15%",
+    "parent": "Main Content Area"
+  },
+  {
+    "type": "text",
+    "content": "Quick Actions",
+    "x": "5%",
+    "y": "5%",
+    "width": "40%",
+    "height": "4%",
+    "parent": "Quick Actions Card"
+  },
+  {
+    "type": "button",
+    "name": "Send Money Button",
+    "content": "Send Money",
+    "x": "5%",
+    "y": "10%",
+    "width": "28%",
+    "height": "6%",
+    "parent": "Quick Actions Card"
+  },
+  {
+    "type": "button",
+    "name": "Pay Bill Button",
+    "content": "Pay Bill",
+    "x": "36%",
+    "y": "10%",
+    "width": "28%",
+    "height": "6%",
+    "parent": "Quick Actions Card"
+  },
+  {
+    "type": "button",
+    "name": "Scan & Pay Button",
+    "content": "Scan & Pay",
+    "x": "67%",
+    "y": "10%",
+    "width": "28%",
+    "height": "6%",
+    "parent": "Quick Actions Card"
+  },
+  {
+    "type": "card",
+    "name": "Personalized Offers Card",
+    "x": "5%",
+    "y": "43%",
+    "width": "90%",
+    "height": "25%",
+    "parent": "Main Content Area"
+  },
+  {
+    "type": "text",
+    "content": "Personalized Offers For You",
+    "x": "5%",
+    "y": "5%",
+    "width": "60%",
+    "height": "4%",
+    "parent": "Personalized Offers Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Offer 1 Container",
+    "x": "5%",
+    "y": "10%",
+    "width": "90%",
+    "height": "10%",
+    "parent": "Personalized Offers Card"
+  },
+  {
+    "type": "text",
+    "content": "Offer Title Example 1",
+    "x": "2%",
+    "y": "1%",
+    "width": "50%",
+    "height": "4%",
+    "parent": "Offer 1 Container"
+  },
+  {
+    "type": "text",
+    "content": "Offer Description Example 1",
+    "x": "2%",
+    "y": "5%",
+    "width": "60%",
+    "height": "3%",
+    "parent": "Offer 1 Container"
+  },
+  {
+    "type": "button",
+    "name": "Activate Offer 1 Button",
+    "content": "Activate Offer",
+    "x": "65%",
+    "y": "3%",
+    "width": "30%",
+    "height": "6%",
+    "parent": "Offer 1 Container"
+  },
+  {
+    "type": "rectangle",
+    "name": "Offer 2 Container",
+    "x": "5%",
+    "y": "22%",
+    "width": "90%",
+    "height": "10%",
+    "parent": "Personalized Offers Card"
+  },
+  {
+    "type": "text",
+    "content": "Offer Title Example 2",
+    "x": "2%",
+    "y": "1%",
+    "width": "50%",
+    "height": "4%",
+    "parent": "Offer 2 Container"
+  },
+  {
+    "type": "text",
+    "content": "Offer Description Example 2",
+    "x": "2%",
+    "y": "5%",
+    "width": "60%",
+    "height": "3%",
+    "parent": "Offer 2 Container"
+  },
+  {
+    "type": "button",
+    "name": "View Offer 2 Details Button",
+    "content": "View Offer",
+    "x": "65%",
+    "y": "3%",
+    "width": "30%",
+    "height": "6%",
+    "parent": "Offer 2 Container"
+  },
+  {
+    "type": "button",
+    "name": "View All Offers Button",
+    "content": "View All Offers",
+    "x": "5%",
+    "y": "35%",
+    "width": "90%",
+    "height": "6%",
+    "parent": "Personalized Offers Card"
+  },
+  {
+    "type": "card",
+    "name": "Rewards Card",
+    "x": "5%",
+    "y": "71%",
+    "width": "90%",
+    "height": "15%",
+    "parent": "Main Content Area"
+  },
+  {
+    "type": "text",
+    "content": "Your Rewards Progress",
+    "x": "5%",
+    "y": "5%",
+    "width": "60%",
+    "height": "4%",
+    "parent": "Rewards Card"
+  },
+  {
+    "type": "text",
+    "content": "Current Streak: X Days",
+    "x": "5%",
+    "y": "10%",
+    "width": "60%",
+    "height": "3%",
+    "parent": "Rewards Card"
+  },
+  {
+    "type": "text",
+    "content": "Badges Earned: Y",
+    "x": "5%",
+    "y": "14%",
+    "width": "60%",
+    "height": "3%",
+    "parent": "Rewards Card"
+  },
+  {
+    "type": "button",
+    "name": "View All Rewards Button",
+    "content": "View All Rewards",
+    "x": "65%",
+    "y": "8%",
+    "width": "30%",
+    "height": "6%",
+    "parent": "Rewards Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Bottom Navigation Bar",
+    "x": 0,
+    "y": "92%",
+    "width": "100%",
+    "height": "8%",
+    "parent": "Dashboard View"
+  },
+  {
+    "type": "button",
+    "name": "Home Nav Button",
+    "x": "2%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar"
+  },
+  {
+    "type": "icon",
+    "name": "Home Icon",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "Home Nav Button"
+  },
+  {
+    "type": "text",
+    "content": "Home",
+    "x": "25%",
+    "y": "70%",
+    "width": "50%",
+    "height": "20%",
+    "parent": "Home Nav Button"
+  },
+  {
+    "type": "button",
+    "name": "Accounts Nav Button",
+    "x": "21%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar"
+  },
+  {
+    "type": "icon",
+    "name": "Accounts Icon",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "Accounts Nav Button"
+  },
+  {
+    "type": "text",
+    "content": "Accounts",
+    "x": "20%",
+    "y": "70%",
+    "width": "60%",
+    "height": "20%",
+    "parent": "Accounts Nav Button"
+  },
+  {
+    "type": "button",
+    "name": "Payments Nav Button",
+    "x": "40%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar"
+  },
+  {
+    "type": "icon",
+    "name": "Payments Icon",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "Payments Nav Button"
+  },
+  {
+    "type": "text",
+    "content": "Payments",
+    "x": "20%",
+    "y": "70%",
+    "width": "60%",
+    "height": "20%",
+    "parent": "Payments Nav Button"
+  },
+  {
+    "type": "button",
+    "name": "Offers Nav Button",
+    "x": "59%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar"
+  },
+  {
+    "type": "icon",
+    "name": "Offers Icon",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "Offers Nav Button"
+  },
+  {
+    "type": "text",
+    "content": "Offers",
+    "x": "25%",
+    "y": "70%",
+    "width": "50%",
+    "height": "20%",
+    "parent": "Offers Nav Button"
+  },
+  {
+    "type": "button",
+    "name": "More Nav Button",
+    "x": "78%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar"
+  },
+  {
+    "type": "icon",
+    "name": "More Icon",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "More Nav Button"
+  },
+  {
+    "type": "text",
+    "content": "More",
+    "x": "25%",
+    "y": "70%",
+    "width": "50%",
+    "height": "20%",
+    "parent": "More Nav Button"
+  },
+  {
+    "type": "frame",
+    "name": "Offers & Rewards View",
+    "x": 0,
+    "y": 0,
+    "width": "100%",
+    "height": "100%",
+    "parent": null
+  },
+  {
+    "type": "rectangle",
+    "name": "Top Navigation Bar (Offers)",
+    "x": 0,
+    "y": 0,
+    "width": "100%",
+    "height": "8%",
+    "parent": "Offers & Rewards View"
+  },
+  {
+    "type": "icon",
+    "name": "Back Icon",
+    "x": "5%",
+    "y": "2%",
+    "width": "5%",
+    "height": "4%",
+    "parent": "Top Navigation Bar (Offers)"
+  },
+  {
+    "type": "text",
+    "content": "Offers & Rewards",
+    "x": "15%",
+    "y": "2%",
+    "width": "60%",
+    "height": "4%",
+    "parent": "Top Navigation Bar (Offers)"
+  },
+  {
+    "type": "rectangle",
+    "name": "Offers Content Area",
+    "x": 0,
+    "y": "8%",
+    "width": "100%",
+    "height": "84%",
+    "parent": "Offers & Rewards View"
+  },
+  {
+    "type": "tab_bar",
+    "name": "Offers/Rewards Tabs",
+    "x": "5%",
+    "y": "1%",
+    "width": "90%",
+    "height": "6%",
+    "parent": "Offers Content Area"
+  },
+  {
+    "type": "button",
+    "name": "Available Offers Tab",
+    "content": "Available Offers",
+    "x": "0%",
+    "y": "0%",
+    "width": "49%",
+    "height": "100%",
+    "parent": "Offers/Rewards Tabs"
+  },
+  {
+    "type": "button",
+    "name": "Your Rewards Tab",
+    "content": "Your Rewards",
+    "x": "51%",
+    "y": "0%",
+    "width": "49%",
+    "height": "100%",
+    "parent": "Offers/Rewards Tabs"
+  },
+  {
+    "type": "card",
+    "name": "All Offers List Card",
+    "x": "5%",
+    "y": "8%",
+    "width": "90%",
+    "height": "80%",
+    "parent": "Offers Content Area"
+  },
+  {
+    "type": "text",
+    "content": "Offers Tailored For You",
+    "x": "5%",
+    "y": "2%",
+    "width": "70%",
+    "height": "4%",
+    "parent": "All Offers List Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Offer Item 1",
+    "x": "5%",
+    "y": "8%",
+    "width": "90%",
+    "height": "10%",
+    "parent": "All Offers List Card"
+  },
+  {
+    "type": "text",
+    "content": "Personalized Cashback Offer",
+    "x": "2%",
+    "y": "1%",
+    "width": "70%",
+    "height": "4%",
+    "parent": "Offer Item 1"
+  },
+  {
+    "type": "text",
+    "content": "Get 5% cashback on your next grocery payment over $50",
+    "x": "2%",
+    "y": "5%",
+    "width": "95%",
+    "height": "3%",
+    "parent": "Offer Item 1"
+  },
+  {
+    "type": "button",
+    "name": "Redeem Offer 1 Button",
+    "content": "Redeem Now",
+    "x": "65%",
+    "y": "3%",
+    "width": "30%",
+    "height": "6%",
+    "parent": "Offer Item 1"
+  },
+  {
+    "type": "rectangle",
+    "name": "Offer Item 2",
+    "x": "5%",
+    "y": "20%",
+    "width": "90%",
+    "height": "10%",
+    "parent": "All Offers List Card"
+  },
+  {
+    "type": "text",
+    "content": "Merchant Specific Discount",
+    "x": "2%",
+    "y": "1%",
+    "width": "70%",
+    "height": "4%",
+    "parent": "Offer Item 2"
+  },
+  {
+    "type": "text",
+    "content": "15% off at 'Favorite Coffee Shop'",
+    "x": "2%",
+    "y": "5%",
+    "width": "95%",
+    "height": "3%",
+    "parent": "Offer Item 2"
+  },
+  {
+    "type": "button",
+    "name": "Redeem Offer 2 Button",
+    "content": "Redeem Now",
+    "x": "65%",
+    "y": "3%",
+    "width": "30%",
+    "height": "6%",
+    "parent": "Offer Item 2"
+  },
+  {
+    "type": "rectangle",
+    "name": "Gamification Progress Section",
+    "x": "5%",
+    "y": "8%",
+    "width": "90%",
+    "height": "80%",
+    "parent": "Offers Content Area"
+  },
+  {
+    "type": "text",
+    "content": "Your Loyalty Level: Gold",
+    "x": "5%",
+    "y": "2%",
+    "width": "80%",
+    "height": "4%",
+    "parent": "Gamification Progress Section"
+  },
+  {
+    "type": "text",
+    "content": "Points Remaining to Next Level: XXX",
+    "x": "5%",
+    "y": "6%",
+    "width": "80%",
+    "height": "3%",
+    "parent": "Gamification Progress Section"
+  },
+  {
+    "type": "text",
+    "content": "Achieved Badges",
+    "x": "5%",
+    "y": "12%",
+    "width": "80%",
+    "height": "4%",
+    "parent": "Gamification Progress Section"
+  },
+  {
+    "type": "grid",
+    "name": "Badges Grid",
+    "x": "5%",
+    "y": "17%",
+    "width": "90%",
+    "height": "50%",
+    "parent": "Gamification Progress Section"
+  },
+  {
+    "type": "icon",
+    "name": "Badge Icon 1",
+    "x": "5%",
+    "y": "5%",
+    "width": "20%",
+    "height": "20%",
+    "parent": "Badges Grid"
+  },
+  {
+    "type": "text",
+    "content": "Transaction Master Badge",
+    "x": "5%",
+    "y": "26%",
+    "width": "20%",
+    "height": "5%",
+    "parent": "Badges Grid"
+  },
+  {
+    "type": "icon",
+    "name": "Badge Icon 2",
+    "x": "35%",
+    "y": "5%",
+    "width": "20%",
+    "height": "20%",
+    "parent": "Badges Grid"
+  },
+  {
+    "type": "text",
+    "content": "Bill Pay Pro Badge",
+    "x": "35%",
+    "y": "26%",
+    "width": "20%",
+    "height": "5%",
+    "parent": "Badges Grid"
+  },
+  {
+    "type": "icon",
+    "name": "Badge Icon 3",
+    "x": "65%",
+    "y": "5%",
+    "width": "20%",
+    "height": "20%",
+    "parent": "Badges Grid"
+  },
+  {
+    "type": "text",
+    "content": "Loyalty Streak Badge",
+    "x": "65%",
+    "y": "26%",
+    "width": "20%",
+    "height": "5%",
+    "parent": "Badges Grid"
+  },
+  {
+    "type": "button",
+    "name": "View All Challenges Button",
+    "content": "View All Challenges",
+    "x": "5%",
+    "y": "70%",
+    "width": "90%",
+    "height": "6%",
+    "parent": "Gamification Progress Section"
+  },
+  {
+    "type": "rectangle",
+    "name": "Bottom Navigation Bar (Offers)",
+    "x": 0,
+    "y": "92%",
+    "width": "100%",
+    "height": "8%",
+    "parent": "Offers & Rewards View"
+  },
+  {
+    "type": "button",
+    "name": "Home Nav Button (Offers)",
+    "x": "2%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar (Offers)"
+  },
+  {
+    "type": "icon",
+    "name": "Home Icon (Offers)",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "Home Nav Button (Offers)"
+  },
+  {
+    "type": "text",
+    "content": "Home",
+    "x": "25%",
+    "y": "70%",
+    "width": "50%",
+    "height": "20%",
+    "parent": "Home Nav Button (Offers)"
+  },
+  {
+    "type": "button",
+    "name": "Accounts Nav Button (Offers)",
+    "x": "21%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar (Offers)"
+  },
+  {
+    "type": "icon",
+    "name": "Accounts Icon (Offers)",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "Accounts Nav Button (Offers)"
+  },
+  {
+    "type": "text",
+    "content": "Accounts",
+    "x": "20%",
+    "y": "70%",
+    "width": "60%",
+    "height": "20%",
+    "parent": "Accounts Nav Button (Offers)"
+  },
+  {
+    "type": "button",
+    "name": "Payments Nav Button (Offers)",
+    "x": "40%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar (Offers)"
+  },
+  {
+    "type": "icon",
+    "name": "Payments Icon (Offers)",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "Payments Nav Button (Offers)"
+  },
+  {
+    "type": "text",
+    "content": "Payments",
+    "x": "20%",
+    "y": "70%",
+    "width": "60%",
+    "height": "20%",
+    "parent": "Payments Nav Button (Offers)"
+  },
+  {
+    "type": "button",
+    "name": "Offers Nav Button (Offers)",
+    "x": "59%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar (Offers)"
+  },
+  {
+    "type": "icon",
+    "name": "Offers Icon (Offers)",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "Offers Nav Button (Offers)"
+  },
+  {
+    "type": "text",
+    "content": "Offers",
+    "x": "25%",
+    "y": "70%",
+    "width": "50%",
+    "height": "20%",
+    "parent": "Offers Nav Button (Offers)"
+  },
+  {
+    "type": "button",
+    "name": "More Nav Button (Offers)",
+    "x": "78%",
+    "y": "0%",
+    "width": "18%",
+    "height": "100%",
+    "parent": "Bottom Navigation Bar (Offers)"
+  },
+  {
+    "type": "icon",
+    "name": "More Icon (Offers)",
+    "x": "35%",
+    "y": "15%",
+    "width": "30%",
+    "height": "50%",
+    "parent": "More Nav Button (Offers)"
+  },
+  {
+    "type": "text",
+    "content": "More",
+    "x": "25%",
+    "y": "70%",
+    "width": "50%",
+    "height": "20%",
+    "parent": "More Nav Button (Offers)"
+  }
+]

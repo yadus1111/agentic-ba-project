@@ -1,0 +1,841 @@
+[
+  {
+    "type": "frame",
+    "name": "Dashboard_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 1600,
+    "content": "Dashboard"
+  },
+  {
+    "type": "rectangle",
+    "name": "Header_Bar",
+    "parent": "Dashboard_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 80
+  },
+  {
+    "type": "text",
+    "content": "Bank Logo/Name",
+    "parent": "Header_Bar",
+    "x": 20,
+    "y": 25,
+    "width": 200,
+    "height": 30
+  },
+  {
+    "type": "icon",
+    "content": "Notification Bell Icon",
+    "parent": "Header_Bar",
+    "x": 800,
+    "y": 25,
+    "width": 40,
+    "height": 40
+  },
+  {
+    "type": "icon",
+    "content": "User Profile Icon",
+    "parent": "Header_Bar",
+    "x": 880,
+    "y": 25,
+    "width": 40,
+    "height": 40
+  },
+  {
+    "type": "rectangle",
+    "name": "Account_Overview_Card",
+    "parent": "Dashboard_Screen",
+    "x": 50,
+    "y": 100,
+    "width": 900,
+    "height": 200
+  },
+  {
+    "type": "text",
+    "content": "Total Account Balance",
+    "parent": "Account_Overview_Card",
+    "x": 70,
+    "y": 120,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "$[Account Balance]",
+    "parent": "Account_Overview_Card",
+    "x": 70,
+    "y": 160,
+    "width": 500,
+    "height": 40
+  },
+  {
+    "type": "button",
+    "name": "View_All_Accounts_Button",
+    "content": "View All Accounts",
+    "parent": "Account_Overview_Card",
+    "x": 70,
+    "y": 230,
+    "width": 300,
+    "height": 50
+  },
+  {
+    "type": "text",
+    "content": "Quick Actions",
+    "parent": "Dashboard_Screen",
+    "x": 50,
+    "y": 330,
+    "width": 300,
+    "height": 30
+  },
+  {
+    "type": "button",
+    "name": "Transfer_Funds_Button",
+    "content": "Transfer Funds",
+    "parent": "Dashboard_Screen",
+    "x": 50,
+    "y": 380,
+    "width": 200,
+    "height": 80
+  },
+  {
+    "type": "button",
+    "name": "Pay_Bills_Button",
+    "content": "Pay Bills",
+    "parent": "Dashboard_Screen",
+    "x": 270,
+    "y": 380,
+    "width": 200,
+    "height": 80
+  },
+  {
+    "type": "button",
+    "name": "Scan_Pay_Button",
+    "content": "Scan & Pay",
+    "parent": "Dashboard_Screen",
+    "x": 490,
+    "y": 380,
+    "width": 200,
+    "height": 80
+  },
+  {
+    "type": "button",
+    "name": "Card_Services_Button",
+    "content": "Card Services",
+    "parent": "Dashboard_Screen",
+    "x": 710,
+    "y": 380,
+    "width": 200,
+    "height": 80
+  },
+  {
+    "type": "text",
+    "content": "Personalized Loan Offers",
+    "parent": "Dashboard_Screen",
+    "x": 50,
+    "y": 500,
+    "width": 500,
+    "height": 30
+  },
+  {
+    "type": "button",
+    "name": "View_All_Offers_Button",
+    "content": "View All Offers",
+    "parent": "Dashboard_Screen",
+    "x": 750,
+    "y": 500,
+    "width": 200,
+    "height": 30
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Offer_Card_1",
+    "parent": "Dashboard_Screen",
+    "x": 50,
+    "y": 560,
+    "width": 900,
+    "height": 250
+  },
+  {
+    "type": "text",
+    "content": "Pre-Approved Personal Loan",
+    "parent": "Loan_Offer_Card_1",
+    "x": 70,
+    "y": 580,
+    "width": 500,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "Special offer tailored for you.",
+    "parent": "Loan_Offer_Card_1",
+    "x": 70,
+    "y": 620,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "Loan Amount: Up to $[Amount]",
+    "parent": "Loan_Offer_Card_1",
+    "x": 70,
+    "y": 660,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "Interest Rate: [X]% p.a.",
+    "parent": "Loan_Offer_Card_1",
+    "x": 70,
+    "y": 690,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "button",
+    "name": "View_Details_Button_1",
+    "content": "View Details",
+    "parent": "Loan_Offer_Card_1",
+    "x": 70,
+    "y": 740,
+    "width": 200,
+    "height": 50
+  },
+  {
+    "type": "button",
+    "name": "Apply_Now_Button_1",
+    "content": "Apply Now",
+    "parent": "Loan_Offer_Card_1",
+    "x": 300,
+    "y": 740,
+    "width": 200,
+    "height": 50
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Offer_Card_2",
+    "parent": "Dashboard_Screen",
+    "x": 50,
+    "y": 830,
+    "width": 900,
+    "height": 200
+  },
+  {
+    "type": "text",
+    "content": "Education Loan",
+    "parent": "Loan_Offer_Card_2",
+    "x": 70,
+    "y": 850,
+    "width": 500,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "For your academic pursuits.",
+    "parent": "Loan_Offer_Card_2",
+    "x": 70,
+    "y": 890,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "button",
+    "name": "View_Details_Button_2",
+    "content": "View Details",
+    "parent": "Loan_Offer_Card_2",
+    "x": 70,
+    "y": 940,
+    "width": 200,
+    "height": 50
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Offer_Card_3",
+    "parent": "Dashboard_Screen",
+    "x": 50,
+    "y": 1050,
+    "width": 900,
+    "height": 200
+  },
+  {
+    "type": "text",
+    "content": "Home Loan",
+    "parent": "Loan_Offer_Card_3",
+    "x": 70,
+    "y": 1070,
+    "width": 500,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "Your dream home awaits.",
+    "parent": "Loan_Offer_Card_3",
+    "x": 70,
+    "y": 1110,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "button",
+    "name": "View_Details_Button_3",
+    "content": "View Details",
+    "parent": "Loan_Offer_Card_3",
+    "x": 70,
+    "y": 1160,
+    "width": 200,
+    "height": 50
+  },
+  {
+    "type": "rectangle",
+    "name": "Bottom_Navigation_Bar",
+    "parent": "Dashboard_Screen",
+    "x": 0,
+    "y": 1500,
+    "width": 1000,
+    "height": 100
+  },
+  {
+    "type": "button",
+    "name": "Home_Nav_Button",
+    "content": "Home",
+    "parent": "Bottom_Navigation_Bar",
+    "x": 50,
+    "y": 1520,
+    "width": 150,
+    "height": 70
+  },
+  {
+    "type": "button",
+    "name": "Accounts_Nav_Button",
+    "content": "Accounts",
+    "parent": "Bottom_Navigation_Bar",
+    "x": 250,
+    "y": 1520,
+    "width": 150,
+    "height": 70
+  },
+  {
+    "type": "button",
+    "name": "Transfers_Nav_Button",
+    "content": "Transfers",
+    "parent": "Bottom_Navigation_Bar",
+    "x": 450,
+    "y": 1520,
+    "width": 150,
+    "height": 70
+  },
+  {
+    "type": "button",
+    "name": "Loans_Offers_Nav_Button",
+    "content": "Loans & Offers",
+    "parent": "Bottom_Navigation_Bar",
+    "x": 650,
+    "y": 1520,
+    "width": 150,
+    "height": 70
+  },
+  {
+    "type": "button",
+    "name": "More_Nav_Button",
+    "content": "More",
+    "parent": "Bottom_Navigation_Bar",
+    "x": 850,
+    "y": 1520,
+    "width": 150,
+    "height": 70
+  },
+  {
+    "type": "frame",
+    "name": "All_Loan_Offers_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 1600,
+    "content": "All Loan Offers"
+  },
+  {
+    "type": "rectangle",
+    "name": "All_Offers_Header_Bar",
+    "parent": "All_Loan_Offers_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 80
+  },
+  {
+    "type": "icon",
+    "content": "Back Arrow Icon",
+    "parent": "All_Offers_Header_Bar",
+    "x": 20,
+    "y": 25,
+    "width": 40,
+    "height": 40
+  },
+  {
+    "type": "text",
+    "content": "All Loan Offers",
+    "parent": "All_Offers_Header_Bar",
+    "x": 70,
+    "y": 25,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "button",
+    "name": "Filter_Button",
+    "content": "Filter",
+    "parent": "All_Loan_Offers_Screen",
+    "x": 50,
+    "y": 100,
+    "width": 180,
+    "height": 50
+  },
+  {
+    "type": "button",
+    "name": "Sort_Button",
+    "content": "Sort By",
+    "parent": "All_Loan_Offers_Screen",
+    "x": 250,
+    "y": 100,
+    "width": 180,
+    "height": 50
+  },
+  {
+    "type": "rectangle",
+    "name": "All_Offer_Card_1",
+    "parent": "All_Loan_Offers_Screen",
+    "x": 50,
+    "y": 180,
+    "width": 900,
+    "height": 220
+  },
+  {
+    "type": "text",
+    "content": "Personal Loan (Recommended for You)",
+    "parent": "All_Offer_Card_1",
+    "x": 70,
+    "y": 200,
+    "width": 600,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "Amount: $[Max Amount]",
+    "parent": "All_Offer_Card_1",
+    "x": 70,
+    "y": 240,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "Term: [X] Months",
+    "parent": "All_Offer_Card_1",
+    "x": 70,
+    "y": 270,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "button",
+    "name": "View_Details_All_1_Button",
+    "content": "View Details",
+    "parent": "All_Offer_Card_1",
+    "x": 70,
+    "y": 320,
+    "width": 250,
+    "height": 50
+  },
+  {
+    "type": "rectangle",
+    "name": "All_Offer_Card_2",
+    "parent": "All_Loan_Offers_Screen",
+    "x": 50,
+    "y": 420,
+    "width": 900,
+    "height": 220
+  },
+  {
+    "type": "text",
+    "content": "Home Loan (Pre-Approved)",
+    "parent": "All_Offer_Card_2",
+    "x": 70,
+    "y": 440,
+    "width": 600,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "Amount: $[Approved Amount]",
+    "parent": "All_Offer_Card_2",
+    "x": 70,
+    "y": 480,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "Interest Rate: [Y]% p.a.",
+    "parent": "All_Offer_Card_2",
+    "x": 70,
+    "y": 510,
+    "width": 500,
+    "height": 25
+  },
+  {
+    "type": "button",
+    "name": "View_Details_All_2_Button",
+    "content": "View Details",
+    "parent": "All_Offer_Card_2",
+    "x": 70,
+    "y": 560,
+    "width": 250,
+    "height": 50
+  },
+  {
+    "type": "frame",
+    "name": "Loan_Details_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 1600,
+    "content": "Loan Details"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Details_Header_Bar",
+    "parent": "Loan_Details_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 80
+  },
+  {
+    "type": "icon",
+    "content": "Back Arrow Icon",
+    "parent": "Loan_Details_Header_Bar",
+    "x": 20,
+    "y": 25,
+    "width": 40,
+    "height": 40
+  },
+  {
+    "type": "text",
+    "content": "Loan Product Name",
+    "parent": "Loan_Details_Header_Bar",
+    "x": 70,
+    "y": 25,
+    "width": 500,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "Loan Product Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "parent": "Loan_Details_Screen",
+    "x": 50,
+    "y": 100,
+    "width": 900,
+    "height": 80
+  },
+  {
+    "type": "text",
+    "content": "Key Features:",
+    "parent": "Loan_Details_Screen",
+    "x": 50,
+    "y": 200,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "- Interest Rate: [X]% p.a.",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 240,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "- Loan Term: [Y] Months",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 270,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "- Processing Fee: [Z]%",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 300,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "Eligibility Criteria:",
+    "parent": "Loan_Details_Screen",
+    "x": 50,
+    "y": 360,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "- Minimum Age: [Age] Years",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 400,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "- Minimum Monthly Income: $[Amount]",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 430,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "- Employment Type: [Type]",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 460,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "Required Documents:",
+    "parent": "Loan_Details_Screen",
+    "x": 50,
+    "y": 520,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "- Identity Proof (e.g., National ID)",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 560,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "- Address Proof (e.g., Utility Bill)",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 590,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "text",
+    "content": "- Income Proof (e.g., Salary Slips)",
+    "parent": "Loan_Details_Screen",
+    "x": 70,
+    "y": 620,
+    "width": 800,
+    "height": 25
+  },
+  {
+    "type": "button",
+    "name": "Calculate_EMI_Button",
+    "content": "Calculate EMI",
+    "parent": "Loan_Details_Screen",
+    "x": 50,
+    "y": 700,
+    "width": 400,
+    "height": 60
+  },
+  {
+    "type": "button",
+    "name": "Apply_Now_Details_Button",
+    "content": "Apply Now",
+    "parent": "Loan_Details_Screen",
+    "x": 50,
+    "y": 780,
+    "width": 900,
+    "height": 70
+  },
+  {
+    "type": "frame",
+    "name": "Loan_Application_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 1600,
+    "content": "Loan Application"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Application_Header_Bar",
+    "parent": "Loan_Application_Screen",
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 80
+  },
+  {
+    "type": "icon",
+    "content": "Back Arrow Icon",
+    "parent": "Loan_Application_Header_Bar",
+    "x": 20,
+    "y": 25,
+    "width": 40,
+    "height": 40
+  },
+  {
+    "type": "text",
+    "content": "Loan Application",
+    "parent": "Loan_Application_Header_Bar",
+    "x": 70,
+    "y": 25,
+    "width": 500,
+    "height": 30
+  },
+  {
+    "type": "text",
+    "content": "Amount Required",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 120,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "input",
+    "name": "Amount_Required_Input",
+    "content": "Enter Amount",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 160,
+    "width": 900,
+    "height": 60
+  },
+  {
+    "type": "text",
+    "content": "Loan Purpose",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 240,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "dropdown",
+    "name": "Loan_Purpose_Dropdown",
+    "content": "Select Purpose",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 280,
+    "width": 900,
+    "height": 60
+  },
+  {
+    "type": "text",
+    "content": "Employment Status",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 360,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "dropdown",
+    "name": "Employment_Status_Dropdown",
+    "content": "Select Status",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 400,
+    "width": 900,
+    "height": 60
+  },
+  {
+    "type": "text",
+    "content": "Monthly Income",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 480,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "input",
+    "name": "Monthly_Income_Input",
+    "content": "Enter Monthly Income",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 520,
+    "width": 900,
+    "height": 60
+  },
+  {
+    "type": "text",
+    "content": "Date of Birth",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 600,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "input",
+    "name": "Date_of_Birth_Input",
+    "content": "DD/MM/YYYY",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 640,
+    "width": 900,
+    "height": 60
+  },
+  {
+    "type": "text",
+    "content": "Address Field",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 720,
+    "width": 400,
+    "height": 30
+  },
+  {
+    "type": "input",
+    "name": "Address_Field_Input",
+    "content": "Enter Address",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 760,
+    "width": 900,
+    "height": 100
+  },
+  {
+    "type": "checkbox",
+    "name": "Terms_Consent_Checkbox",
+    "content": "I agree to the Terms and Conditions",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 900,
+    "width": 800,
+    "height": 30
+  },
+  {
+    "type": "button",
+    "name": "Submit_Application_Button",
+    "content": "Submit Application",
+    "parent": "Loan_Application_Screen",
+    "x": 50,
+    "y": 980,
+    "width": 900,
+    "height": 70
+  }
+]

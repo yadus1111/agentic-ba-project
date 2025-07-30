@@ -1,0 +1,658 @@
+[
+  {
+    "type": "frame",
+    "name": "Banking_App_Frame",
+    "x": 0,
+    "y": 0,
+    "width": 360,
+    "height": 700
+  },
+  {
+    "type": "rectangle",
+    "name": "Login_Screen_Container",
+    "x": 0,
+    "y": 0,
+    "width": 360,
+    "height": 700,
+    "parent": "Banking_App_Frame"
+  },
+  {
+    "type": "text",
+    "content": "Welcome to Mobile Banking",
+    "x": 20,
+    "y": 80,
+    "width": 320,
+    "height": 30,
+    "parent": "Login_Screen_Container"
+  },
+  {
+    "type": "rectangle",
+    "name": "Login_Card",
+    "x": 20,
+    "y": 150,
+    "width": 320,
+    "height": 300,
+    "parent": "Login_Screen_Container"
+  },
+  {
+    "type": "text",
+    "content": "Sign In",
+    "x": 40,
+    "y": 170,
+    "width": 280,
+    "height": 30,
+    "parent": "Login_Card"
+  },
+  {
+    "type": "text_input",
+    "content": "Username or Customer ID",
+    "x": 40,
+    "y": 220,
+    "width": 280,
+    "height": 40,
+    "parent": "Login_Card"
+  },
+  {
+    "type": "text_input",
+    "content": "Password",
+    "x": 40,
+    "y": 280,
+    "width": 280,
+    "height": 40,
+    "parent": "Login_Card"
+  },
+  {
+    "type": "button",
+    "content": "Login",
+    "x": 40,
+    "y": 340,
+    "width": 280,
+    "height": 50,
+    "parent": "Login_Card"
+  },
+  {
+    "type": "button",
+    "content": "Forgot Password?",
+    "x": 40,
+    "y": 400,
+    "width": 280,
+    "height": 30,
+    "parent": "Login_Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Bottom_NavBar",
+    "x": 0,
+    "y": 650,
+    "width": 360,
+    "height": 50,
+    "parent": "Banking_App_Frame"
+  },
+  {
+    "type": "icon",
+    "name": "Home_Icon",
+    "x": 25,
+    "y": 660,
+    "width": 30,
+    "height": 30,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "text",
+    "content": "Home",
+    "x": 20,
+    "y": 685,
+    "width": 40,
+    "height": 15,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "icon",
+    "name": "Accounts_Icon",
+    "x": 90,
+    "y": 660,
+    "width": 30,
+    "height": 30,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "text",
+    "content": "Accounts",
+    "x": 80,
+    "y": 685,
+    "width": 60,
+    "height": 15,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "icon",
+    "name": "Payments_Icon",
+    "x": 155,
+    "y": 660,
+    "width": 30,
+    "height": 30,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "text",
+    "content": "Payments",
+    "x": 145,
+    "y": 685,
+    "width": 70,
+    "height": 15,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "icon",
+    "name": "Offers_Icon",
+    "x": 225,
+    "y": 660,
+    "width": 30,
+    "height": 30,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "text",
+    "content": "Offers",
+    "x": 220,
+    "y": 685,
+    "width": 50,
+    "height": 15,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "icon",
+    "name": "More_Icon",
+    "x": 295,
+    "y": 660,
+    "width": 30,
+    "height": 30,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "text",
+    "content": "More",
+    "x": 290,
+    "y": 685,
+    "width": 40,
+    "height": 15,
+    "parent": "Bottom_NavBar"
+  },
+  {
+    "type": "rectangle",
+    "name": "Dashboard_Screen_Container",
+    "x": 0,
+    "y": 0,
+    "width": 360,
+    "height": 650,
+    "parent": "Banking_App_Frame"
+  },
+  {
+    "type": "rectangle",
+    "name": "Dashboard_Header",
+    "x": 0,
+    "y": 0,
+    "width": 360,
+    "height": 60,
+    "parent": "Dashboard_Screen_Container"
+  },
+  {
+    "type": "icon",
+    "name": "Menu_Icon",
+    "x": 20,
+    "y": 20,
+    "width": 25,
+    "height": 25,
+    "parent": "Dashboard_Header"
+  },
+  {
+    "type": "text",
+    "content": "Dashboard",
+    "x": 55,
+    "y": 20,
+    "width": 200,
+    "height": 25,
+    "parent": "Dashboard_Header"
+  },
+  {
+    "type": "rectangle",
+    "name": "Dashboard_Scrollable_Content",
+    "x": 0,
+    "y": 60,
+    "width": 360,
+    "height": 590,
+    "parent": "Dashboard_Screen_Container"
+  },
+  {
+    "type": "text",
+    "content": "Welcome, User Name!",
+    "x": 20,
+    "y": 75,
+    "width": 200,
+    "height": 25,
+    "parent": "Dashboard_Scrollable_Content"
+  },
+  {
+    "type": "rectangle",
+    "name": "Account_Summary_Card",
+    "x": 20,
+    "y": 115,
+    "width": 320,
+    "height": 110,
+    "parent": "Dashboard_Scrollable_Content"
+  },
+  {
+    "type": "text",
+    "content": "Account Balance",
+    "x": 40,
+    "y": 130,
+    "width": 200,
+    "height": 20,
+    "parent": "Account_Summary_Card"
+  },
+  {
+    "type": "text",
+    "content": "Currency Value",
+    "x": 40,
+    "y": 155,
+    "width": 200,
+    "height": 30,
+    "parent": "Account_Summary_Card"
+  },
+  {
+    "type": "button",
+    "content": "View All Accounts",
+    "x": 40,
+    "y": 195,
+    "width": 150,
+    "height": 30,
+    "parent": "Account_Summary_Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Quick_Actions_Card",
+    "x": 20,
+    "y": 240,
+    "width": 320,
+    "height": 100,
+    "parent": "Dashboard_Scrollable_Content"
+  },
+  {
+    "type": "text",
+    "content": "Quick Actions",
+    "x": 40,
+    "y": 255,
+    "width": 200,
+    "height": 20,
+    "parent": "Quick_Actions_Card"
+  },
+  {
+    "type": "button",
+    "content": "Transfer Funds",
+    "x": 40,
+    "y": 285,
+    "width": 120,
+    "height": 40,
+    "parent": "Quick_Actions_Card"
+  },
+  {
+    "type": "button",
+    "content": "Pay Bill",
+    "x": 190,
+    "y": 285,
+    "width": 120,
+    "height": 40,
+    "parent": "Quick_Actions_Card"
+  },
+  {
+    "type": "rectangle",
+    "name": "Personalized_Offers_Section",
+    "x": 0,
+    "y": 360,
+    "width": 360,
+    "height": 280,
+    "parent": "Dashboard_Scrollable_Content"
+  },
+  {
+    "type": "text",
+    "content": "Personalized Loan Offers",
+    "x": 20,
+    "y": 375,
+    "width": 200,
+    "height": 25,
+    "parent": "Personalized_Offers_Section"
+  },
+  {
+    "type": "button",
+    "content": "View All Offers",
+    "x": 230,
+    "y": 375,
+    "width": 110,
+    "height": 25,
+    "parent": "Personalized_Offers_Section"
+  },
+  {
+    "type": "rectangle",
+    "name": "Offer_Card_PreApproved",
+    "x": 20,
+    "y": 410,
+    "width": 320,
+    "height": 90,
+    "parent": "Personalized_Offers_Section"
+  },
+  {
+    "type": "text",
+    "content": "Pre-Approved Personal Loan",
+    "x": 40,
+    "y": 420,
+    "width": 250,
+    "height": 20,
+    "parent": "Offer_Card_PreApproved"
+  },
+  {
+    "type": "text",
+    "content": "Eligible Amount: Value",
+    "x": 40,
+    "y": 445,
+    "width": 200,
+    "height": 15,
+    "parent": "Offer_Card_PreApproved"
+  },
+  {
+    "type": "text",
+    "content": "Interest Rate: Value%",
+    "x": 40,
+    "y": 465,
+    "width": 200,
+    "height": 15,
+    "parent": "Offer_Card_PreApproved"
+  },
+  {
+    "type": "button",
+    "content": "View Details",
+    "x": 220,
+    "y": 450,
+    "width": 100,
+    "height": 30,
+    "parent": "Offer_Card_PreApproved"
+  },
+  {
+    "type": "rectangle",
+    "name": "Offer_Card_Education",
+    "x": 20,
+    "y": 510,
+    "width": 320,
+    "height": 90,
+    "parent": "Personalized_Offers_Section"
+  },
+  {
+    "type": "text",
+    "content": "Recommended Education Loan",
+    "x": 40,
+    "y": 520,
+    "width": 250,
+    "height": 20,
+    "parent": "Offer_Card_Education"
+  },
+  {
+    "type": "text",
+    "content": "Loan Term: Value Months",
+    "x": 40,
+    "y": 545,
+    "width": 200,
+    "height": 15,
+    "parent": "Offer_Card_Education"
+  },
+  {
+    "type": "text",
+    "content": "Monthly Repayment: Currency Value",
+    "x": 40,
+    "y": 565,
+    "width": 200,
+    "height": 15,
+    "parent": "Offer_Card_Education"
+  },
+  {
+    "type": "button",
+    "content": "View Details",
+    "x": 220,
+    "y": 550,
+    "width": 100,
+    "height": 30,
+    "parent": "Offer_Card_Education"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Detail_Screen_Container",
+    "x": 0,
+    "y": 0,
+    "width": 360,
+    "height": 650,
+    "parent": "Banking_App_Frame"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Detail_Header",
+    "x": 0,
+    "y": 0,
+    "width": 360,
+    "height": 60,
+    "parent": "Loan_Detail_Screen_Container"
+  },
+  {
+    "type": "icon",
+    "name": "Back_Icon",
+    "x": 20,
+    "y": 20,
+    "width": 25,
+    "height": 25,
+    "parent": "Loan_Detail_Header"
+  },
+  {
+    "type": "text",
+    "content": "Loan Details",
+    "x": 55,
+    "y": 20,
+    "width": 200,
+    "height": 25,
+    "parent": "Loan_Detail_Header"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Detail_Scrollable_Content",
+    "x": 0,
+    "y": 60,
+    "width": 360,
+    "height": 590,
+    "parent": "Loan_Detail_Screen_Container"
+  },
+  {
+    "type": "text",
+    "content": "Loan Product Name",
+    "x": 20,
+    "y": 75,
+    "width": 320,
+    "height": 30,
+    "parent": "Loan_Detail_Scrollable_Content"
+  },
+  {
+    "type": "text",
+    "content": "Detailed description of the loan product, its benefits, and typical use cases.",
+    "x": 20,
+    "y": 115,
+    "width": 320,
+    "height": 80,
+    "parent": "Loan_Detail_Scrollable_Content"
+  },
+  {
+    "type": "rectangle",
+    "name": "Loan_Terms_Card",
+    "x": 20,
+    "y": 210,
+    "width": 320,
+    "height": 150,
+    "parent": "Loan_Detail_Scrollable_Content"
+  },
+  {
+    "type": "text",
+    "content": "Interest Rate: Value%",
+    "x": 40,
+    "y": 225,
+    "width": 280,
+    "height": 20,
+    "parent": "Loan_Terms_Card"
+  },
+  {
+    "type": "text",
+    "content": "Loan Term: Value Months",
+    "x": 40,
+    "y": 250,
+    "width": 280,
+    "height": 20,
+    "parent": "Loan_Terms_Card"
+  },
+  {
+    "type": "text",
+    "content": "Eligible Amount: Currency Value",
+    "x": 40,
+    "y": 275,
+    "width": 280,
+    "height": 20,
+    "parent": "Loan_Terms_Card"
+  },
+  {
+    "type": "text",
+    "content": "Processing Fees: Value%",
+    "x": 40,
+    "y": 300,
+    "width": 280,
+    "height": 20,
+    "parent": "Loan_Terms_Card"
+  },
+  {
+    "type": "text",
+    "content": "Eligibility Criteria: Age, Income, Credit Score, Employment Status.",
+    "x": 20,
+    "y": 380,
+    "width": 320,
+    "height": 80,
+    "parent": "Loan_Detail_Scrollable_Content"
+  },
+  {
+    "type": "text",
+    "content": "Document Requirements: ID Proof, Address Proof, Income Statements.",
+    "x": 20,
+    "y": 470,
+    "width": 320,
+    "height": 80,
+    "parent": "Loan_Detail_Scrollable_Content"
+  },
+  {
+    "type": "button",
+    "content": "Apply Now",
+    "x": 20,
+    "y": 570,
+    "width": 320,
+    "height": 50,
+    "parent": "Loan_Detail_Scrollable_Content"
+  },
+  {
+    "type": "rectangle",
+    "name": "Settings_Screen_Container",
+    "x": 0,
+    "y": 0,
+    "width": 360,
+    "height": 650,
+    "parent": "Banking_App_Frame"
+  },
+  {
+    "type": "rectangle",
+    "name": "Settings_Header",
+    "x": 0,
+    "y": 0,
+    "width": 360,
+    "height": 60,
+    "parent": "Settings_Screen_Container"
+  },
+  {
+    "type": "icon",
+    "name": "Back_Icon",
+    "x": 20,
+    "y": 20,
+    "width": 25,
+    "height": 25,
+    "parent": "Settings_Header"
+  },
+  {
+    "type": "text",
+    "content": "Settings",
+    "x": 55,
+    "y": 20,
+    "width": 200,
+    "height": 25,
+    "parent": "Settings_Header"
+  },
+  {
+    "type": "rectangle",
+    "name": "Settings_Scrollable_Content",
+    "x": 0,
+    "y": 60,
+    "width": 360,
+    "height": 590,
+    "parent": "Settings_Screen_Container"
+  },
+  {
+    "type": "rectangle",
+    "name": "Privacy_Settings_Card",
+    "x": 20,
+    "y": 75,
+    "width": 320,
+    "height": 140,
+    "parent": "Settings_Scrollable_Content"
+  },
+  {
+    "type": "text",
+    "content": "Privacy & Data",
+    "x": 40,
+    "y": 90,
+    "width": 280,
+    "height": 20,
+    "parent": "Privacy_Settings_Card"
+  },
+  {
+    "type": "text",
+    "content": "Enable Personalized Recommendations",
+    "x": 40,
+    "y": 130,
+    "width": 220,
+    "height": 20,
+    "parent": "Privacy_Settings_Card"
+  },
+  {
+    "type": "toggle",
+    "name": "Personalization_Toggle",
+    "x": 280,
+    "y": 130,
+    "width": 40,
+    "height": 20,
+    "parent": "Privacy_Settings_Card"
+  },
+  {
+    "type": "button",
+    "content": "Manage Data Preferences",
+    "x": 40,
+    "y": 170,
+    "width": 280,
+    "height": 40,
+    "parent": "Privacy_Settings_Card"
+  },
+  {
+    "type": "button",
+    "content": "Logout",
+    "x": 20,
+    "y": 580,
+    "width": 320,
+    "height": 50,
+    "parent": "Settings_Scrollable_Content"
+  }
+]

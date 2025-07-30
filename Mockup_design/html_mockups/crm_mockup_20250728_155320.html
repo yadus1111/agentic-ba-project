@@ -1,0 +1,1401 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analyst Dashboard - Fintech Banking CRM</title>
+    <style>
+        /* CSS Variables for consistent theming */
+        :root {
+            --primary-bg: #f8f9fa; /* Light grey background */
+            --secondary-bg: #ffffff; /* White for cards/containers */
+            --sidebar-bg: #2c3e50; /* Dark blue for sidebar */
+            --header-bg: linear-gradient(to right, #2c3e50, #4a627d); /* Gradient for header */
+            --accent-color: #3498db; /* Bright blue for accents */
+            --accent-hover: #2980b9; /* Darker blue on hover */
+            --text-color: #333; /* Dark text */
+            --light-text: #ecf0f1; /* Light text for dark backgrounds */
+            --border-color: #e0e0e0; /* Light border */
+            --shadow-light: rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            --shadow-medium: rgba(0, 0, 0, 0.1); /* Medium shadow */
+            --card-padding: 20px;
+            --border-radius: 8px;
+        }
+
+        /* Base Body Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary-bg);
+            display: flex; /* Flex container for sidebar and main content */
+            min-height: 100vh;
+            color: var(--text-color);
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--light-text);
+            padding: 20px;
+            box-shadow: 2px 0 10px var(--shadow-medium);
+            display: flex;
+            flex-direction: column;
+            position: sticky; /* Make sidebar sticky */
+            top: 0;
+            height: 100vh;
+            overflow-y: auto; /* Enable scrolling for long nav lists */
+            z-index: 1000;
+            flex-shrink: 0; /* Prevent sidebar from shrinking */
+        }
+
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar nav ul li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--light-text);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: var(--accent-hover);
+            transform: translateX(5px);
+        }
+
+        .sidebar nav ul li a.active {
+            background-color: var(--accent-color);
+            color: var(--secondary-bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .sidebar nav ul li a .icon { /* Basic icon styling if no external font library */
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        /* Main Content Area Styling */
+        .main-content {
+            flex-grow: 1; /* Allows main content to take remaining space */
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Header Styling */
+        .header {
+            background: var(--header-bg);
+            color: var(--light-text);
+            padding: 20px 40px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; /* Make header sticky */
+            top: 0;
+            z-index: 999;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile span {
+            margin-right: 15px;
+            font-size: 16px;
+        }
+
+        .user-profile .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--secondary-bg);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Dashboard Section Styling */
+        .dashboard-section {
+            padding: 30px 40px;
+            margin-bottom: 20px;
+            flex-grow: 1; /* Allow sections to grow within main content */
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* Card Grid Layout */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsive grid */
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--secondary-bg);
+            padding: var(--card-padding);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px var(--shadow-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px var(--shadow-medium);
+        }
+
+        .card .metric-label {
+            font-size: 16px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .card .metric-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .card .metric-trend {
+            font-size: 14px;
+            color: #5cb85c; /* Green for positive trend */
+            display: flex;
+            align-items: center;
+            margin-top: auto; /* Push to bottom of card */
+        }
+
+        .card .metric-trend.negative {
+            color: #d9534f; /* Red for negative trend */
+        }
+
+        /* Charts & Tables Containers */
+        .chart-container, .table-container {
+            background-color: var(--secondary-bg);
+            padding: var(--card-padding);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px var(--shadow-light);
+            margin-bottom: 25px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .chart-placeholder {
+            background-color: #e9ecef;
+            border-radius: var(--border-radius);
+            height: 250px; /* Standard height for charts */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            font-style: italic;
+            font-size: 14px;
+            margin-bottom: 15px;
+            overflow: hidden; /* Ensure gradient/mask stays within bounds */
+            position: relative; /* For inner chart elements */
+        }
+        
+        /* Specific Chart Visualizations (CSS-only approximation) */
+        .chart-placeholder.bar-chart {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 bars for example */
+            gap: 10px;
+            align-items: flex-end; /* Bars start from bottom */
+            padding: 15px;
+            height: 200px; /* Slightly shorter for bar charts */
+        }
+        .chart-placeholder.bar-chart .bar {
+            background-color: var(--accent-color);
+            border-radius: 4px 4px 0 0;
+            width: 100%;
+            transition: height 0.5s ease; /* Smooth height changes */
+        }
+        .chart-placeholder.pie-chart {
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            /* Example conic gradient for segments */
+            background-image: conic-gradient(
+                #3498db 0 25%, /* Blue segment */
+                #2ecc71 25% 65%, /* Green segment */
+                #f1c40f 65% 85%, /* Yellow segment */
+                #e74c3c 85% 100% /* Red segment */
+            );
+            margin: 0 auto; /* Center the pie chart */
+            border: 5px solid var(--border-color);
+        }
+        .chart-placeholder.line-chart {
+            height: 200px;
+            /* Grid background for lines */
+            background-image: linear-gradient(to right, #ccc 1px, transparent 1px),
+                              linear-gradient(to bottom, #ccc 1px, transparent 1px);
+            background-size: 20% 100%, 100% 20%;
+            background-position: 0 0, 0 0;
+            position: relative;
+        }
+        .chart-placeholder.line-chart::before { /* Pseudo-element for the line graph shape */
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-hover));
+            /* SVG mask for line graph shape - simple path for illustration */
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 80 C 25 30, 75 90, 100 20 L 100 100 L 0 100 Z" fill="black"/></svg>') no-repeat center / cover;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 80 C 25 30, 75 90, 100 20 L 100 100 L 0 100 Z" fill="black"/></svg>') no-repeat center / cover;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Remove double borders */
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        table tr:hover {
+            background-color: #f5f5f5; /* Hover effect for table rows */
+        }
+
+        /* Button Styling */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--secondary-bg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .btn .icon { /* Icon within button */
+            margin-right: 8px;
+        }
+
+        /* Search and Filter Bar */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .search-bar input[type="text"],
+        .search-bar select {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background-color: var(--secondary-bg);
+            box-shadow: inset 0 1px 3px var(--shadow-light);
+        }
+
+        /* Customer Profile Detail Panel */
+        .customer-detail-panel {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* Info on left, tabs on right */
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .customer-info-card {
+            background-color: var(--secondary-bg);
+            padding: var(--card-padding);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px var(--shadow-light);
+        }
+
+        .customer-info-card h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+            font-size: 22px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .customer-info-card p {
+            margin: 8px 0;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .customer-info-card p strong {
+            color: #555;
+            min-width: 120px; /* Align labels */
+            display: inline-block;
+        }
+
+        .customer-tabs {
+            background-color: var(--secondary-bg);
+            padding: var(--card-padding);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px var(--shadow-light);
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Allow tabs to wrap */
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #777;
+            transition: color 0.3s ease, border-bottom 0.3s ease;
+        }
+
+        .tab-button:hover {
+            color: var(--accent-hover);
+        }
+
+        .tab-button.active {
+            color: var(--accent-color);
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        .tab-content {
+            display: none; /* Hidden by default */
+        }
+
+        .tab-content.active {
+            display: block; /* Shown when active */
+        }
+
+        .interaction-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+        .interaction-item:last-child {
+            border-bottom: none; /* No border for the last item */
+        }
+        .interaction-item .date {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        .interaction-item .details {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* Utility classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .flex-row { display: flex; align-items: center; justify-content: space-between; }
+        .mb-20 { margin-bottom: 20px; }
+        .mt-20 { margin-top: 20px; }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            .customer-detail-panel {
+                grid-template-columns: 1fr 1.5fr;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+                padding: 15px;
+            }
+            .sidebar .logo {
+                font-size: 22px;
+            }
+            .sidebar nav ul li a {
+                padding: 10px 12px;
+                font-size: 15px;
+            }
+            .header {
+                padding: 15px 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .dashboard-section {
+                padding: 20px;
+            }
+            .card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 20px;
+            }
+            .customer-detail-panel {
+                grid-template-columns: 1fr; /* Stack panels on smaller screens */
+            }
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stack sidebar on top */
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: none;
+                padding: 15px;
+                order: -1; /* Place sidebar above header on mobile */
+            }
+            .sidebar nav ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 5px;
+            }
+            .sidebar nav ul li {
+                margin-bottom: 0;
+            }
+            .sidebar nav ul li a {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            .sidebar nav ul li a .icon {
+                margin-right: 5px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            .header h1 {
+                margin-bottom: 10px;
+            }
+            .user-profile {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .dashboard-section {
+                padding: 15px;
+            }
+            .card-grid {
+                grid-template-columns: 1fr; /* Single column on very small screens */
+                gap: 15px;
+            }
+            .search-bar {
+                flex-direction: column;
+            }
+            .search-bar input, .search-bar select, .search-bar .btn {
+                width: 100%;
+            }
+            table th, table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">FinDash</div>
+        <nav>
+            <ul>
+                <li><a href="#overview" class="active"><span class="icon">📊</span> Dashboard Overview</a></li>
+                <li><a href="#customers"><span class="icon">👥</span> Customer Profiles</a></li>
+                <li><a href="#segmentation"><span class="icon">📈</span> Segmentation & Analysis</a></li>
+                <li><a href="#financial"><span class="icon">💰</span> Financial Performance</a></li>
+                <li><a href="#behavior"><span class="icon">🏃</span> Customer Behavior</a></li>
+                <li><a href="#risk-compliance"><span class="icon">🛡️</span> Risk & Compliance</a></li>
+                <li><a href="#reports"><span class="icon">📋</span> BI Reports</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>Business Analyst Dashboard</h1>
+            <div class="user-profile">
+                <span>Welcome, Sarah!</span>
+                <div class="avatar">SA</div>
+            </div>
+        </header>
+
+        <!-- Dashboard Overview Section -->
+        <section id="overview" class="dashboard-section active-section">
+            <h2 class="section-title">Customer Overview & Key Business Metrics</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="metric-label">Total Customers</div>
+                    <div class="metric-value">12,50,000</div>
+                    <div class="metric-trend"><span style="color:#5cb85c;">&#9650; 2.5%</span> vs. Last Month</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Active Bank Accounts</div>
+                    <div class="metric-value">9,80,000</div>
+                    <div class="metric-trend"><span style="color:#5cb85c;">&#9650; 1.8%</span> vs. Last Quarter</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Avg. Customer Balance</div>
+                    <div class="metric-value">Rs. 1,75,000</div>
+                    <div class="metric-trend"><span style="color:#5cb85c;">&#9650; 3.1%</span> vs. Previous Year</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">New Leads (30 Days)</div>
+                    <div class="metric-value">8,500</div>
+                    <div class="metric-trend"><span style="color:#5cb85c;">&#9650; 15%</span> Growth</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Delinquent Loan Accounts</div>
+                    <div class="metric-value">1,200</div>
+                    <div class="metric-trend negative"><span style="color:#d9534f;">&#9660; 0.5%</span> Improvement</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Overall NPS Score</div>
+                    <div class="metric-value">58</div>
+                    <div class="metric-trend"><span style="color:#5cb85c;">&#9650; 2 pts</span> from Q3</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Avg. CSAT Score</div>
+                    <div class="metric-value">85%</div>
+                    <div class="metric-trend"><span style="color:#5cb85c;">&#9650; 1%</span> from Last Survey</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Cross-Sell Ratio</div>
+                    <div class="metric-value">2.1</div>
+                    <div class="metric-trend"><span style="color:#5cb85c;">&#9650; 0.1</span> Target: 2.5</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">High-Level Financial Insights</h2>
+            <div class="card-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Total Deposits Trend (Last 12 Months)</div>
+                    <div class="chart-placeholder line-chart"></div>
+                    <p class="text-center" style="font-size:14px; color:#666;">Total Deposits: Rs. 1,50,00,00,000 (+12% YoY)</p>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Loan Portfolio Growth (Quarterly)</div>
+                    <div class="chart-placeholder line-chart" style="height:200px; background-image: linear-gradient(to top, rgba(231, 76, 60, 0.2) 0%, rgba(231, 76, 60, 0) 50%), linear-gradient(to right, #ccc 1px, transparent 1px), linear-gradient(to bottom, #ccc 1px, transparent 1px);"><div style="background: linear-gradient(to right, #e74c3c, #c0392b); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 60 C 25 20, 75 70, 100 30 L 100 100 L 0 100 Z" fill="black"/></svg>') no-repeat center / cover; mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 60 C 25 20, 75 70, 100 30 L 100 100 L 0 100 Z" fill="black"/></svg>') no-repeat center / cover; width:100%; height:100%;"></div></div>
+                    <p class="text-center" style="font-size:14px; color:#666;">Total Loan Book: Rs. 80,00,00,000 (+5% QoQ)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customer Profiles Section -->
+        <section id="customers" class="dashboard-section" style="display:none;">
+            <h2 class="section-title">Customer Profiles & Detailed Information</h2>
+            <div class="search-bar">
+                <input type="text" id="customerSearch" placeholder="Search by Name, ID, or Account...">
+                <select id="customerFilter">
+                    <option value="all">All Customers</option>
+                    <option value="active">Active Accounts</option>
+                    <option value="high_value">High Value Customers</option>
+                    <option value="delinquent">Delinquent Accounts</option>
+                </select>
+                <button class="btn btn-primary" onclick="alert('Exporting customer data...');"><span class="icon">⬇️</span> Export List</button>
+            </div>
+
+            <div class="table-container">
+                <div class="chart-title">Customer Directory</div>
+                <table id="customerTable">
+                    <thead>
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Accounts</th>
+                            <th>Avg. Balance</th>
+                            <th>Last Activity</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be populated by JavaScript -->
+                        <tr data-customer-id="CUST-001234">
+                            <td>CUST-001234</td>
+                            <td>John Doe</td>
+                            <td>Mumbai, India</td>
+                            <td>2</td>
+                            <td>Rs. 6,70,000</td>
+                            <td>2023-10-26</td>
+                            <td>Active</td>
+                            <td><button class="btn btn-primary btn-view" onclick="viewCustomerDetails('CUST-001234')">View</button></td>
+                        </tr>
+                        <tr data-customer-id="CUST-005678">
+                            <td>CUST-005678</td>
+                            <td>Sarah Jane</td>
+                            <td>London, UK</td>
+                            <td>3</td>
+                            <td>Rs. 12,50,000</td>
+                            <td>2023-10-25</td>
+                            <td>Active</td>
+                            <td><button class="btn btn-primary btn-view" onclick="viewCustomerDetails('CUST-005678')">View</button></td>
+                        </tr>
+                        <tr data-customer-id="CUST-009012">
+                            <td>CUST-009012</td>
+                            <td>Michael Wong</td>
+                            <td>Singapore</td>
+                            <td>1</td>
+                            <td>Rs. 85,000</td>
+                            <td>2023-10-24</td>
+                            <td>Active</td>
+                            <td><button class="btn btn-primary btn-view" onclick="viewCustomerDetails('CUST-009012')">View</button></td>
+                        </tr>
+                        <tr data-customer-id="CUST-003456">
+                            <td>CUST-003456</td>
+                            <td>Priya Sharma</td>
+                            <td>Delhi, India</td>
+                            <td>2</td>
+                            <td>Rs. 2,10,000</td>
+                            <td>2023-10-23</td>
+                            <td>Active</td>
+                            <td><button class="btn btn-primary btn-view" onclick="viewCustomerDetails('CUST-003456')">View</button></td>
+                        </tr>
+                        <tr data-customer-id="CUST-007890">
+                            <td>CUST-007890</td>
+                            <td>David Chen</td>
+                            <td>Dubai, UAE</td>
+                            <td>4</td>
+                            <td>Rs. 35,00,000</td>
+                            <td>2023-10-22</td>
+                            <td>High Value</td>
+                            <td><button class="btn btn-primary btn-view" onclick="viewCustomerDetails('CUST-007890')">View</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="customerDetailView" style="display:none;">
+                <h3 class="section-title">Customer Details: <span id="customerDetailName"></span> (<span id="customerDetailId"></span>)</h3>
+                <div class="customer-detail-panel">
+                    <div class="customer-info-card">
+                        <h3>General Information</h3>
+                        <p><strong>Name:</strong> <span id="detailName"></span></p>
+                        <p><strong>Customer ID:</strong> <span id="detailId"></span></p>
+                        <p><strong>Contact:</strong> <span id="detailContact"></span></p>
+                        <p><strong>Email:</strong> <span id="detailEmail"></span></p>
+                        <p><strong>Address:</strong> <span id="detailAddress"></span></p>
+                        <p><strong>Date Joined:</strong> <span id="detailJoinedDate"></span></p>
+                        <p><strong>Customer Type:</strong> <span id="detailCustomerType"></span></p>
+                        <p><strong>Relationship Manager:</strong> <span id="detailRM"></span></p>
+                    </div>
+                    <div class="customer-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-button active" data-tab="accounts">Accounts</button>
+                            <button class="tab-button" data-tab="transactions">Transactions</button>
+                            <button class="tab-button" data-tab="interactions">Interactions</button>
+                            <button class="tab-button" data-tab="risk-sat">Risk & Satisfaction</button>
+                        </div>
+                        <div id="accounts" class="tab-content active">
+                            <h4>Account Summary</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Account Type</th>
+                                        <th>Account No.</th>
+                                        <th>Balance (Rs.)</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="transactions" class="tab-content">
+                            <h4>Recent Transactions</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Amount (Rs.)</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="interactions" class="tab-content">
+                            <h4>Interaction History</h4>
+                            <!-- Populated by JS -->
+                        </div>
+                        <div id="risk-sat" class="tab-content">
+                            <h4>Risk & Satisfaction Overview</h4>
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customer Segmentation & Analysis Section -->
+        <section id="segmentation" class="dashboard-section" style="display:none;">
+            <h2 class="section-title">Customer Segmentation & Analysis</h2>
+            <div class="card-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Customer Segments Distribution</div>
+                    <div class="chart-placeholder pie-chart"></div>
+                    <p class="text-center" style="font-size:14px; color:#666;">High Net Worth (25%), Mass Affluent (40%), Retail (30%), Students (5%)</p>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Product Holdings by Segment (Top 5 Products)</div>
+                    <div class="chart-placeholder bar-chart" style="height:250px;">
+                        <div class="bar" style="height:85%; background-color: #3498db;" title="Savings (85%)"></div>
+                        <div class="bar" style="height:70%; background-color: #2ecc71;" title="Current (70%)"></div>
+                        <div class="bar" style="height:55%; background-color: #f1c40f;" title="Loans (55%)"></div>
+                        <div class="bar" style="height:40%; background-color: #e74c3c;" title="Credit Cards (40%)"></div>
+                        <div class="bar" style="height:25%; background-color: #9b59b6;" title="Investments (25%)"></div>
+                    </div>
+                    <p class="text-center" style="font-size:14px; color:#666;">Insights into dominant product uptake across customer segments.</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="chart-title">Detailed Segment Performance</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Segment</th>
+                            <th>Count</th>
+                            <th>Avg. Balance (Rs.)</th>
+                            <th>Avg. Products</th>
+                            <th>NPS</th>
+                            <th>Churn Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>High Net Worth</td><td>62,500</td><td>55,00,000</td><td>4.2</td><td>75</td><td>0.5%</td></tr>
+                        <tr><td>Mass Affluent</td><td>2,50,000</td><td>15,00,000</td><td>3.5</td><td>65</td><td>1.2%</td></tr>
+                        <tr><td>Retail</td><td>7,50,000</td><td>1,50,000</td><td>2.1</td><td>50</td><td>3.8%</td></tr>
+                        <tr><td>Students/Youth</td><td>1,87,500</td><td>40,000</td><td>1.5</td><td>45</td><td>5.1%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Financial Performance Section -->
+        <section id="financial" class="dashboard-section" style="display:none;">
+            <h2 class="section-title">Financial Analysis & Trends</h2>
+            <div class="card-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Net Interest Margin (NIM) Trend</div>
+                    <div class="chart-placeholder line-chart" style="height:200px; background-image: linear-gradient(to top, rgba(46, 204, 113, 0.2) 0%, rgba(46, 204, 113, 0) 50%), linear-gradient(to right, #ccc 1px, transparent 1px), linear-gradient(to bottom, #ccc 1px, transparent 1px);"><div style="background: linear-gradient(to right, #2ecc71, #27ae60); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 40 C 25 60, 75 30, 100 50 L 100 100 L 0 100 Z" fill="black"/></svg>') no-repeat center / cover; mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 40 C 25 60, 75 30, 100 50 L 100 100 L 0 100 Z" fill="black"/></svg>') no-repeat center / cover; width:100%; height:100%;"></div></div>
+                    <p class="text-center" style="font-size:14px; color:#666;">Current NIM: 3.2% (Target: 3.5%) - Key Central Bank Indicator</p>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Revenue by Product Category</div>
+                    <div class="chart-placeholder bar-chart" style="height:250px;">
+                        <div class="bar" style="height:90%; background-color: #3498db;" title="Loans (45%)"></div>
+                        <div class="bar" style="height:50%; background-color: #2ecc71;" title="Deposits (25%)"></div>
+                        <div class="bar" style="height:30%; background-color: #f1c40f;" title="Cards (15%)"></div>
+                        <div class="bar" style="height:20%; background-color: #e74c3c;" title="Investments (10%)"></div>
+                        <div class="bar" style="height:10%; background-color: #9b59b6;" title="Other (5%)"></div>
+                    </div>
+                    <p class="text-center" style="font-size:14px; color:#666;">Total Revenue for Q3: Rs. 15,00,00,000</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="chart-title">Key Financial Ratios (as per local banking regulations)</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ratio</th>
+                            <th>Current Value</th>
+                            <th>Previous Quarter</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Capital Adequacy Ratio (CAR)</td><td>15.5%</td><td>15.2%</td><td>12% (RBI Req.)</td></tr>
+                        <tr><td>Non-Performing Assets (NPA) Ratio</td><td>1.8%</td><td>2.1%</td><td>< 2.0%</td></tr>
+                        <tr><td>Cost-to-Income Ratio</td><td>48%</td><td>50%</td><td>< 45%</td></tr>
+                        <tr><td>Return on Assets (ROA)</td><td>1.2%</td><td>1.1%</td><td>> 1.0%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Customer Behavior Patterns Section -->
+        <section id="behavior" class="dashboard-section" style="display:none;">
+            <h2 class="section-title">Customer Behavior Patterns</h2>
+            <div class="card-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Digital Channel Engagement (Daily Avg.)</div>
+                    <div class="chart-placeholder line-chart" style="height:200px; background-image: linear-gradient(to top, rgba(241, 196, 15, 0.2) 0%, rgba(241, 196, 15, 0) 50%), linear-gradient(to right, #ccc 1px, transparent 1px), linear-gradient(to bottom, #ccc 1px, transparent 1px);"><div style="background: linear-gradient(to right, #f1c40f, #f39c12); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 C 25 20, 75 80, 100 40 L 100 100 L 0 100 Z" fill="black"/></svg>') no-repeat center / cover; mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 C 25 20, 75 80, 100 40 L 100 100 L 0 100 Z" fill="black"/></svg>') no-repeat center / cover; width:100%; height:100%;"></div></div>
+                    <p class="text-center" style="font-size:14px; color:#666;">Mobile App Logins: 50,000/day, Web Logins: 30,000/day</p>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Top 5 Most Used Banking Services</div>
+                    <div class="chart-placeholder bar-chart" style="height:250px;">
+                        <div class="bar" style="height:95%; background-color: #3498db;" title="Fund Transfers (95%)"></div>
+                        <div class="bar" style="height:80%; background-color: #2ecc71;" title="Bill Payments (80%)"></div>
+                        <div class="bar" style="height:60%; background-color: #f1c40f;" title="Account Statement (60%)"></div>
+                        <div class="bar" style="height:45%; background-color: #e74c3c;" title="Loan Applications (45%)"></div>
+                        <div class="bar" style="height:30%; background-color: #9b59b6;" title="Investment Purchases (30%)"></div>
+                    </div>
+                    <p class="text-center" style="font-size:14px; color:#666;">Insights into service adoption and Cross-Sell opportunities.</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="chart-title">Behavioral Segments Insights</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Behavioral Segment</th>
+                            <th>Description</th>
+                            <th>Count</th>
+                            <th>Avg. Transaction Value (Rs.)</th>
+                            <th>Key Products</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Digital Natives</td><td>Frequent online/mobile users, low branch visits.</td><td>4,00,000</td><td>8,000</td><td>Digital Wallets, Online Investing</td></tr>
+                        <tr><td>Branch Loyalists</td><td>Prefers branch interactions, less digital.</td><td>3,00,000</td><td>15,000</td><td>FDs, Traditional Loans</td></tr>
+                        <tr><td>Credit Seekers</td><td>High loan uptake, frequent credit card use.</td><td>2,00,000</td><td>25,000</td><td>Personal Loans, Credit Cards</td></tr>
+                        <tr><td>Savers & Investors</td><td>Focus on deposits, mutual funds, FDs.</td><td>1,50,000</td><td>50,000</td><td>Savings Accounts, Investments</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Risk Assessment & Compliance Section -->
+        <section id="risk-compliance" class="dashboard-section" style="display:none;">
+            <h2 class="section-title">Risk Assessment & Compliance Monitoring</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="metric-label">AML Alerts (Last 7 Days)</div>
+                    <div class="metric-value" style="color:#e74c3c;">3</div>
+                    <div class="metric-trend negative">&#9650; Critical Priority Cases</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Fraudulent Transactions (30 Days)</div>
+                    <div class="metric-value">Rs. 1,50,000</div>
+                    <div class="metric-trend negative">&#9650; 2 Incidents Recorded</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Pending KYC Updates</div>
+                    <div class="metric-value" style="color:#f1c40f;">500</div>
+                    <div class="metric-trend">&#9650; Due to Central Bank Norms</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Regulatory Audit Status</div>
+                    <div class="metric-value" style="color:#2ecc71;">Green</div>
+                    <div class="metric-trend">Last Audit: 2023-09-01</div>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="chart-title">Customer Risk Score Distribution</div>
+                <div class="chart-placeholder bar-chart" style="height:250px;">
+                    <div class="bar" style="height:90%; background-color: #2ecc71;" title="Low Risk (90%)"></div>
+                    <div class="bar" style="height:50%; background-color: #f1c40f;" title="Medium Risk (50%)"></div>
+                    <div class="bar" style="height:10%; background-color: #e74c3c;" title="High Risk (10%)"></div>
+                    <div class="bar" style="height:5%; background-color: #c0392b;" title="Very High Risk (5%)"></div>
+                    <div class="bar" style="height:0%;" title=""></div>
+                </div>
+                <p class="text-center" style="font-size:14px; color:#666;">90% of customers are categorized as Low Risk based on internal models.</p>
+            </div>
+            <div class="table-container">
+                <div class="chart-title">Compliance Check Status</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Regulation / Policy</th>
+                            <th>Status</th>
+                            <th>Last Check</th>
+                            <th>Next Review</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Central Bank KYC Norms</td><td>Compliant</td><td>2023-09-01</td><td>2024-09-01</td><td>Routine annual review cycle.</td></tr>
+                        <tr><td>AML Act (Local Banking)</td><td>Compliant</td><td>2023-10-20</td><td>2024-10-20</td><td>Automated daily checks in place.</td></tr>
+                        <tr><td>Data Privacy (GDPR/Local Reg.)</td><td>Compliant</td><td>2023-07-15</td><td>2024-07-15</td><td>Continuous monitoring as per policy.</td></tr>
+                        <tr><td>Credit Bureau Reporting</td><td>Compliant</td><td>2023-10-31</td><td>Monthly</td><td>October report submitted on time.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Business Intelligence Reports Section -->
+        <section id="reports" class="dashboard-section" style="display:none;">
+            <h2 class="section-title">Business Intelligence Reports & Data Export</h2>
+            <div class="table-container">
+                <div class="chart-title">Available BI Reports</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Report Name</th>
+                            <th>Description</th>
+                            <th>Last Generated</th>
+                            <th>Frequency</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Quarterly Profitability Report</td>
+                            <td>Detailed breakdown of revenue and expenses by product line and branch performance.</td>
+                            <td>2023-10-15</td>
+                            <td>Quarterly</td>
+                            <td><button class="btn btn-primary" onclick="alert('Generating report...');"><span class="icon">⚙️</span> Generate Now</button> <button class="btn btn-primary" onclick="alert('Downloading report...');"><span class="icon">⬇️</span> Download PDF</button></td>
+                        </tr>
+                        <tr>
+                            <td>New Customer Acquisition Analysis</td>
+                            <td>Analysis of new customer onboarding channels, acquisition costs, and conversion rates.</td>
+                            <td>2023-10-31</td>
+                            <td>Monthly</td>
+                            <td><button class="btn btn-primary" onclick="alert('Generating report...');"><span class="icon">⚙️</span> Generate Now</button> <button class="btn btn-primary" onclick="alert('Downloading report...');"><span class="icon">⬇️</span> Download CSV</button></td>
+                        </tr>
+                        <tr>
+                            <td>Customer Churn Prediction Model Insights</td>
+                            <td>Identifies customers at high risk of churning with contributing factors and retention strategies.</td>
+                            <td>2023-11-01</td>
+                            <td>Weekly</td>
+                            <td><button class="btn btn-primary" onclick="alert('Generating report...');"><span class="icon">⚙️</span> Generate Now</button> <button class="btn btn-primary" onclick="alert('Downloading report...');"><span class="icon">⬇️</span> Download Excel</button></td>
+                        </tr>
+                        <tr>
+                            <td>Branch Performance Metrics</td>
+                            <td>Key Performance Indicators (KPIs) for each local bank branch including deposits, loans, and customer footfall.</td>
+                            <td>2023-10-25</td>
+                            <td>Monthly</td>
+                            <td><button class="btn btn-primary" onclick="alert('Generating report...');"><span class="icon">⚙️</span> Generate Now</button> <button class="btn btn-primary" onclick="alert('Downloading report...');"><span class="icon">⬇️</span> Download PDF</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarLinks = document.querySelectorAll('.sidebar nav ul li a');
+            const sections = document.querySelectorAll('.dashboard-section');
+            const customerTableBody = document.querySelector('#customerTable tbody');
+            const customerDetailView = document.getElementById('customerDetailView');
+            const customerSearchInput = document.getElementById('customerSearch');
+            const customerFilterSelect = document.getElementById('customerFilter');
+
+            // --- Navigation Logic ---
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and sections
+                    sidebarLinks.forEach(item => item.classList.remove('active'));
+                    sections.forEach(section => section.style.display = 'none');
+
+                    // Add active class to clicked link
+                    this.classList.add('active');
+
+                    // Show the corresponding section
+                    const targetId = this.getAttribute('href').substring(1);
+                    document.getElementById(targetId).style.display = 'block';
+
+                    // If navigating away from Customer Profiles, hide detail view
+                    if (targetId !== 'customers') {
+                        customerDetailView.style.display = 'none';
+                    } else {
+                        // If returning to Customer Profiles, ensure table is visible and detail view hidden initially
+                        customerDetailView.style.display = 'none';
+                        // Refresh customer table filter in case user changed search/filter while away
+                        filterCustomerTable();
+                    }
+                });
+            });
+
+            // --- Customer Table & Detail View Logic ---
+            // Sample Customer Data (for demonstration)
+            const customerData = {
+                'CUST-001234': {
+                    name: 'John Doe',
+                    id: 'CUST-001234',
+                    contact: '+91 98765 43210',
+                    email: 'john.doe@example.com',
+                    address: '123, Bank Street, Bandra, Mumbai, India',
+                    joinedDate: '2022-03-10',
+                    customerType: 'Retail',
+                    rm: 'Sarah Ahmed',
+                    accounts: [
+                        {type: 'Savings Account', number: 'SB-123456789', balance: '5,20,000', status: 'Active'},
+                        {type: 'Current Account', number: 'CA-987654321', balance: '1,50,000', status: 'Active'},
+                        {type: 'Home Loan', number: 'LOAN-001', balance: '12,00,000', status: 'Active'}
+                    ],
+                    transactions: [
+                        {date: '2023-10-26', description: 'ATM Withdrawal', amount: '-10,000', type: 'Withdrawal'},
+                        {date: '2023-10-25', description: 'Online Fund Transfer (Sarah Jane)', amount: '-25,000', type: 'Transfer'},
+                        {date: '2023-10-24', description: 'Utility Bill Payment', amount: '-3,500', type: 'Payment'},
+                        {date: '2023-10-20', description: 'Salary Deposit', amount: '+80,000', type: 'Deposit'}
+                    ],
+                    interactions: [
+                        {date: '2023-10-20 14:30', details: 'Call with RM Sarah regarding investment options. Customer expressed interest in Mutual Funds.'},
+                        {date: '2023-09-15 10:00', details: 'Email sent: Pre-approved Personal Loan offer. (No response yet)'},
+                        {date: '2023-08-01 11:00', details: 'Branch Visit: Updated KYC documents. Customer expressed satisfaction with service.'}
+                    ],
+                    riskScore: 'Low (7/100) - No significant red flags detected.',
+                    amlStatus: 'Cleared. Last AML Review: 2023-09-01.',
+                    kycStatus: 'Verified. Last KYC Update: 2023-08-01.',
+                    sentiment: 'Positive',
+                    surveyScore: '9/10 (dated 2023-08-10)',
+                    nps: '70 (Promoter)',
+                    status: 'Active' // For filtering
+                },
+                'CUST-005678': {
+                    name: 'Sarah Jane',
+                    id: 'CUST-005678',
+                    contact: '+44 7911 123456',
+                    email: 'sarah.jane@example.com',
+                    address: 'Flat 4, Elm Court, London, UK',
+                    joinedDate: '2021-08-20',
+                    customerType: 'Mass Affluent',
+                    rm: 'Michael Brown',
+                    accounts: [
+                        {type: 'Savings Account', number: 'SB-987654321', balance: '8,00,000', status: 'Active'},
+                        {type: 'Current Account', number: 'CA-123456789', balance: '4,50,000', status: 'Active'},
+                        {type: 'Mortgage Loan', number: 'MORT-002', balance: '30,00,000', status: 'Active'}
+                    ],
+                     transactions: [
+                        {date: '2023-10-25', description: 'Online Shopping (RetailerXYZ)', amount: '-5,000', type: 'Purchase'},
+                        {date: '2023-10-24', description: 'Monthly Mortgage Payment', amount: '-70,000', type: 'Payment'}
+                    ],
+                    interactions: [
+                        {date: '2023-10-10 09:00', details: 'Call with RM Michael regarding mortgage refinancing options. Sent brochure.'}
+                    ],
+                    riskScore: 'Low (10/100) - Stable financial history.',
+                    amlStatus: 'Cleared. Last Review: 2023-09-05.',
+                    kycStatus: 'Verified. Last Update: 2022-08-20.',
+                    sentiment: 'Neutral',
+                    surveyScore: '8/10',
+                    nps: '60',
+                    status: 'Active'
+                },
+                'CUST-009012': {
+                    name: 'Michael Wong',
+                    id: 'CUST-009012',
+                    contact: '+65 9123 4567',
+                    email: 'michael.wong@example.com',
+                    address: 'Orchard Rd, Singapore',
+                    joinedDate: '2023-01-05',
+                    customerType: 'Retail',
+                    rm: 'David Lee',
+                    accounts: [
+                        {type: 'Savings Account', number: 'SB-001122334', balance: '85,000', status: 'Active'}
+                    ],
+                     transactions: [
+                        {date: '2023-10-24', description: 'Grocery Purchase', amount: '-1,200', type: 'Purchase'},
+                        {date: '2023-10-23', description: 'Mobile Top-up', amount: '-500', type: 'Payment'}
+                    ],
+                    interactions: [
+                        {date: '2023-02-01 16:00', details: 'New account opening. Explained basic banking services and mobile app features.'}
+                    ],
+                    riskScore: 'Low (5/100) - New customer, no adverse history.',
+                    amlStatus: 'Cleared',
+                    kycStatus: 'Verified',
+                    sentiment: 'Positive',
+                    surveyScore: '9/10',
+                    nps: '65',
+                    status: 'Active'
+                },
+                'CUST-003456': {
+                    name: 'Priya Sharma',
+                    id: 'CUST-003456',
+                    contact: '+91 99887 76655',
+                    email: 'priya.sharma@example.com',
+                    address: 'Flat B, Green Apartments, Karol Bagh, Delhi, India',
+                    joinedDate: '2020-07-12',
+                    customerType: 'Retail',
+                    rm: 'Rahul Singh',
+                    accounts: [
+                        {type: 'Savings Account', number: 'SB-223344556', balance: '2,10,000', status: 'Active'},
+                        {type: 'Personal Loan', number: 'PL-005', balance: '3,50,000', status: 'Active', delinquent: true} // Mark as delinquent for filter test
+                    ],
+                     transactions: [
+                        {date: '2023-10-23', description: 'EMI Payment', amount: '-15,000', type: 'Payment'},
+                        {date: '2023-10-22', description: 'Online Food Order', amount: '-800', type: 'Purchase'}
+                    ],
+                    interactions: [
+                        {date: '2023-09-05 11:30', details: 'Customer enquired about personal loan top-up. Declined due to credit score concerns. Follow-up needed.'}
+                    ],
+                    riskScore: 'Medium (40/100) - Recent missed EMI payment, requires monitoring.',
+                    amlStatus: 'Cleared',
+                    kycStatus: 'Verified',
+                    sentiment: 'Neutral',
+                    surveyScore: '7/10',
+                    nps: '40',
+                    status: 'Delinquent' // For filtering
+                },
+                'CUST-007890': {
+                    name: 'David Chen',
+                    id: 'CUST-007890',
+                    contact: '+971 50 123 4567',
+                    email: 'david.chen@example.com',
+                    address: 'Tower A, Downtown, Dubai, UAE',
+                    joinedDate: '2019-02-01',
+                    customerType: 'High Value',
+                    rm: 'Emily White',
+                    accounts: [
+                        {type: 'Savings Account', number: 'SB-667788990', balance: '15,00,000', status: 'Active'},
+                        {type: 'Current Account', number: 'CA-009988776', balance: '10,00,000', status: 'Active'},
+                        {type: 'Investment Account', number: 'INV-003', balance: '10,00,000', status: 'Active'},
+                        {type: 'Auto Loan', number: 'AL-007', balance: '8,00,000', status: 'Active'}
+                    ],
+                     transactions: [
+                        {date: '2023-10-22', description: 'Investment Purchase (Stocks)', amount: '-5,00,000', type: 'Investment'},
+                        {date: '2023-10-21', description: 'Luxury Retail Purchase', amount: '-50,000', type: 'Purchase'}
+                    ],
+                    interactions: [
+                        {date: '2023-10-18 10:00', details: 'Meeting with RM Emily to discuss portfolio restructuring and new investment opportunities.'},
+                        {date: '2023-09-01 15:00', details: 'Email sent: Exclusive wealth management offer tailored to profile.'}
+                    ],
+                    riskScore: 'Low (15/100) - Consistent high-value transactions, well-diversified.',
+                    amlStatus: 'Cleared',
+                    kycStatus: 'Verified',
+                    sentiment: 'Very Positive',
+                    surveyScore: '10/10',
+                    nps: '85',
+                    status: 'High Value' // For filtering
+                }
+            };
+
+            // Helper to format currency
+            function formatRupees(amount) {
+                // Ensure amount is string and remove non-numeric
+                const numericAmount = parseInt(String(amount).replace(/[^0-9-]/g, ''));
+                if (isNaN(numericAmount)) return amount; // Return original if not a valid number
+                
+                // Format using 'en-IN' locale for Indian numbering system
+                const formatted = numericAmount.toLocaleString('en-IN');
+                return (numericAmount < 0 ? '-' : '') + 'Rs. ' + formatted.replace('-', ''); // Add Rs. prefix and handle negative sign
+            }
+
+            function populateCustomerTable(data) {
+                customerTableBody.innerHTML = ''; // Clear existing rows
+                Object.values(data).forEach(customer => {
+                    const row = customerTableBody.insertRow();
+                    row.dataset.customerId = customer.id;
+                    const avgBalance = customer.accounts.reduce((sum, acc) => sum + parseInt(acc.balance.replace(/[^0-9]/g, '')), 0);
+                    row.innerHTML = `
+                        <td>${customer.id}</td>
+                        <td>${customer.name}</td>
+                        <td>${customer.address.split(',').slice(-2).join(', ').trim()}</td>
+                        <td>${customer.accounts.length}</td>
+                        <td>${formatRupees(avgBalance)}</td>
+                        <td>${customer.transactions.length > 0 ? customer.transactions[0].date : 'N/A'}</td>
+                        <td>${customer.status}</td>
+                        <td><button class="btn btn-primary btn-view" onclick="viewCustomerDetails('${customer.id}')">View</button></td>
+                    `;
+                });
+            }
+
+            function filterCustomerTable() {
+                const searchTerm = customerSearchInput.value.toLowerCase();
+                const filterValue = customerFilterSelect.value;
+                const rows = customerTableBody.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    const customerId = row.dataset.customerId;
+                    const customer = customerData[customerId];
+                    if (!customer) { // Should not happen with valid data-customer-id
+                        row.style.display = 'none';
+                        return;
+                    }
+
+                    const matchesSearch = searchTerm === '' ||
+                                          customer.name.toLowerCase().includes(searchTerm) ||
+                                          customer.id.toLowerCase().includes(searchTerm) ||
+                                          customer.accounts.some(acc => acc.number.toLowerCase().includes(searchTerm)) ||
+                                          customer.email.toLowerCase().includes(searchTerm) ||
+                                          customer.contact.toLowerCase().includes(searchTerm);
+                    
+                    let matchesFilter = false;
+                    switch (filterValue) {
+                        case 'all':
+                            matchesFilter = true;
+                            break;
+                        case 'active':
+                            matchesFilter = (customer.status === 'Active');
+                            break;
+                        case 'high_value':
+                            matchesFilter = (customer.customerType === 'High Value');
+                            break;
+                        case 'delinquent':
+                            matchesFilter = (customer.status === 'Delinquent' || customer.accounts.some(acc => acc.delinquent));
+                            break;
+                        default:
+                            matchesFilter = true;
+                    }
+
+                    if (matchesSearch && matchesFilter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            customerSearchInput.addEventListener('keyup', filterCustomerTable);
+            customerFilterSelect.addEventListener('change', filterCustomerTable);
+            
+            // Initial population of the table
+            populateCustomerTable(customerData);
+
+
+            window.viewCustomerDetails = function(customerId) {
+                const customer = customerData[customerId];
+                if (!customer) return;
+
+                // Populate general info
+                document.getElementById('customerDetailName').textContent = customer.name;
+                document.getElementById('customerDetailId').textContent = customer.id;
+
+                document.getElementById('detailName').textContent = customer.name;
+                document.getElementById('detailId').textContent = customer.id;
+                document.getElementById('detailContact').textContent = customer.contact;
+                document.getElementById('detailEmail').textContent = customer.email;
+                document.getElementById('detailAddress').textContent = customer.address;
+                document.getElementById('detailJoinedDate').textContent = customer.joinedDate;
+                document.getElementById('detailCustomerType').textContent = customer.customerType;
+                document.getElementById('detailRM').textContent = customer.rm;
+
+                // Populate Accounts Tab
+                const accountsHtml = customer.accounts.map(acc => `
+                    <tr><td>${acc.type}</td><td>${acc.number}</td><td>${formatRupees(acc.balance)}</td><td>${acc.status}</td></tr>
+                `).join('');
+                document.querySelector('#accounts tbody').innerHTML = accountsHtml;
+
+                // Populate Transactions Tab
+                const transactionsHtml = customer.transactions.map(tx => `
+                    <tr><td>${tx.date}</td><td>${tx.description}</td><td>${formatRupees(tx.amount)}</td><td>${tx.type}</td></tr>
+                `).join('');
+                document.querySelector('#transactions tbody').innerHTML = transactionsHtml;
+
+                // Populate Interactions Tab
+                const interactionsHtml = customer.interactions.map(int => `
+                    <div class="interaction-item">
+                        <div class="date">${int.date}</div>
+                        <div class="details">${int.details}</div>
+                    </div>
+                `).join('');
+                document.getElementById('interactions').innerHTML = `<h4>Interaction History</h4>${interactionsHtml}`;
+
+                // Populate Risk & Satisfaction Tab
+                document.getElementById('risk-sat').innerHTML = `
+                    <h4>Risk & Satisfaction Overview</h4>
+                    <p><strong>Risk Score:</strong> ${customer.riskScore}</p>
+                    <p><strong>AML Status:</strong> ${customer.amlStatus}</p>
+                    <p><strong>KYC Status:</strong> ${customer.kycStatus}</p>
+                    <p><strong>Customer Sentiment:</strong> ${customer.sentiment}</p>
+                    <p><strong>Recent Survey Score:</strong> ${customer.surveyScore}</p>
+                    <p><strong>NPS Score:</strong> ${customer.nps}</p>
+                `;
+
+                // Show the detail view
+                customerDetailView.style.display = 'block';
+                customerDetailView.scrollIntoView({ behavior: 'smooth' }); // Scroll to view the details
+            };
+
+            // --- Tab Switching Logic for Customer Details ---
+            const tabButtons = document.querySelectorAll('.customer-tabs .tab-button');
+            const tabContents = document.querySelectorAll('.customer-tabs .tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active to clicked button
+                    this.classList.add('active');
+
+                    // Show corresponding content
+                    const targetTabId = this.dataset.tab;
+                    document.getElementById(targetTabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

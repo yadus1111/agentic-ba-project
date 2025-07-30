@@ -1,0 +1,1209 @@
+[
+  {
+    "type": "frame",
+    "name": "User_App_Fonepoints_Section",
+    "x": 0,
+    "y": 0,
+    "width": 400,
+    "height": 800,
+    "content": "Fonepoints Loyalty Program",
+    "children": [
+      {
+        "type": "rectangle",
+        "name": "App_Header_Bar",
+        "x": 0,
+        "y": 0,
+        "width": 400,
+        "height": 60,
+        "parent": "User_App_Fonepoints_Section",
+        "children": [
+          {
+            "type": "icon",
+            "name": "Back_Button_Icon",
+            "x": 10,
+            "y": 20,
+            "width": 24,
+            "height": 24,
+            "content": "Back Arrow",
+            "parent": "App_Header_Bar"
+          },
+          {
+            "type": "text",
+            "name": "Page_Title",
+            "x": 60,
+            "y": 20,
+            "width": 200,
+            "height": 24,
+            "content": "Loyalty Points",
+            "parent": "App_Header_Bar"
+          },
+          {
+            "type": "icon",
+            "name": "Notifications_Icon",
+            "x": 360,
+            "y": 20,
+            "width": 24,
+            "height": 24,
+            "content": "Bell Icon",
+            "parent": "App_Header_Bar"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "name": "Points_Summary_Card",
+        "x": 20,
+        "y": 80,
+        "width": 360,
+        "height": 100,
+        "parent": "User_App_Fonepoints_Section",
+        "children": [
+          {
+            "type": "text",
+            "name": "Current_Balance_Label",
+            "x": 15,
+            "y": 15,
+            "width": 150,
+            "height": 20,
+            "content": "Your Current Points Balance",
+            "parent": "Points_Summary_Card"
+          },
+          {
+            "type": "text",
+            "name": "Points_Value",
+            "x": 15,
+            "y": 40,
+            "width": 200,
+            "height": 36,
+            "content": "12345 Points",
+            "fontSize": 28,
+            "parent": "Points_Summary_Card"
+          },
+          {
+            "type": "text",
+            "name": "Points_Expiring_Label",
+            "x": 15,
+            "y": 78,
+            "width": 250,
+            "height": 16,
+            "content": "500 points expiring on DD/MM/YYYY",
+            "parent": "Points_Summary_Card"
+          },
+          {
+            "type": "button",
+            "name": "Redeem_Points_Button",
+            "x": 220,
+            "y": 40,
+            "width": 120,
+            "height": 36,
+            "content": "Redeem Now",
+            "parent": "Points_Summary_Card"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Personalized_Offers_Section_Title",
+        "x": 20,
+        "y": 200,
+        "width": 300,
+        "height": 24,
+        "content": "Recommended Offers",
+        "parent": "User_App_Fonepoints_Section"
+      },
+      {
+        "type": "card",
+        "name": "Offer_Card_1",
+        "x": 20,
+        "y": 230,
+        "width": 360,
+        "height": 140,
+        "parent": "User_App_Fonepoints_Section",
+        "children": [
+          {
+            "type": "text",
+            "name": "Offer_Title_1",
+            "x": 15,
+            "y": 15,
+            "width": 300,
+            "height": 20,
+            "content": "X% Discount on Grocery Store",
+            "parent": "Offer_Card_1"
+          },
+          {
+            "type": "text",
+            "name": "Offer_Description_1",
+            "x": 15,
+            "y": 40,
+            "width": 300,
+            "height": 40,
+            "content": "Get X% off on your next purchase at a favorite grocery store. Min spend Y.",
+            "parent": "Offer_Card_1"
+          },
+          {
+            "type": "button",
+            "name": "View_Details_Button_1",
+            "x": 15,
+            "y": 90,
+            "width": 120,
+            "height": 36,
+            "content": "View Details",
+            "parent": "Offer_Card_1"
+          },
+          {
+            "type": "button",
+            "name": "Redeem_Offer_Button_1",
+            "x": 145,
+            "y": 90,
+            "width": 100,
+            "height": 36,
+            "content": "Redeem",
+            "parent": "Offer_Card_1"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "name": "Offer_Card_2",
+        "x": 20,
+        "y": 380,
+        "width": 360,
+        "height": 140,
+        "parent": "User_App_Fonepoints_Section",
+        "children": [
+          {
+            "type": "text",
+            "name": "Offer_Title_2",
+            "x": 15,
+            "y": 15,
+            "width": 300,
+            "height": 20,
+            "content": "Bonus Points for Bill Payment",
+            "parent": "Offer_Card_2"
+          },
+          {
+            "type": "text",
+            "name": "Offer_Description_2",
+            "x": 15,
+            "y": 40,
+            "width": 300,
+            "height": 40,
+            "content": "Earn X bonus points on your next Utility Bill Payment.",
+            "parent": "Offer_Card_2"
+          },
+          {
+            "type": "button",
+            "name": "View_Details_Button_2",
+            "x": 15,
+            "y": 90,
+            "width": 120,
+            "height": 36,
+            "content": "View Details",
+            "parent": "Offer_Card_2"
+          },
+          {
+            "type": "button",
+            "name": "Redeem_Offer_Button_2",
+            "x": 145,
+            "y": 90,
+            "width": 100,
+            "height": 36,
+            "content": "Redeem",
+            "parent": "Offer_Card_2"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Active_Challenges_Section_Title",
+        "x": 20,
+        "y": 540,
+        "width": 300,
+        "height": 24,
+        "content": "Active Challenges",
+        "parent": "User_App_Fonepoints_Section"
+      },
+      {
+        "type": "card",
+        "name": "Challenge_Card_1",
+        "x": 20,
+        "y": 570,
+        "width": 360,
+        "height": 120,
+        "parent": "User_App_Fonepoints_Section",
+        "children": [
+          {
+            "type": "text",
+            "name": "Challenge_Title_1",
+            "x": 15,
+            "y": 15,
+            "width": 300,
+            "height": 20,
+            "content": "Spend at X Unique Merchants",
+            "parent": "Challenge_Card_1"
+          },
+          {
+            "type": "text",
+            "name": "Challenge_Description_1",
+            "x": 15,
+            "y": 40,
+            "width": 300,
+            "height": 20,
+            "content": "Complete transactions at 3 unique QR merchants this week.",
+            "parent": "Challenge_Card_1"
+          },
+          {
+            "type": "progress_bar",
+            "name": "Challenge_Progress_1",
+            "x": 15,
+            "y": 65,
+            "width": 200,
+            "height": 10,
+            "content": "Progress: 1/3",
+            "parent": "Challenge_Card_1"
+          },
+          {
+            "type": "button",
+            "name": "View_Challenge_Button_1",
+            "x": 215,
+            "y": 60,
+            "width": 130,
+            "height": 30,
+            "content": "View Progress",
+            "parent": "Challenge_Card_1"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "name": "Flash_Sale_Banner",
+        "x": 20,
+        "y": 700,
+        "width": 360,
+        "height": 80,
+        "parent": "User_App_Fonepoints_Section",
+        "children": [
+          {
+            "type": "text",
+            "name": "Flash_Sale_Title",
+            "x": 15,
+            "y": 15,
+            "width": 300,
+            "height": 20,
+            "content": "Limited Time Offer! X% Off Voucher",
+            "parent": "Flash_Sale_Banner"
+          },
+          {
+            "type": "text",
+            "name": "Flash_Sale_Countdown",
+            "x": 15,
+            "y": 40,
+            "width": 150,
+            "height": 20,
+            "content": "Ends in 01h 30m 15s",
+            "parent": "Flash_Sale_Banner"
+          },
+          {
+            "type": "button",
+            "name": "Redeem_Flash_Sale_Button",
+            "x": 250,
+            "y": 30,
+            "width": 90,
+            "height": 36,
+            "content": "Redeem",
+            "parent": "Flash_Sale_Banner"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Bottom_Navigation_Bar",
+        "x": 0,
+        "y": 740,
+        "width": 400,
+        "height": 60,
+        "parent": "User_App_Fonepoints_Section",
+        "children": [
+          {
+            "type": "icon",
+            "name": "Home_Icon",
+            "x": 40,
+            "y": 10,
+            "width": 40,
+            "height": 40,
+            "content": "Home",
+            "parent": "Bottom_Navigation_Bar"
+          },
+          {
+            "type": "icon",
+            "name": "Payments_Icon",
+            "x": 120,
+            "y": 10,
+            "width": 40,
+            "height": 40,
+            "content": "Payments",
+            "parent": "Bottom_Navigation_Bar"
+          },
+          {
+            "type": "icon",
+            "name": "Loyalty_Icon",
+            "x": 200,
+            "y": 10,
+            "width": 40,
+            "height": 40,
+            "content": "Loyalty",
+            "parent": "Bottom_Navigation_Bar"
+          },
+          {
+            "type": "icon",
+            "name": "Services_Icon",
+            "x": 280,
+            "y": 10,
+            "width": 40,
+            "height": 40,
+            "content": "Services",
+            "parent": "Bottom_Navigation_Bar"
+          },
+          {
+            "type": "icon",
+            "name": "Profile_Icon",
+            "x": 340,
+            "y": 10,
+            "width": 40,
+            "height": 40,
+            "content": "Profile",
+            "parent": "Bottom_Navigation_Bar"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "frame",
+    "name": "Admin_Dashboard_Campaign_Management",
+    "x": 420,
+    "y": 0,
+    "width": 1200,
+    "height": 800,
+    "content": "Admin Dashboard - Campaign Management",
+    "children": [
+      {
+        "type": "rectangle",
+        "name": "Dashboard_Sidebar",
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 800,
+        "parent": "Admin_Dashboard_Campaign_Management",
+        "children": [
+          {
+            "type": "text",
+            "name": "Brand_Logo",
+            "x": 20,
+            "y": 30,
+            "width": 160,
+            "height": 30,
+            "content": "Company Logo",
+            "fontSize": 20,
+            "parent": "Dashboard_Sidebar"
+          },
+          {
+            "type": "nav_link",
+            "name": "Dashboard_Link",
+            "x": 0,
+            "y": 100,
+            "width": 200,
+            "height": 40,
+            "content": "Dashboard",
+            "parent": "Dashboard_Sidebar"
+          },
+          {
+            "type": "nav_link",
+            "name": "Campaigns_Link",
+            "x": 0,
+            "y": 140,
+            "width": 200,
+            "height": 40,
+            "content": "Campaigns",
+            "parent": "Dashboard_Sidebar"
+          },
+          {
+            "type": "nav_link",
+            "name": "Analytics_Link",
+            "x": 0,
+            "y": 180,
+            "width": 200,
+            "height": 40,
+            "content": "Analytics",
+            "parent": "Dashboard_Sidebar"
+          },
+          {
+            "type": "nav_link",
+            "name": "Settings_Link",
+            "x": 0,
+            "y": 220,
+            "width": 200,
+            "height": 40,
+            "content": "Settings",
+            "parent": "Dashboard_Sidebar"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Dashboard_Header",
+        "x": 200,
+        "y": 0,
+        "width": 1000,
+        "height": 60,
+        "parent": "Admin_Dashboard_Campaign_Management",
+        "children": [
+          {
+            "type": "text",
+            "name": "Header_Title",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 24,
+            "content": "Campaign Management",
+            "fontSize": 20,
+            "parent": "Dashboard_Header"
+          },
+          {
+            "type": "icon",
+            "name": "User_Profile_Icon_Admin",
+            "x": 940,
+            "y": 20,
+            "width": 24,
+            "height": 24,
+            "content": "User Icon",
+            "parent": "Dashboard_Header"
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "name": "Create_New_Campaign_Button",
+        "x": 1020,
+        "y": 80,
+        "width": 150,
+        "height": 40,
+        "content": "Create New Campaign",
+        "parent": "Admin_Dashboard_Campaign_Management"
+      },
+      {
+        "type": "text",
+        "name": "Campaign_List_Title",
+        "x": 220,
+        "y": 140,
+        "width": 200,
+        "height": 24,
+        "content": "Current Campaigns",
+        "parent": "Admin_Dashboard_Campaign_Management"
+      },
+      {
+        "type": "table",
+        "name": "Campaigns_Table",
+        "x": 220,
+        "y": 180,
+        "width": 940,
+        "height": 500,
+        "parent": "Admin_Dashboard_Campaign_Management",
+        "content": "List of Campaigns",
+        "children": [
+          {
+            "type": "table_header",
+            "name": "Campaign_Table_Header",
+            "x": 0,
+            "y": 0,
+            "width": 940,
+            "height": 40,
+            "parent": "Campaigns_Table",
+            "children": [
+              {
+                "type": "text",
+                "name": "Header_Campaign_Name",
+                "x": 10,
+                "y": 10,
+                "width": 150,
+                "height": 20,
+                "content": "Campaign Name",
+                "parent": "Campaign_Table_Header"
+              },
+              {
+                "type": "text",
+                "name": "Header_Type",
+                "x": 170,
+                "y": 10,
+                "width": 100,
+                "height": 20,
+                "content": "Type",
+                "parent": "Campaign_Table_Header"
+              },
+              {
+                "type": "text",
+                "name": "Header_Start_Date",
+                "x": 280,
+                "y": 10,
+                "width": 120,
+                "height": 20,
+                "content": "Start Date",
+                "parent": "Campaign_Table_Header"
+              },
+              {
+                "type": "text",
+                "name": "Header_End_Date",
+                "x": 410,
+                "y": 10,
+                "width": 120,
+                "height": 20,
+                "content": "End Date",
+                "parent": "Campaign_Table_Header"
+              },
+              {
+                "type": "text",
+                "name": "Header_Status",
+                "x": 540,
+                "y": 10,
+                "width": 100,
+                "height": 20,
+                "content": "Status",
+                "parent": "Campaign_Table_Header"
+              },
+              {
+                "type": "text",
+                "name": "Header_Actions",
+                "x": 650,
+                "y": 10,
+                "width": 100,
+                "height": 20,
+                "content": "Actions",
+                "parent": "Campaign_Table_Header"
+              }
+            ]
+          },
+          {
+            "type": "table_row",
+            "name": "Campaign_Row_1",
+            "x": 0,
+            "y": 40,
+            "width": 940,
+            "height": 40,
+            "parent": "Campaigns_Table",
+            "children": [
+              {
+                "type": "text",
+                "name": "Campaign_Name_1",
+                "x": 10,
+                "y": 10,
+                "width": 150,
+                "height": 20,
+                "content": "Weekend Flash Sale",
+                "parent": "Campaign_Row_1"
+              },
+              {
+                "type": "text",
+                "name": "Campaign_Type_1",
+                "x": 170,
+                "y": 10,
+                "width": 100,
+                "height": 20,
+                "content": "Flash Sale",
+                "parent": "Campaign_Row_1"
+              },
+              {
+                "type": "text",
+                "name": "Campaign_Start_1",
+                "x": 280,
+                "y": 10,
+                "width": 120,
+                "height": 20,
+                "content": "DD/MM/YYYY",
+                "parent": "Campaign_Row_1"
+              },
+              {
+                "type": "text",
+                "name": "Campaign_End_1",
+                "x": 410,
+                "y": 10,
+                "width": 120,
+                "height": 20,
+                "content": "DD/MM/YYYY",
+                "parent": "Campaign_Row_1"
+              },
+              {
+                "type": "text",
+                "name": "Campaign_Status_1",
+                "x": 540,
+                "y": 10,
+                "width": 100,
+                "height": 20,
+                "content": "Active",
+                "parent": "Campaign_Row_1"
+              },
+              {
+                "type": "button",
+                "name": "Edit_Button_1",
+                "x": 650,
+                "y": 5,
+                "width": 60,
+                "height": 30,
+                "content": "Edit",
+                "parent": "Campaign_Row_1"
+              },
+              {
+                "type": "button",
+                "name": "Delete_Button_1",
+                "x": 720,
+                "y": 5,
+                "width": 70,
+                "height": 30,
+                "content": "Delete",
+                "parent": "Campaign_Row_1"
+              }
+            ]
+          },
+          {
+            "type": "table_row",
+            "name": "Campaign_Row_2",
+            "x": 0,
+            "y": 80,
+            "width": 940,
+            "height": 40,
+            "parent": "Campaigns_Table",
+            "children": [
+              {
+                "type": "text",
+                "name": "Campaign_Name_2",
+                "x": 10,
+                "y": 10,
+                "width": 150,
+                "height": 20,
+                "content": "Monthly Bill Challenge",
+                "parent": "Campaign_Row_2"
+              },
+              {
+                "type": "text",
+                "name": "Campaign_Type_2",
+                "x": 170,
+                "y": 10,
+                "width": 100,
+                "height": 20,
+                "content": "Challenge",
+                "parent": "Campaign_Row_2"
+              },
+              {
+                "type": "text",
+                "name": "Campaign_Start_2",
+                "x": 280,
+                "y": 10,
+                "width": 120,
+                "height": 20,
+                "content": "DD/MM/YYYY",
+                "parent": "Campaign_Row_2"
+              },
+              {
+                "type": "text",
+                "name": "Campaign_End_2",
+                "x": 410,
+                "y": 10,
+                "width": 120,
+                "height": 20,
+                "content": "DD/MM/YYYY",
+                "parent": "Campaign_Row_2"
+              },
+              {
+                "type": "text",
+                "name": "Campaign_Status_2",
+                "x": 540,
+                "y": 10,
+                "width": 100,
+                "height": 20,
+                "content": "Scheduled",
+                "parent": "Campaign_Row_2"
+              },
+              {
+                "type": "button",
+                "name": "Edit_Button_2",
+                "x": 650,
+                "y": 5,
+                "width": 60,
+                "height": 30,
+                "content": "Edit",
+                "parent": "Campaign_Row_2"
+              },
+              {
+                "type": "button",
+                "name": "Delete_Button_2",
+                "x": 720,
+                "y": 5,
+                "width": 70,
+                "height": 30,
+                "content": "Delete",
+                "parent": "Campaign_Row_2"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "frame",
+    "name": "Admin_Dashboard_Analytics",
+    "x": 420,
+    "y": 820,
+    "width": 1200,
+    "height": 800,
+    "content": "Admin Dashboard - Analytics",
+    "children": [
+      {
+        "type": "rectangle",
+        "name": "Dashboard_Sidebar_Analytics",
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 800,
+        "parent": "Admin_Dashboard_Analytics",
+        "children": [
+          {
+            "type": "text",
+            "name": "Brand_Logo_Analytics",
+            "x": 20,
+            "y": 30,
+            "width": 160,
+            "height": 30,
+            "content": "Company Logo",
+            "fontSize": 20,
+            "parent": "Dashboard_Sidebar_Analytics"
+          },
+          {
+            "type": "nav_link",
+            "name": "Dashboard_Link_Analytics",
+            "x": 0,
+            "y": 100,
+            "width": 200,
+            "height": 40,
+            "content": "Dashboard",
+            "parent": "Dashboard_Sidebar_Analytics"
+          },
+          {
+            "type": "nav_link",
+            "name": "Campaigns_Link_Analytics",
+            "x": 0,
+            "y": 140,
+            "width": 200,
+            "height": 40,
+            "content": "Campaigns",
+            "parent": "Dashboard_Sidebar_Analytics"
+          },
+          {
+            "type": "nav_link",
+            "name": "Analytics_Link_Active",
+            "x": 0,
+            "y": 180,
+            "width": 200,
+            "height": 40,
+            "content": "Analytics",
+            "parent": "Dashboard_Sidebar_Analytics"
+          },
+          {
+            "type": "nav_link",
+            "name": "Settings_Link_Analytics",
+            "x": 0,
+            "y": 220,
+            "width": 200,
+            "height": 40,
+            "content": "Settings",
+            "parent": "Dashboard_Sidebar_Analytics"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Analytics_Header",
+        "x": 200,
+        "y": 0,
+        "width": 1000,
+        "height": 60,
+        "parent": "Admin_Dashboard_Analytics",
+        "children": [
+          {
+            "type": "text",
+            "name": "Analytics_Header_Title",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 24,
+            "content": "Loyalty Analytics Overview",
+            "fontSize": 20,
+            "parent": "Analytics_Header"
+          },
+          {
+            "type": "icon",
+            "name": "User_Profile_Icon_Analytics",
+            "x": 940,
+            "y": 20,
+            "width": 24,
+            "height": 24,
+            "content": "User Icon",
+            "parent": "Analytics_Header"
+          }
+        ]
+      },
+      {
+        "type": "dropdown",
+        "name": "Date_Range_Filter",
+        "x": 220,
+        "y": 80,
+        "width": 150,
+        "height": 30,
+        "content": "Last 30 Days",
+        "parent": "Admin_Dashboard_Analytics"
+      },
+      {
+        "type": "card",
+        "name": "KPI_Card_Redemption_Rate",
+        "x": 220,
+        "y": 130,
+        "width": 250,
+        "height": 120,
+        "parent": "Admin_Dashboard_Analytics",
+        "children": [
+          {
+            "type": "text",
+            "name": "KPI_Title_Redemption_Rate",
+            "x": 15,
+            "y": 15,
+            "width": 200,
+            "height": 20,
+            "content": "Fonepoints Redemption Rate",
+            "parent": "KPI_Card_Redemption_Rate"
+          },
+          {
+            "type": "text",
+            "name": "KPI_Value_Redemption_Rate",
+            "x": 15,
+            "y": 40,
+            "width": 150,
+            "height": 30,
+            "content": "XX.XX%",
+            "fontSize": 24,
+            "parent": "KPI_Card_Redemption_Rate"
+          },
+          {
+            "type": "text",
+            "name": "KPI_Trend_Redemption_Rate",
+            "x": 15,
+            "y": 75,
+            "width": 150,
+            "height": 16,
+            "content": "Increase by Y% from last period",
+            "parent": "KPI_Card_Redemption_Rate"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "name": "KPI_Card_Active_Redeemers",
+        "x": 480,
+        "y": 130,
+        "width": 250,
+        "height": 120,
+        "parent": "Admin_Dashboard_Analytics",
+        "children": [
+          {
+            "type": "text",
+            "name": "KPI_Title_Active_Redeemers",
+            "x": 15,
+            "y": 15,
+            "width": 200,
+            "height": 20,
+            "content": "Active Redeemers (Monthly)",
+            "parent": "KPI_Card_Active_Redeemers"
+          },
+          {
+            "type": "text",
+            "name": "KPI_Value_Active_Redeemers",
+            "x": 15,
+            "y": 40,
+            "width": 150,
+            "height": 30,
+            "content": "Z,ZZZ",
+            "fontSize": 24,
+            "parent": "KPI_Card_Active_Redeemers"
+          },
+          {
+            "type": "text",
+            "name": "KPI_Trend_Active_Redeemers",
+            "x": 15,
+            "y": 75,
+            "width": 150,
+            "height": 16,
+            "content": "Increase by A% from last month",
+            "parent": "KPI_Card_Active_Redeemers"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "name": "KPI_Card_Engagement_Rate",
+        "x": 740,
+        "y": 130,
+        "width": 250,
+        "height": 120,
+        "parent": "Admin_Dashboard_Analytics",
+        "children": [
+          {
+            "type": "text",
+            "name": "KPI_Title_Engagement_Rate",
+            "x": 15,
+            "y": 15,
+            "width": 200,
+            "height": 20,
+            "content": "Loyalty Feature Engagement",
+            "parent": "KPI_Card_Engagement_Rate"
+          },
+          {
+            "type": "text",
+            "name": "KPI_Value_Engagement_Rate",
+            "x": 15,
+            "y": 40,
+            "width": 150,
+            "height": 30,
+            "content": "XX.XX%",
+            "fontSize": 24,
+            "parent": "KPI_Card_Engagement_Rate"
+          },
+          {
+            "type": "text",
+            "name": "KPI_Trend_Engagement_Rate",
+            "x": 15,
+            "y": 75,
+            "width": 150,
+            "height": 16,
+            "content": "Increase by B% from last period",
+            "parent": "KPI_Card_Engagement_Rate"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "name": "Chart_Card_Redemption_Trend",
+        "x": 220,
+        "y": 290,
+        "width": 500,
+        "height": 300,
+        "parent": "Admin_Dashboard_Analytics",
+        "children": [
+          {
+            "type": "text",
+            "name": "Chart_Title_Redemption_Trend",
+            "x": 15,
+            "y": 15,
+            "width": 400,
+            "height": 20,
+            "content": "Fonepoints Redemption Volume Trend",
+            "parent": "Chart_Card_Redemption_Trend"
+          },
+          {
+            "type": "chart",
+            "name": "Redemption_Trend_Chart",
+            "x": 20,
+            "y": 45,
+            "width": 460,
+            "height": 220,
+            "content": "Line Chart showing redemption volume over time",
+            "parent": "Chart_Card_Redemption_Trend"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "name": "Chart_Card_Campaign_Performance",
+        "x": 740,
+        "y": 290,
+        "width": 420,
+        "height": 300,
+        "parent": "Admin_Dashboard_Analytics",
+        "children": [
+          {
+            "type": "text",
+            "name": "Chart_Title_Campaign_Performance",
+            "x": 15,
+            "y": 15,
+            "width": 300,
+            "height": 20,
+            "content": "Campaign Performance by Type",
+            "parent": "Chart_Card_Campaign_Performance"
+          },
+          {
+            "type": "chart",
+            "name": "Campaign_Performance_Chart",
+            "x": 20,
+            "y": 45,
+            "width": 380,
+            "height": 220,
+            "content": "Bar Chart showing participation rates for different campaign types",
+            "parent": "Chart_Card_Campaign_Performance"
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "name": "Table_Card_Expiring_Points",
+        "x": 220,
+        "y": 600,
+        "width": 940,
+        "height": 300,
+        "parent": "Admin_Dashboard_Analytics",
+        "children": [
+          {
+            "type": "text",
+            "name": "Table_Title_Expiring_Points",
+            "x": 15,
+            "y": 15,
+            "width": 400,
+            "height": 20,
+            "content": "Upcoming Points Expiration Summary",
+            "parent": "Table_Card_Expiring_Points"
+          },
+          {
+            "type": "table",
+            "name": "Expiring_Points_Table",
+            "x": 10,
+            "y": 45,
+            "width": 920,
+            "height": 220,
+            "parent": "Table_Card_Expiring_Points",
+            "content": "Table of users with expiring points",
+            "children": [
+              {
+                "type": "table_header",
+                "name": "Expiring_Points_Table_Header",
+                "x": 0,
+                "y": 0,
+                "width": 920,
+                "height": 30,
+                "parent": "Expiring_Points_Table",
+                "children": [
+                  {
+                    "type": "text",
+                    "name": "Header_User_ID",
+                    "x": 10,
+                    "y": 10,
+                    "width": 100,
+                    "height": 16,
+                    "content": "User ID",
+                    "parent": "Expiring_Points_Table_Header"
+                  },
+                  {
+                    "type": "text",
+                    "name": "Header_Expiring_Points",
+                    "x": 120,
+                    "y": 10,
+                    "width": 120,
+                    "height": 16,
+                    "content": "Expiring Points",
+                    "parent": "Expiring_Points_Table_Header"
+                  },
+                  {
+                    "type": "text",
+                    "name": "Header_Expiration_Date",
+                    "x": 250,
+                    "y": 10,
+                    "width": 120,
+                    "height": 16,
+                    "content": "Expiration Date",
+                    "parent": "Expiring_Points_Table_Header"
+                  },
+                  {
+                    "type": "text",
+                    "name": "Header_Last_Redemption",
+                    "x": 380,
+                    "y": 10,
+                    "width": 150,
+                    "height": 16,
+                    "content": "Last Redemption Date",
+                    "parent": "Expiring_Points_Table_Header"
+                  },
+                  {
+                    "type": "text",
+                    "name": "Header_Action",
+                    "x": 540,
+                    "y": 10,
+                    "width": 80,
+                    "height": 16,
+                    "content": "Action",
+                    "parent": "Expiring_Points_Table_Header"
+                  }
+                ]
+              },
+              {
+                "type": "table_row",
+                "name": "Expiring_Row_1",
+                "x": 0,
+                "y": 30,
+                "width": 920,
+                "height": 30,
+                "parent": "Expiring_Points_Table",
+                "children": [
+                  {
+                    "type": "text",
+                    "name": "User_ID_1",
+                    "x": 10,
+                    "y": 10,
+                    "width": 100,
+                    "height": 16,
+                    "content": "User001",
+                    "parent": "Expiring_Row_1"
+                  },
+                  {
+                    "type": "text",
+                    "name": "Points_1",
+                    "x": 120,
+                    "y": 10,
+                    "width": 120,
+                    "height": 16,
+                    "content": "500",
+                    "parent": "Expiring_Row_1"
+                  },
+                  {
+                    "type": "text",
+                    "name": "Date_1",
+                    "x": 250,
+                    "y": 10,
+                    "width": 120,
+                    "height": 16,
+                    "content": "DD/MM/YYYY",
+                    "parent": "Expiring_Row_1"
+                  },
+                  {
+                    "type": "text",
+                    "name": "Last_Red_1",
+                    "x": 380,
+                    "y": 10,
+                    "width": 150,
+                    "height": 16,
+                    "content": "DD/MM/YYYY",
+                    "parent": "Expiring_Row_1"
+                  },
+                  {
+                    "type": "button",
+                    "name": "Notify_1",
+                    "x": 540,
+                    "y": 5,
+                    "width": 80,
+                    "height": 24,
+                    "content": "Notify",
+                    "parent": "Expiring_Row_1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

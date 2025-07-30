@@ -1,0 +1,929 @@
+[
+  {
+    "type": "frame",
+    "name": "ApplicationFrame",
+    "x": 0,
+    "y": 0,
+    "width": 1440,
+    "height": 900
+  },
+  {
+    "type": "rectangle",
+    "name": "TopNavigationBar",
+    "parent": "ApplicationFrame",
+    "x": 0,
+    "y": 0,
+    "width": 1440,
+    "height": 60,
+    "content": "Navigation Bar"
+  },
+  {
+    "type": "text",
+    "name": "AppLogo",
+    "parent": "TopNavigationBar",
+    "x": 20,
+    "y": 15,
+    "width": 150,
+    "height": 30,
+    "content": "CRM Solution"
+  },
+  {
+    "type": "text_input",
+    "name": "GlobalSearchInput",
+    "parent": "TopNavigationBar",
+    "x": 400,
+    "y": 15,
+    "width": 400,
+    "height": 30,
+    "content": "Search Customers..."
+  },
+  {
+    "type": "icon",
+    "name": "SearchIcon",
+    "parent": "TopNavigationBar",
+    "x": 770,
+    "y": 20,
+    "width": 20,
+    "height": 20,
+    "content": "Search"
+  },
+  {
+    "type": "button",
+    "name": "UserProfileButton",
+    "parent": "TopNavigationBar",
+    "x": 1280,
+    "y": 15,
+    "width": 140,
+    "height": 30,
+    "content": "User Name"
+  },
+  {
+    "type": "rectangle",
+    "name": "SidebarNavigation",
+    "parent": "ApplicationFrame",
+    "x": 0,
+    "y": 60,
+    "width": 200,
+    "height": 840,
+    "content": "Sidebar Navigation"
+  },
+  {
+    "type": "button",
+    "name": "DashboardLink",
+    "parent": "SidebarNavigation",
+    "x": 20,
+    "y": 80,
+    "width": 160,
+    "height": 40,
+    "content": "Dashboard"
+  },
+  {
+    "type": "button",
+    "name": "CustomersLink",
+    "parent": "SidebarNavigation",
+    "x": 20,
+    "y": 130,
+    "width": 160,
+    "height": 40,
+    "content": "Customers"
+  },
+  {
+    "type": "button",
+    "name": "OpportunitiesLink",
+    "parent": "SidebarNavigation",
+    "x": 20,
+    "y": 180,
+    "width": 160,
+    "height": 40,
+    "content": "Opportunities"
+  },
+  {
+    "type": "button",
+    "name": "ServiceRequestsLink",
+    "parent": "SidebarNavigation",
+    "x": 20,
+    "y": 230,
+    "width": 160,
+    "height": 40,
+    "content": "Service Requests"
+  },
+  {
+    "type": "button",
+    "name": "ReportsLink",
+    "parent": "SidebarNavigation",
+    "x": 20,
+    "y": 280,
+    "width": 160,
+    "height": 40,
+    "content": "Reports"
+  },
+  {
+    "type": "button",
+    "name": "AdminLink",
+    "parent": "SidebarNavigation",
+    "x": 20,
+    "y": 330,
+    "width": 160,
+    "height": 40,
+    "content": "Admin"
+  },
+  {
+    "type": "frame",
+    "name": "CustomerProfilePage",
+    "parent": "ApplicationFrame",
+    "x": 200,
+    "y": 60,
+    "width": 1240,
+    "height": 840
+  },
+  {
+    "type": "rectangle",
+    "name": "CustomerProfileHeader",
+    "parent": "CustomerProfilePage",
+    "x": 220,
+    "y": 80,
+    "width": 1200,
+    "height": 100,
+    "content": "Customer Profile Header"
+  },
+  {
+    "type": "text",
+    "name": "CustomerNameDisplay",
+    "parent": "CustomerProfileHeader",
+    "x": 240,
+    "y": 95,
+    "width": 300,
+    "height": 30,
+    "content": "Customer Full Name"
+  },
+  {
+    "type": "text",
+    "name": "CustomerIDDisplay",
+    "parent": "CustomerProfileHeader",
+    "x": 240,
+    "y": 125,
+    "width": 200,
+    "height": 20,
+    "content": "Customer ID: [ID]"
+  },
+  {
+    "type": "text",
+    "name": "Metric1Label",
+    "parent": "CustomerProfileHeader",
+    "x": 550,
+    "y": 95,
+    "width": 150,
+    "height": 20,
+    "content": "Total Assets Under Management:"
+  },
+  {
+    "type": "text",
+    "name": "Metric1Value",
+    "parent": "CustomerProfileHeader",
+    "x": 550,
+    "y": 115,
+    "width": 150,
+    "height": 25,
+    "content": "$XXX,XXX.XX"
+  },
+  {
+    "type": "text",
+    "name": "Metric2Label",
+    "parent": "CustomerProfileHeader",
+    "x": 750,
+    "y": 95,
+    "width": 150,
+    "height": 20,
+    "content": "Total Liabilities:"
+  },
+  {
+    "type": "text",
+    "name": "Metric2Value",
+    "parent": "CustomerProfileHeader",
+    "x": 750,
+    "y": 115,
+    "width": 150,
+    "height": 25,
+    "content": "$XX,XXX.XX"
+  },
+  {
+    "type": "button",
+    "name": "LogInteractionButton",
+    "parent": "CustomerProfileHeader",
+    "x": 930,
+    "y": 110,
+    "width": 120,
+    "height": 35,
+    "content": "Log Interaction"
+  },
+  {
+    "type": "button",
+    "name": "CreateServiceRequestButton",
+    "parent": "CustomerProfileHeader",
+    "x": 1060,
+    "y": 110,
+    "width": 160,
+    "height": 35,
+    "content": "New Service Request"
+  },
+  {
+    "type": "button",
+    "name": "CreateOpportunityButton",
+    "parent": "CustomerProfileHeader",
+    "x": 1230,
+    "y": 110,
+    "width": 140,
+    "height": 35,
+    "content": "New Opportunity"
+  },
+  {
+    "type": "rectangle",
+    "name": "ProfileTabsNavigation",
+    "parent": "CustomerProfilePage",
+    "x": 220,
+    "y": 190,
+    "width": 1200,
+    "height": 40,
+    "content": "Profile Tabs Navigation"
+  },
+  {
+    "type": "button",
+    "name": "OverviewTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 225,
+    "y": 195,
+    "width": 100,
+    "height": 30,
+    "content": "Overview"
+  },
+  {
+    "type": "button",
+    "name": "AccountsTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 335,
+    "y": 195,
+    "width": 100,
+    "height": 30,
+    "content": "Accounts"
+  },
+  {
+    "type": "button",
+    "name": "TransactionsTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 445,
+    "y": 195,
+    "width": 100,
+    "height": 30,
+    "content": "Transactions"
+  },
+  {
+    "type": "button",
+    "name": "ProductsTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 555,
+    "y": 195,
+    "width": 100,
+    "height": 30,
+    "content": "Products"
+  },
+  {
+    "type": "button",
+    "name": "ServiceHistoryTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 665,
+    "y": 195,
+    "width": 120,
+    "height": 30,
+    "content": "Service History"
+  },
+  {
+    "type": "button",
+    "name": "CommunicationTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 795,
+    "y": 195,
+    "width": 120,
+    "height": 30,
+    "content": "Communication"
+  },
+  {
+    "type": "button",
+    "name": "DigitalActivityTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 925,
+    "y": 195,
+    "width": 120,
+    "height": 30,
+    "content": "Digital Activity"
+  },
+  {
+    "type": "button",
+    "name": "RelationshipsTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 1055,
+    "y": 195,
+    "width": 100,
+    "height": 30,
+    "content": "Relationships"
+  },
+  {
+    "type": "button",
+    "name": "PreferencesTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 1165,
+    "y": 195,
+    "width": 100,
+    "height": 30,
+    "content": "Preferences"
+  },
+  {
+    "type": "button",
+    "name": "InsightsTabButton",
+    "parent": "ProfileTabsNavigation",
+    "x": 1275,
+    "y": 195,
+    "width": 100,
+    "height": 30,
+    "content": "Insights"
+  },
+  {
+    "type": "frame",
+    "name": "OverviewContentArea",
+    "parent": "CustomerProfilePage",
+    "x": 220,
+    "y": 240,
+    "width": 1200,
+    "height": 640,
+    "content": "Overview Content"
+  },
+  {
+    "type": "rectangle",
+    "name": "DemographicsCard",
+    "parent": "OverviewContentArea",
+    "x": 230,
+    "y": 250,
+    "width": 380,
+    "height": 340,
+    "content": "Demographics Card"
+  },
+  {
+    "type": "text",
+    "name": "DemographicsCardTitle",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 260,
+    "width": 150,
+    "height": 25,
+    "content": "Demographics"
+  },
+  {
+    "type": "text",
+    "name": "FirstNameLabel",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 290,
+    "width": 100,
+    "height": 20,
+    "content": "First Name:"
+  },
+  {
+    "type": "text",
+    "name": "FirstNameValue",
+    "parent": "DemographicsCard",
+    "x": 340,
+    "y": 290,
+    "width": 250,
+    "height": 20,
+    "content": "[First Name Data]"
+  },
+  {
+    "type": "text",
+    "name": "LastNameLabel",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 315,
+    "width": 100,
+    "height": 20,
+    "content": "Last Name:"
+  },
+  {
+    "type": "text",
+    "name": "LastNameValue",
+    "parent": "DemographicsCard",
+    "x": 340,
+    "y": 315,
+    "width": 250,
+    "height": 20,
+    "content": "[Last Name Data]"
+  },
+  {
+    "type": "text",
+    "name": "DOBLabel",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 340,
+    "width": 100,
+    "height": 20,
+    "content": "Date of Birth:"
+  },
+  {
+    "type": "text",
+    "name": "DOBValue",
+    "parent": "DemographicsCard",
+    "x": 340,
+    "y": 340,
+    "width": 250,
+    "height": 20,
+    "content": "[Date of Birth Data]"
+  },
+  {
+    "type": "text",
+    "name": "GenderLabel",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 365,
+    "width": 100,
+    "height": 20,
+    "content": "Gender:"
+  },
+  {
+    "type": "text",
+    "name": "GenderValue",
+    "parent": "DemographicsCard",
+    "x": 340,
+    "y": 365,
+    "width": 250,
+    "height": 20,
+    "content": "[Gender Data]"
+  },
+  {
+    "type": "text",
+    "name": "MaritalStatusLabel",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 390,
+    "width": 100,
+    "height": 20,
+    "content": "Marital Status:"
+  },
+  {
+    "type": "text",
+    "name": "MaritalStatusValue",
+    "parent": "DemographicsCard",
+    "x": 340,
+    "y": 390,
+    "width": 250,
+    "height": 20,
+    "content": "[Marital Status Data]"
+  },
+  {
+    "type": "text",
+    "name": "AddressLabel",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 415,
+    "width": 100,
+    "height": 20,
+    "content": "Address:"
+  },
+  {
+    "type": "text",
+    "name": "AddressValue",
+    "parent": "DemographicsCard",
+    "x": 340,
+    "y": 415,
+    "width": 250,
+    "height": 20,
+    "content": "[Address Field Data]"
+  },
+  {
+    "type": "text",
+    "name": "EmailLabel",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 440,
+    "width": 100,
+    "height": 20,
+    "content": "Email:"
+  },
+  {
+    "type": "text",
+    "name": "EmailValue",
+    "parent": "DemographicsCard",
+    "x": 340,
+    "y": 440,
+    "width": 250,
+    "height": 20,
+    "content": "[Email Address Data]"
+  },
+  {
+    "type": "text",
+    "name": "PhoneLabel",
+    "parent": "DemographicsCard",
+    "x": 240,
+    "y": 465,
+    "width": 100,
+    "height": 20,
+    "content": "Phone:"
+  },
+  {
+    "type": "text",
+    "name": "PhoneValue",
+    "parent": "DemographicsCard",
+    "x": 340,
+    "y": 465,
+    "width": 250,
+    "height": 20,
+    "content": "[Phone Number Data]"
+  },
+  {
+    "type": "button",
+    "name": "EditDemographicsButton",
+    "parent": "DemographicsCard",
+    "x": 480,
+    "y": 500,
+    "width": 120,
+    "height": 30,
+    "content": "Edit Data"
+  },
+  {
+    "type": "rectangle",
+    "name": "AccountSummaryCard",
+    "parent": "OverviewContentArea",
+    "x": 620,
+    "y": 250,
+    "width": 380,
+    "height": 340,
+    "content": "Account Summary Card"
+  },
+  {
+    "type": "text",
+    "name": "AccountSummaryCardTitle",
+    "parent": "AccountSummaryCard",
+    "x": 630,
+    "y": 260,
+    "width": 150,
+    "height": 25,
+    "content": "Account Summary"
+  },
+  {
+    "type": "text",
+    "name": "AccountTypeHeader",
+    "parent": "AccountSummaryCard",
+    "x": 630,
+    "y": 290,
+    "width": 80,
+    "height": 20,
+    "content": "Account Type"
+  },
+  {
+    "type": "text",
+    "name": "AccountNumberHeader",
+    "parent": "AccountSummaryCard",
+    "x": 720,
+    "y": 290,
+    "width": 100,
+    "height": 20,
+    "content": "Account Number"
+  },
+  {
+    "type": "text",
+    "name": "BalanceHeader",
+    "parent": "AccountSummaryCard",
+    "x": 830,
+    "y": 290,
+    "width": 80,
+    "height": 20,
+    "content": "Balance"
+  },
+  {
+    "type": "text",
+    "name": "StatusHeader",
+    "parent": "AccountSummaryCard",
+    "x": 920,
+    "y": 290,
+    "width": 60,
+    "height": 20,
+    "content": "Status"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow1Type",
+    "parent": "AccountSummaryCard",
+    "x": 630,
+    "y": 315,
+    "width": 80,
+    "height": 20,
+    "content": "Savings"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow1Number",
+    "parent": "AccountSummaryCard",
+    "x": 720,
+    "y": 315,
+    "width": 100,
+    "height": 20,
+    "content": "XXXXXXXX1234"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow1Balance",
+    "parent": "AccountSummaryCard",
+    "x": 830,
+    "y": 315,
+    "width": 80,
+    "height": 20,
+    "content": "$12,345.67"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow1Status",
+    "parent": "AccountSummaryCard",
+    "x": 920,
+    "y": 315,
+    "width": 60,
+    "height": 20,
+    "content": "Active"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow2Type",
+    "parent": "AccountSummaryCard",
+    "x": 630,
+    "y": 340,
+    "width": 80,
+    "height": 20,
+    "content": "Checking"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow2Number",
+    "parent": "AccountSummaryCard",
+    "x": 720,
+    "y": 340,
+    "width": 100,
+    "height": 20,
+    "content": "XXXXXXXX5678"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow2Balance",
+    "parent": "AccountSummaryCard",
+    "x": 830,
+    "y": 340,
+    "width": 80,
+    "height": 20,
+    "content": "$9,876.54"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow2Status",
+    "parent": "AccountSummaryCard",
+    "x": 920,
+    "y": 340,
+    "width": 60,
+    "height": 20,
+    "content": "Active"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow3Type",
+    "parent": "AccountSummaryCard",
+    "x": 630,
+    "y": 365,
+    "width": 80,
+    "height": 20,
+    "content": "Credit Card"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow3Number",
+    "parent": "AccountSummaryCard",
+    "x": 720,
+    "y": 365,
+    "width": 100,
+    "height": 20,
+    "content": "XXXXXXXX9012"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow3Balance",
+    "parent": "AccountSummaryCard",
+    "x": 830,
+    "y": 365,
+    "width": 80,
+    "height": 20,
+    "content": "$1,234.56"
+  },
+  {
+    "type": "text",
+    "name": "AccountRow3Status",
+    "parent": "AccountSummaryCard",
+    "x": 920,
+    "y": 365,
+    "width": 60,
+    "height": 20,
+    "content": "Active"
+  },
+  {
+    "type": "button",
+    "name": "ViewAllAccountsButton",
+    "parent": "AccountSummaryCard",
+    "x": 880,
+    "y": 500,
+    "width": 120,
+    "height": 30,
+    "content": "View All Accounts"
+  },
+  {
+    "type": "rectangle",
+    "name": "ProductHoldingsCard",
+    "parent": "OverviewContentArea",
+    "x": 1010,
+    "y": 250,
+    "width": 400,
+    "height": 340,
+    "content": "Product Holdings Card"
+  },
+  {
+    "type": "text",
+    "name": "ProductHoldingsCardTitle",
+    "parent": "ProductHoldingsCard",
+    "x": 1020,
+    "y": 260,
+    "width": 150,
+    "height": 25,
+    "content": "Product Holdings"
+  },
+  {
+    "type": "text",
+    "name": "Product1",
+    "parent": "ProductHoldingsCard",
+    "x": 1020,
+    "y": 290,
+    "width": 300,
+    "height": 20,
+    "content": "Savings Account Platinum"
+  },
+  {
+    "type": "text",
+    "name": "Product2",
+    "parent": "ProductHoldingsCard",
+    "x": 1020,
+    "y": 315,
+    "width": 300,
+    "height": 20,
+    "content": "Mortgage Loan Type A"
+  },
+  {
+    "type": "text",
+    "name": "Product3",
+    "parent": "ProductHoldingsCard",
+    "x": 1020,
+    "y": 340,
+    "width": 300,
+    "height": 20,
+    "content": "Investment Portfolio Standard"
+  },
+  {
+    "type": "button",
+    "name": "ViewAllProductsButton",
+    "parent": "ProductHoldingsCard",
+    "x": 1290,
+    "y": 500,
+    "width": 110,
+    "height": 30,
+    "content": "View All Products"
+  },
+  {
+    "type": "rectangle",
+    "name": "RecentInteractionsCard",
+    "parent": "OverviewContentArea",
+    "x": 230,
+    "y": 600,
+    "width": 380,
+    "height": 260,
+    "content": "Recent Interactions Card"
+  },
+  {
+    "type": "text",
+    "name": "RecentInteractionsCardTitle",
+    "parent": "RecentInteractionsCard",
+    "x": 240,
+    "y": 610,
+    "width": 250,
+    "height": 25,
+    "content": "Recent Interactions & Service"
+  },
+  {
+    "type": "text",
+    "name": "Interaction1",
+    "parent": "RecentInteractionsCard",
+    "x": 240,
+    "y": 640,
+    "width": 350,
+    "height": 20,
+    "content": "2023-10-26: Call from CSR - Account Inquiry"
+  },
+  {
+    "type": "text",
+    "name": "Interaction2",
+    "parent": "RecentInteractionsCard",
+    "x": 240,
+    "y": 665,
+    "width": 350,
+    "height": 20,
+    "content": "2023-10-25: Service Request SR-12345 - Resolved"
+  },
+  {
+    "type": "text",
+    "name": "Interaction3",
+    "parent": "RecentInteractionsCard",
+    "x": 240,
+    "y": 690,
+    "width": 350,
+    "height": 20,
+    "content": "2023-10-24: Digital Login - Mobile App"
+  },
+  {
+    "type": "button",
+    "name": "ViewFullTimelineButton",
+    "parent": "RecentInteractionsCard",
+    "x": 480,
+    "y": 800,
+    "width": 120,
+    "height": 30,
+    "content": "View Full Timeline"
+  },
+  {
+    "type": "rectangle",
+    "name": "OpportunitiesInsightsCard",
+    "parent": "OverviewContentArea",
+    "x": 620,
+    "y": 600,
+    "width": 790,
+    "height": 260,
+    "content": "Opportunities & Insights Card"
+  },
+  {
+    "type": "text",
+    "name": "OpportunitiesInsightsCardTitle",
+    "parent": "OpportunitiesInsightsCard",
+    "x": 630,
+    "y": 610,
+    "width": 250,
+    "height": 25,
+    "content": "Opportunities & Insights"
+  },
+  {
+    "type": "text",
+    "name": "InsightChurnRisk",
+    "parent": "OpportunitiesInsightsCard",
+    "x": 630,
+    "y": 640,
+    "width": 300,
+    "height": 20,
+    "content": "Churn Risk Level: Medium"
+  },
+  {
+    "type": "text",
+    "name": "InsightNextBestAction",
+    "parent": "OpportunitiesInsightsCard",
+    "x": 630,
+    "y": 665,
+    "width": 300,
+    "height": 20,
+    "content": "Next Best Action: Offer Investment Product"
+  },
+  {
+    "type": "text",
+    "name": "OpportunityCrossSell1",
+    "parent": "OpportunitiesInsightsCard",
+    "x": 630,
+    "y": 690,
+    "width": 350,
+    "height": 20,
+    "content": "Cross-Sell: Credit Card with Rewards"
+  },
+  {
+    "type": "text",
+    "name": "OpportunityUpSell1",
+    "parent": "OpportunitiesInsightsCard",
+    "x": 630,
+    "y": 715,
+    "width": 350,
+    "height": 20,
+    "content": "Up-Sell: Premium Checking Account"
+  },
+  {
+    "type": "button",
+    "name": "ViewAllOpportunitiesButton",
+    "parent": "OpportunitiesInsightsCard",
+    "x": 1290,
+    "y": 800,
+    "width": 120,
+    "height": 30,
+    "content": "View All Opportunities"
+  }
+]

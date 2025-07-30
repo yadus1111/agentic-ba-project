@@ -1,0 +1,686 @@
+[
+  {
+    "type": "frame",
+    "name": "Dashboard Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 812,
+    "children": [
+      {
+        "type": "rectangle",
+        "name": "Top Navigation Bar",
+        "x": 0,
+        "y": 0,
+        "width": 375,
+        "height": 60,
+        "children": [
+          {
+            "type": "text",
+            "name": "Bank Logo",
+            "content": "Bank Name",
+            "x": 20,
+            "y": 20,
+            "parent": "Top Navigation Bar"
+          },
+          {
+            "type": "button",
+            "name": "Profile Icon Button",
+            "content": "Profile Icon",
+            "x": 280,
+            "y": 20,
+            "width": 30,
+            "height": 30,
+            "parent": "Top Navigation Bar"
+          },
+          {
+            "type": "button",
+            "name": "Notifications Icon Button",
+            "content": "Notifications Icon",
+            "x": 325,
+            "y": 20,
+            "width": 30,
+            "height": 30,
+            "parent": "Top Navigation Bar"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Account Summary Section",
+        "x": 0,
+        "y": 70,
+        "width": 375,
+        "height": 200,
+        "children": [
+          {
+            "type": "text",
+            "name": "Account Summary Title",
+            "content": "Your Accounts",
+            "x": 20,
+            "y": 80,
+            "parent": "Account Summary Section"
+          },
+          {
+            "type": "rectangle",
+            "name": "Checking Account Card",
+            "x": 20,
+            "y": 110,
+            "width": 335,
+            "height": 70,
+            "children": [
+              {
+                "type": "text",
+                "name": "Checking Account Name",
+                "content": "Checking Account",
+                "x": 30,
+                "y": 120,
+                "parent": "Checking Account Card"
+              },
+              {
+                "type": "text",
+                "name": "Account Balance Label",
+                "content": "Available Balance",
+                "x": 30,
+                "y": 140,
+                "parent": "Checking Account Card"
+              },
+              {
+                "type": "text",
+                "name": "Account Balance Value",
+                "content": "$X,XXX.XX",
+                "x": 250,
+                "y": 140,
+                "parent": "Checking Account Card"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Quick Actions Section",
+        "x": 0,
+        "y": 280,
+        "width": 375,
+        "height": 100,
+        "children": [
+          {
+            "type": "text",
+            "name": "Quick Actions Title",
+            "content": "Quick Actions",
+            "x": 20,
+            "y": 290,
+            "parent": "Quick Actions Section"
+          },
+          {
+            "type": "button",
+            "name": "Transfer Funds Button",
+            "content": "Transfer Funds",
+            "x": 20,
+            "y": 320,
+            "width": 160,
+            "height": 40,
+            "parent": "Quick Actions Section"
+          },
+          {
+            "type": "button",
+            "name": "Pay Bills Button",
+            "content": "Pay Bills",
+            "x": 195,
+            "y": 320,
+            "width": 160,
+            "height": 40,
+            "parent": "Quick Actions Section"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Personalized Loan Offers Section",
+        "x": 0,
+        "y": 390,
+        "width": 375,
+        "height": 350,
+        "children": [
+          {
+            "type": "text",
+            "name": "Offers Section Title",
+            "content": "Recommended Loans for You",
+            "x": 20,
+            "y": 400,
+            "parent": "Personalized Loan Offers Section"
+          },
+          {
+            "type": "rectangle",
+            "name": "Pre-Approved Loan Card",
+            "x": 20,
+            "y": 430,
+            "width": 335,
+            "height": 100,
+            "children": [
+              {
+                "type": "text",
+                "name": "Offer Tag Pre-Approved",
+                "content": "Pre-Approved",
+                "x": 30,
+                "y": 440,
+                "parent": "Pre-Approved Loan Card"
+              },
+              {
+                "type": "text",
+                "name": "Personal Loan Name",
+                "content": "Personal Loan Offer",
+                "x": 30,
+                "y": 460,
+                "parent": "Pre-Approved Loan Card"
+              },
+              {
+                "type": "text",
+                "name": "Pre-Approved Amount",
+                "content": "Up to $X0,000",
+                "x": 30,
+                "y": 480,
+                "parent": "Pre-Approved Loan Card"
+              },
+              {
+                "type": "button",
+                "name": "View Details Pre-Approved",
+                "content": "View Details",
+                "x": 230,
+                "y": 480,
+                "width": 100,
+                "height": 30,
+                "parent": "Pre-Approved Loan Card"
+              }
+            ]
+          },
+          {
+            "type": "rectangle",
+            "name": "Education Loan Card",
+            "x": 20,
+            "y": 540,
+            "width": 335,
+            "height": 100,
+            "children": [
+              {
+                "type": "text",
+                "name": "Offer Tag Recommended",
+                "content": "Recommended for You",
+                "x": 30,
+                "y": 550,
+                "parent": "Education Loan Card"
+              },
+              {
+                "type": "text",
+                "name": "Education Loan Name",
+                "content": "Education Loan",
+                "x": 30,
+                "y": 570,
+                "parent": "Education Loan Card"
+              },
+              {
+                "type": "text",
+                "name": "Education Loan Feature",
+                "content": "Flexible Repayment",
+                "x": 30,
+                "y": 590,
+                "parent": "Education Loan Card"
+              },
+              {
+                "type": "button",
+                "name": "View Details Education Loan",
+                "content": "View Details",
+                "x": 230,
+                "y": 590,
+                "width": 100,
+                "height": 30,
+                "parent": "Education Loan Card"
+              }
+            ]
+          },
+          {
+            "type": "button",
+            "name": "View All Offers Button",
+            "content": "View All Offers",
+            "x": 20,
+            "y": 660,
+            "width": 335,
+            "height": 40,
+            "parent": "Personalized Loan Offers Section"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Bottom Navigation Bar",
+        "x": 0,
+        "y": 752,
+        "width": 375,
+        "height": 60,
+        "children": [
+          {
+            "type": "button",
+            "name": "Dashboard Nav Button",
+            "content": "Dashboard",
+            "x": 0,
+            "y": 752,
+            "width": 75,
+            "height": 60,
+            "parent": "Bottom Navigation Bar"
+          },
+          {
+            "type": "button",
+            "name": "Accounts Nav Button",
+            "content": "Accounts",
+            "x": 75,
+            "y": 752,
+            "width": 75,
+            "height": 60,
+            "parent": "Bottom Navigation Bar"
+          },
+          {
+            "type": "button",
+            "name": "Payments Nav Button",
+            "content": "Payments",
+            "x": 150,
+            "y": 752,
+            "width": 75,
+            "height": 60,
+            "parent": "Bottom Navigation Bar"
+          },
+          {
+            "type": "button",
+            "name": "Offers Nav Button",
+            "content": "Offers",
+            "x": 225,
+            "y": 752,
+            "width": 75,
+            "height": 60,
+            "parent": "Bottom Navigation Bar"
+          },
+          {
+            "type": "button",
+            "name": "More Nav Button",
+            "content": "More",
+            "x": 300,
+            "y": 752,
+            "width": 75,
+            "height": 60,
+            "parent": "Bottom Navigation Bar"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "frame",
+    "name": "Loan Details Screen",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 812,
+    "children": [
+      {
+        "type": "rectangle",
+        "name": "Loan Details Top Bar",
+        "x": 0,
+        "y": 0,
+        "width": 375,
+        "height": 60,
+        "children": [
+          {
+            "type": "button",
+            "name": "Back Button",
+            "content": "Back Arrow Icon",
+            "x": 10,
+            "y": 20,
+            "width": 30,
+            "height": 30,
+            "parent": "Loan Details Top Bar"
+          },
+          {
+            "type": "text",
+            "name": "Loan Details Title",
+            "content": "Loan Product Name",
+            "x": 50,
+            "y": 25,
+            "parent": "Loan Details Top Bar"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Loan Information Container",
+        "x": 0,
+        "y": 70,
+        "width": 375,
+        "height": 650,
+        "children": [
+          {
+            "type": "text",
+            "name": "Loan Title Display",
+            "content": "Your Loan Product Name",
+            "x": 20,
+            "y": 80,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Key Features Heading",
+            "content": "Key Features",
+            "x": 20,
+            "y": 120,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Feature 1",
+            "content": "- Feature Description One",
+            "x": 20,
+            "y": 150,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Feature 2",
+            "content": "- Feature Description Two",
+            "x": 20,
+            "y": 170,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Interest Rates Heading",
+            "content": "Interest Rates",
+            "x": 20,
+            "y": 210,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Rate Details",
+            "content": "Starting from X.XX% p.a.",
+            "x": 20,
+            "y": 240,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Eligibility Criteria Heading",
+            "content": "Eligibility Criteria",
+            "x": 20,
+            "y": 280,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Criteria 1",
+            "content": "- Minimum Age: 18 years",
+            "x": 20,
+            "y": 310,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Criteria 2",
+            "content": "- Minimum Income: $Y,000/month",
+            "x": 20,
+            "y": 330,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "text",
+            "name": "Terms and Conditions Heading",
+            "content": "Terms and Conditions",
+            "x": 20,
+            "y": 370,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "button",
+            "name": "Read Full T&C Link",
+            "content": "Read Full Terms and Conditions",
+            "x": 20,
+            "y": 400,
+            "width": 300,
+            "height": 30,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "button",
+            "name": "Calculate EMI Button",
+            "content": "Calculate EMI",
+            "x": 20,
+            "y": 450,
+            "width": 335,
+            "height": 45,
+            "parent": "Loan Information Container"
+          },
+          {
+            "type": "button",
+            "name": "Speak to Advisor Button",
+            "content": "Speak to an Advisor",
+            "x": 20,
+            "y": 505,
+            "width": 335,
+            "height": 45,
+            "parent": "Loan Information Container"
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "name": "Apply Now Fixed Button",
+        "content": "Apply Now",
+        "x": 20,
+        "y": 740,
+        "width": 335,
+        "height": 50,
+        "parent": null
+      }
+    ]
+  },
+  {
+    "type": "frame",
+    "name": "Loan Application - Step 1",
+    "x": 0,
+    "y": 0,
+    "width": 375,
+    "height": 812,
+    "children": [
+      {
+        "type": "rectangle",
+        "name": "Application Top Bar",
+        "x": 0,
+        "y": 0,
+        "width": 375,
+        "height": 60,
+        "children": [
+          {
+            "type": "button",
+            "name": "Back Button",
+            "content": "Back Arrow Icon",
+            "x": 10,
+            "y": 20,
+            "width": 30,
+            "height": 30,
+            "parent": "Application Top Bar"
+          },
+          {
+            "type": "text",
+            "name": "Application Title",
+            "content": "Loan Application",
+            "x": 50,
+            "y": 25,
+            "parent": "Application Top Bar"
+          },
+          {
+            "type": "text",
+            "name": "Progress Indicator",
+            "content": "Step 1 of 3",
+            "x": 280,
+            "y": 25,
+            "parent": "Application Top Bar"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Personal Information Card",
+        "x": 20,
+        "y": 80,
+        "width": 335,
+        "height": 450,
+        "children": [
+          {
+            "type": "text",
+            "name": "Section Heading",
+            "content": "Personal Information",
+            "x": 30,
+            "y": 90,
+            "parent": "Personal Information Card"
+          },
+          {
+            "type": "text",
+            "name": "First Name Label",
+            "content": "First Name",
+            "x": 30,
+            "y": 130,
+            "parent": "Personal Information Card"
+          },
+          {
+            "type": "rectangle",
+            "name": "First Name Input Field",
+            "content": "Text Input",
+            "x": 30,
+            "y": 150,
+            "width": 315,
+            "height": 40,
+            "parent": "Personal Information Card"
+          },
+          {
+            "type": "text",
+            "name": "Last Name Label",
+            "content": "Last Name",
+            "x": 30,
+            "y": 200,
+            "parent": "Personal Information Card"
+          },
+          {
+            "type": "rectangle",
+            "name": "Last Name Input Field",
+            "content": "Text Input",
+            "x": 30,
+            "y": 220,
+            "width": 315,
+            "height": 40,
+            "parent": "Personal Information Card"
+          },
+          {
+            "type": "text",
+            "name": "Date of Birth Label",
+            "content": "Date of Birth",
+            "x": 30,
+            "y": 270,
+            "parent": "Personal Information Card"
+          },
+          {
+            "type": "rectangle",
+            "name": "Date of Birth Input Field",
+            "content": "Date Picker",
+            "x": 30,
+            "y": 290,
+            "width": 315,
+            "height": 40,
+            "parent": "Personal Information Card"
+          },
+          {
+            "type": "text",
+            "name": "Address Label",
+            "content": "Address Field",
+            "x": 30,
+            "y": 340,
+            "parent": "Personal Information Card"
+          },
+          {
+            "type": "rectangle",
+            "name": "Address Input Field",
+            "content": "Multi-line Text Input",
+            "x": 30,
+            "y": 360,
+            "width": 315,
+            "height": 80,
+            "parent": "Personal Information Card"
+          }
+        ]
+      },
+      {
+        "type": "rectangle",
+        "name": "Consent Section",
+        "x": 20,
+        "y": 550,
+        "width": 335,
+        "height": 120,
+        "children": [
+          {
+            "type": "button",
+            "name": "Data Usage Consent Checkbox",
+            "content": "Checkbox",
+            "x": 30,
+            "y": 570,
+            "width": 20,
+            "height": 20,
+            "parent": "Consent Section"
+          },
+          {
+            "type": "text",
+            "name": "Data Usage Consent Text",
+            "content": "I consent to data usage for personalization.",
+            "x": 60,
+            "y": 570,
+            "parent": "Consent Section"
+          },
+          {
+            "type": "button",
+            "name": "T&C Agreement Checkbox",
+            "content": "Checkbox",
+            "x": 30,
+            "y": 610,
+            "width": 20,
+            "height": 20,
+            "parent": "Consent Section"
+          },
+          {
+            "type": "text",
+            "name": "T&C Agreement Text",
+            "content": "I agree to the Terms and Conditions.",
+            "x": 60,
+            "y": 610,
+            "parent": "Consent Section"
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "name": "Cancel Button",
+        "content": "Cancel",
+        "x": 20,
+        "y": 740,
+        "width": 160,
+        "height": 50,
+        "parent": null
+      },
+      {
+        "type": "button",
+        "name": "Next Button",
+        "content": "Next",
+        "x": 195,
+        "y": 740,
+        "width": 160,
+        "height": 50,
+        "parent": null
+      }
+    ]
+  }
+]
