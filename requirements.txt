@@ -10,4 +10,5 @@ markdown
 beautifulsoup4
 playwright
 streamlit
+pdfplumber
 
