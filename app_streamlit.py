@@ -35,9 +35,19 @@ try:
     # Initialize the Gemini model
     try:
         model = genai.GenerativeModel(MODEL_NAME)
+        # Quick test to verify API key works
+        test_response = model.generate_content("Hello")
+        if not test_response or not test_response.text:
+            st.error("API key test failed. Please check your API key.")
+            st.stop()
     except Exception as model_error:
         try:
             model = genai.GenerativeModel("gemini-1.5-flash")
+            # Quick test to verify API key works
+            test_response = model.generate_content("Hello")
+            if not test_response or not test_response.text:
+                st.error("API key test failed. Please check your API key.")
+                st.stop()
         except Exception as alt_error:
             st.error("Failed to initialize AI model. Please check your API key.")
             st.stop()
