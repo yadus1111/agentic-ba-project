@@ -387,6 +387,19 @@ def main():
         height=180,
         placeholder="Paste your business case or objective here..."
     )
+    
+    # Add a test button for debugging
+    if st.button("🔧 Test API Connection"):
+        try:
+            st.info("Testing API connection...")
+            test_response = model.generate_content("Say 'Hello' in one word.")
+            if test_response and test_response.text:
+                st.success(f"✅ API working! Response: {test_response.text}")
+            else:
+                st.error("❌ API returned no response")
+        except Exception as e:
+            st.error(f"❌ API test failed: {str(e)}")
+            st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
 
     if 'report_data' not in st.session_state:
         st.session_state['report_data'] = {"html": "", "business_problem": ""}
@@ -404,6 +417,25 @@ def main():
         try:
             status_text.text("🔄 Starting report generation...")
             progress_bar.progress(10)
+            
+            # First, test if the API key is working
+            status_text.text("🔑 Testing API connection...")
+            progress_bar.progress(20)
+            
+            try:
+                test_response = model.generate_content("Say 'Hello' in one word.")
+                if test_response and test_response.text:
+                    st.success("✅ API connection successful!")
+                else:
+                    st.error("❌ API connection failed - no response")
+                    return
+            except Exception as api_error:
+                st.error(f"❌ API connection failed: {str(api_error)}")
+                st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
+                return
+            
+            progress_bar.progress(30)
+            status_text.text("📝 Generating full report...")
             
             report, images = generate_report_and_images(business_problem)
             
