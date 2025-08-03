@@ -23,37 +23,20 @@ sys.path.append("Mockup_design")
 from enhanced_agent import EnhancedBRDAgent
 
 # --- Gemini Model Setup (NEW SDK) ---
-# Set up Gemini model using environment variable
+# The client automatically gets the API key from the environment variable GEMINI_API_KEY
 try:
-    # Check if API key is available
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        st.error("⚠️ GEMINI_API_KEY not found in environment variables. Please set it in Streamlit Cloud secrets or your .env file.")
-        st.info("To fix this in Streamlit Cloud:\n1. Go to your app settings\n2. Add GEMINI_API_KEY to the secrets\n3. Redeploy the app")
+    client = genai.Client()
+    # Quick test to verify API key works
+    test_response = client.models.generate_content(
+        model="gemini-2.5-flash", 
+        contents="Hello"
+    )
+    if not test_response or not test_response.text:
+        st.error("API key test failed. Please check your API key.")
         st.stop()
-    
-    # Initialize the Gemini model
-    try:
-        model = genai.GenerativeModel(MODEL_NAME)
-        # Quick test to verify API key works
-        test_response = model.generate_content("Hello")
-        if not test_response or not test_response.text:
-            st.error("API key test failed. Please check your API key.")
-            st.stop()
-    except Exception as model_error:
-        try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
-            # Quick test to verify API key works
-            test_response = model.generate_content("Hello")
-            if not test_response or not test_response.text:
-                st.error("API key test failed. Please check your API key.")
-                st.stop()
-        except Exception as alt_error:
-            st.error("Failed to initialize AI model. Please check your API key.")
-            st.stop()
 except Exception as e:
-    st.error(f"❌ Failed to initialize Gemini AI: {str(e)}")
-    st.info(f"🔍 Debug info: API key length = {len(api_key) if api_key else 0}")
+    st.error(f"Failed to initialize Gemini AI: {str(e)}")
+    st.info("Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
     st.stop()
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -205,7 +188,10 @@ Main Flow: {use_case['main_flow']}
 Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific actors, steps, and interactions for this use case. Use only rectangles and arrows. No generic diagrams. No advanced formatting. Output only the Mermaid code, no extra text.
 """
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
         if response.text:
             code = response.text.strip().replace('```mermaid','').replace('```','').strip()
             code = sanitize_mermaid_code(code)
@@ -285,16 +271,15 @@ Business Problem:
 
 def generate_report_and_images(business_problem):
     try:
-        # Check if model is properly initialized
-        if not model:
-            return "Gemini AI model not initialized. Please check your API key.", []
-        
         prompt = REPORT_PROMPT_TEMPLATE.format(business_problem=business_problem)
         
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                response = model.generate_content(prompt)
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt
+                )
                 
                 if not response or not response.text:
                     return "No content generated from Gemini AI. Please try again.", []
