@@ -26,9 +26,9 @@ class EnhancedBRDAgent:
     def __init__(self):
         # Check for Gemini AI availability
         try:
-            from google import genai
-            # The client automatically gets the API key from the environment variable GEMINI_API_KEY
-            self.client = genai.Client()
+            import google.generativeai as genai
+            # Set up Gemini model using environment variable
+            self.client = genai.GenerativeModel("gemini-2.5-flash")
             print("✓ Gemini AI client initialized")
         except ImportError:
             print("Google Generative AI not available. Install with: pip install google-generativeai")
@@ -86,10 +86,7 @@ class EnhancedBRDAgent:
             {brd_text[:2000]}...
             """
             
-            response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
+            response = self.client.generate_content(prompt)
             
             app_type = response.text.strip().lower()
             print(f"✓ Detected application type: {app_type}")
@@ -143,10 +140,7 @@ class EnhancedBRDAgent:
             """
             
             print("Generating UI schema...")
-            response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
+            response = self.client.generate_content(prompt)
             
             # Try to parse the response directly first
             try:
@@ -287,10 +281,7 @@ class EnhancedBRDAgent:
             """
             
             print("📤 Sending request to Gemini AI...")
-            response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
+            response = self.client.generate_content(prompt)
             
             if not response or not response.text:
                 print("✗ Empty response from Gemini AI")

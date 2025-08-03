@@ -23,8 +23,7 @@ sys.path.append("Mockup_design")
 from enhanced_agent import EnhancedBRDAgent
 
 # --- Gemini Model Setup (NEW SDK) ---
-# The client automatically gets the API key from the environment variable GEMINI_API_KEY
-client = genai.Client()
+# Set up Gemini model using environment variable
 model = genai.GenerativeModel(MODEL_NAME)
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
