@@ -69,6 +69,12 @@ This dashboard is an **AI-powered tool** that generates comprehensive business a
 - `schemas/sample_banking_schema_2.json` — Another example UI schema
 - `html_mockups/sample_banking_mockup_1.html` — Example HTML mockup for banking application
 - `html_mockups/sample_banking_mockup_2.html` — Another example HTML mockup
+- `output/sample_mermaid_diagram_1.mmd` — Example Mermaid diagram code
+- `output/sample_mermaid_diagram_2.mmd` — Another example Mermaid diagram
+- `output/sample_diagram_1.png` — Example generated diagram image
+- `output/sample_diagram_2.png` — Another example diagram image
+- `output/sample_business_report_1.pdf` — Example business analysis report
+- `output/sample_business_report_2.pdf` — Another example business report
 
 ---
 
