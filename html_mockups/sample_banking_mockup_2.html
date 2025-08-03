@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analyst Dashboard - Fintech Loan Personalization</title>
+    <style>
+        /* Basic Resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f7fc;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #1a2a47 0%, #0d1a33 100%);
+            color: #ecf0f1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 1000; /* Ensure sidebar is above main content */
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #66b3ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar .logo svg {
+            margin-right: 10px;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar nav ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .sidebar nav ul li a svg {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .sidebar nav ul li a:hover,
+        .sidebar nav ul li a.active {
+            background-color: #2c3e50;
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #1a2a47;
+            font-weight: 600;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-right: 10px;
+            font-size: 15px;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            border-color: #66b3ff;
+            box-shadow: 0 0 0 3px rgba(102, 179, 255, 0.2);
+            outline: none;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #66b3ff;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            color: #1a2a47;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .card .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #66b3ff;
+            margin-bottom: 10px;
+        }
+
+        .card .metric-change {
+            font-size: 14px;
+            color: #5cb85c; /* Green for positive change */
+            display: flex;
+            align-items: center;
+        }
+
+        .card .metric-change.negative {
+            color: #d9534f; /* Red for negative change */
+        }
+
+        .card .metric-change svg {
+            margin-right: 5px;
+        }
+
+        .section-header {
+            font-size: 24px;
+            color: #1a2a47;
+            margin-bottom: 25px;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .chart-container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #777;
+            position: relative;
+        }
+        .chart-container h3 {
+            font-size: 18px;
+            color: #1a2a47;
+            margin-bottom: 15px;
+            font-weight: 600;
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            width: calc(100% - 50px);
+            text-align: left;
+        }
+        .chart-container p {
+            font-size: 15px;
+            color: #888;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .chart-container::before {
+            content: 'Chart/Graph Placeholder';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ccc;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .customer-profile-card {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .profile-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .profile-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+            border: 3px solid #66b3ff;
+        }
+
+        .profile-info h3 {
+            font-size: 24px;
+            color: #1a2a47;
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: #777;
+            font-size: 15px;
+        }
+
+        .profile-details {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .detail-item:last-child {
+             border-bottom: none;
+        }
+
+
+        .detail-item strong {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .detail-item span {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .interaction-timeline {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #eee;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #66b3ff;
+            border-radius: 50%;
+            position: absolute;
+            left: 5px;
+            top: 3px;
+            z-index: 1;
+            box-shadow: 0 0 0 4px rgba(102, 179, 255, 0.2);
+        }
+
+        .timeline-content {
+            margin-left: 30px;
+            background-color: #f9f9f9;
+            padding: 15px 20px;
+            border-radius: 8px;
+            flex-grow: 1;
+            border: 1px solid #eee;
+        }
+
+        .timeline-date {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .timeline-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .timeline-description {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .compliance-table, .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .compliance-table th, .compliance-table td,
+        .risk-table th, .risk-table td {
+            border: 1px solid #eee;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .compliance-table th, .risk-table th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .compliance-table tr:nth-child(even),
+        .risk-table tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.approved { background-color: #d4edda; color: #155724; }
+        .status-badge.pending { background-color: #fff3cd; color: #856404; }
+        .status-badge.violation { background-color: #f8d7da; color: #721c24; }
+        .status-badge.high { background-color: #f8d7da; color: #721c24; }
+        .status-badge.medium { background-color: #fff3cd; color: #856404; }
+        .status-badge.low { background-color: #d4edda; color: #155724; }
+        .status-badge.complete { background-color: #d4edda; color: #155724; }
+        .status-badge.in-progress { background-color: #cfe2ff; color: #0a58ca; }
+        .status-badge.resolved { background-color: #d4edda; color: #155724; }
+
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .button.primary {
+            background-color: #66b3ff;
+            color: #fff;
+        }
+
+        .button.primary:hover {
+            background-color: #4da6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(102, 179, 255, 0.3);
+        }
+
+        .button.secondary {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .button.secondary:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-filter-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .data-filter-controls select,
+        .data-filter-controls input[type="text"],
+        .data-filter-controls input[type="date"] {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            background-color: #fff;
+            flex: 1; /* Allow inputs to grow */
+            min-width: 150px; /* Minimum width for inputs */
+        }
+        .data-filter-controls button {
+            flex-shrink: 0; /* Prevent buttons from shrinking */
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+            .profile-details {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px; /* Collapse sidebar */
+                padding: 15px;
+            }
+            .sidebar .logo span {
+                display: none; /* Hide logo text */
+            }
+            .sidebar nav ul li a span {
+                display: none; /* Hide menu item text */
+            }
+            .sidebar nav ul li a {
+                justify-content: center; /* Center icons */
+                padding: 10px;
+            }
+            .sidebar nav ul li a svg {
+                margin-right: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px;
+            }
+            .header h1 {
+                margin-bottom: 15px;
+            }
+            .search-bar {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            .search-bar input {
+                width: calc(100% - 60px); /* Adjust width considering search button */
+            }
+            .user-profile {
+                position: absolute;
+                top: 15px;
+                right: 20px;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .customer-profile-card, .interaction-timeline, .chart-container {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                justify-content: space-around;
+                position: relative;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                padding: 10px;
+                flex-wrap: wrap;
+                top: 0; /* Ensure it stays at the top */
+                z-index: 1000;
+            }
+            .sidebar .logo {
+                display: none;
+            }
+            .sidebar nav ul {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+            }
+            .sidebar nav ul li {
+                margin: 5px 10px;
+            }
+            .sidebar nav ul li a {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            .sidebar nav ul li a span {
+                display: block; /* Show text again for mobile nav */
+                margin-left: 5px;
+            }
+            .sidebar nav ul li a svg {
+                margin-right: 5px;
+            }
+            .main-content {
+                padding: 15px;
+            }
+            .header {
+                padding: 10px 15px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .search-bar input {
+                width: 100%;
+                margin-right: 0;
+            }
+            .user-profile {
+                position: relative;
+                margin-top: 10px;
+            }
+            .card {
+                padding: 20px;
+            }
+            .chart-container, .customer-profile-card, .interaction-timeline {
+                padding: 15px;
+            }
+            .profile-details {
+                grid-template-columns: 1fr;
+            }
+            .data-filter-controls {
+                flex-direction: column;
+            }
+            .compliance-table, .risk-table {
+                font-size: 14px;
+            }
+            .compliance-table th, .compliance-table td,
+            .risk-table th, .risk-table td {
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar nav ul {
+                justify-content: space-between;
+            }
+            .sidebar nav ul li {
+                margin: 5px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .card .metric-value {
+                font-size: 28px;
+            }
+            .section-header {
+                font-size: 20px;
+            }
+            .button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-banknote"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+            <span>Fintech BA Hub</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    <span>Dashboard</span>
+                </a></li>
+                <li><a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Customers</span>
+                </a></li>
+                <li><a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-line-chart"><path d="M3 3v18h18"/><path d="m18 10-4 4-2-2-5 5"/></svg>
+                    <span>Analytics</span>
+                </a></li>
+                <li><a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                    <span>Reports</span>
+                </a></li>
+                <li><a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.78 1.35a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.74v.44a2 2 0 0 1-1 1.73l-.15.08a2 2 0 0 0-.73 2.73l.78 1.35a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 1-1.74v.18a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.78-1.35a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.44a2 2 0 0 1 1-1.73l.15-.08a2 2 0 0 0 .73-2.73l-.78-1.35a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-1-1.74V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Settings</span>
+                </a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <!-- Add future footer items like logout button or version info here -->
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Business Analyst Dashboard</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Search customer, loan, or data...">
+                <button class="button primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </button>
+            </div>
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/40/66b3ff/FFFFFF?text=BA" alt="User Profile">
+                <span>Priya Sharma</span>
+            </div>
+        </div>
+
+        <h2 class="section-header">Overview & Key Performance Indicators</h2>
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Total Active Customers</h3>
+                <div class="metric-value">1,25,000</div>
+                <div class="metric-change">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+                    <span>+2.5% vs. Last Month</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Mobile Loan Uptake Rate</h3>
+                <div class="metric-value">7.8%</div>
+                <div class="metric-change">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+                    <span>+1.2% point (Target: 15%)</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Avg. Loan Application Value</h3>
+                <div class="metric-value">Rs. 1,75,000</div>
+                <div class="metric-change negative">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-right" style="color: #d9534f;"><path d="M7 7h10v10"/><path d="M17 7 7 17"/></svg>
+                    <span>-0.5% vs. Last Quarter</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>New Loan Leads (Mobile App)</h3>
+                <div class="metric-value">1,820</div>
+                <div class="metric-change">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+                    <span>+15% Week-over-Week</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-header">Customer Segmentation & Behavior Analytics</h2>
+        <div class="dashboard-grid" style="grid-template-columns: 2fr 1fr;">
+            <div class="chart-container">
+                <h3>Customer Segmentation by Loan Potential</h3>
+                <p>Segmenting customers by income, transaction history, and mobile app engagement to identify high-potential loan applicants. </p>
+                <p>E.g., "Salary Earners (Personal Loan)", "Students (Education Loan)", "Home Owners (Home Equity Loan)"</p>
+                <!-- Chart will be rendered here by JS library -->
+            </div>
+            <div class="card">
+                <h3>Top Engaged Features (Mobile App)</h3>
+                <div class="detail-item"><strong>Utility Payments:</strong> 85% Engagement</div>
+                <div class="detail-item"><strong>Fund Transfers:</strong> 78% Engagement</div>
+                <div class="detail-item"><strong>Balance Inquiries:</strong> 72% Engagement</div>
+                <div class="detail-item"><strong>Loan Product View:</strong> 15% Engagement</div>
+                <div class="detail-item"><strong>Loan Application Start:</strong> 5% Engagement</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>Customer Behavior: Mobile App Engagement Over Time</h3>
+            <p>Illustrates daily/weekly active users, feature usage frequency, and session duration to identify patterns and optimal recommendation times.</p>
+            <!-- Line chart for app engagement -->
+        </div>
+
+        <h2 class="section-header">Loan Product Performance & Financials</h2>
+        <div class="dashboard-grid">
+            <div class="chart-container">
+                <h3>Loan Product Uptake & Conversion Funnel</h3>
+                <p>Visualizing the conversion steps: Impression -> Click -> Application Start -> Submission -> Approval -> Disbursement.</p>
+                <!-- Funnel chart -->
+            </div>
+            <div class="chart-container">
+                <h3>Revenue Contribution by Loan Product</h3>
+                <p>Breakdown of revenue generated from different loan types (Home, Personal, Auto, Education, Foneloan).</p>
+                <!-- Bar chart -->
+            </div>
+        </div>
+        <div class="chart-container">
+            <h3>Forecasted Loan Disbursal Trends (Next 3 Months)</h3>
+            <p>Based on current application pipeline and personalization efforts. Projections for Home Loan, Personal Loan, Education Loan.</p>
+            <!-- Line chart for trends -->
+        </div>
+
+        <h2 class="section-header">Detailed Customer Insights & Interaction History</h2>
+
+        <div class="data-filter-controls">
+            <input type="text" placeholder="Search Customer Name or ID">
+            <select>
+                <option value="">Filter by Loan Type Interest</option>
+                <option value="personal">Personal Loan</option>
+                <option value="home">Home Loan</option>
+                <option value="education">Education Loan</option>
+                <option value="auto">Auto Loan</option>
+                <option value="foneloan">Foneloan</option>
+            </select>
+            <button class="button primary">Apply Filters</button>
+            <button class="button secondary">Export Data</button>
+        </div>
+
+        <div class="customer-profile-card">
+            <div class="profile-header">
+                <img src="https://via.placeholder.com/80/ADD8E6/000000?text=Sita" alt="Sita Rai Profile">
+                <div class="profile-info">
+                    <h3>Sita Rai (Customer ID: CUST-001234)</h3>
+                    <p>Kathmandu, Nepal | Active Since: 2018 | Primary Account: Savings A/C #123456789</p>
+                    <p>Current Recommendation: <span class="status-badge complete">Pre-approved Personal Loan</span></p>
+                </div>
+            </div>
+            <div class="profile-details">
+                <div class="detail-item">
+                    <strong>KYC Status:</strong>
+                    <span>Complete</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Annual Income:</strong>
+                    <span>Rs. 10,00,000</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Average Monthly Spending:</strong>
+                    <span>Rs. 65,000</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Location:</strong>
+                    <span>Kathmandu, Bagmati Province</span>
+                </div>
+                <div class="detail-item">
+                    <strong>App Engagement Score:</strong>
+                    <span>9.2/10 (Highly Engaged)</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Existing Loans:</strong>
+                    <span>Auto Loan (Disbursed: Rs. 12,00,000, EMI: Rs. 25,000)</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Identified Need:</strong>
+                    <span>Home Purchase (Based on property searches & savings behavior)</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Suggested Loan Product:</strong>
+                    <span>Home Loan (Rs. 50,00,000 - Rs. 1,00,00,000)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-timeline">
+            <h3 style="margin-bottom: 20px; color: #1a2a47;">Sita Rai - Interaction History</h3>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024-03-10, 10:30 AM</div>
+                    <div class="timeline-title">Personalized Home Loan Offer Displayed</div>
+                    <div class="timeline-description">System recommended Home Loan based on high savings and property search activity in mobile app.</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024-03-10, 10:35 AM</div>
+                    <div class="timeline-title">Customer Clicked on Home Loan Offer</div>
+                    <div class="timeline-description">Navigated to Home Loan details page in mobile app. Engagement Uplift: Yes.</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024-03-05, 02:15 PM</div>
+                    <div class="timeline-title">High Spending Alert Triggered</div>
+                    <div class="timeline-description">Transaction anomaly detected (large furniture purchase). Potential for Personal Loan or Home Improvement Loan.</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024-02-28, 09:00 AM</div>
+                    <div class="timeline-title">Automated Education Loan Promotion (Outreach)</div>
+                    <div class="timeline-description">Customer opted out of education loan promotions. (Not a student segment)</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2023-11-15, 04:00 PM</div>
+                    <div class="timeline-title">Auto Loan Disbursed</div>
+                    <div class="timeline-description">Loan amount Rs. 12,00,000. Customer happy with the process.</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-header">Risk Assessment & Compliance Monitoring</h2>
+        <div class="dashboard-grid" style="grid-template-columns: 1.5fr 1fr;">
+            <div class="card">
+                <h3>Overall Portfolio Risk Level</h3>
+                <div class="metric-value" style="color: #d9534f;">Medium-High</div>
+                <div class="metric-change negative">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+                    <span>Increasing due to new unsecured loans</span>
+                </div>
+                <h4 style="margin-top: 20px; color: #555;">Key Risk Metrics:</h4>
+                <table class="risk-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>NPL Ratio (Loans)</td>
+                            <td>2.8%</td>
+                            <td><span class="status-badge high">High</span></td>
+                        </tr>
+                        <tr>
+                            <td>Credit Score Distribution</td>
+                            <td>Avg. 680</td>
+                            <td><span class="status-badge medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fraudulent Applications</td>
+                            <td>0.1%</td>
+                            <td><span class="status-badge low">Low</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Compliance Status Overview</h3>
+                <div class="metric-value" style="color: #5cb85c;">Compliant</div>
+                <div class="metric-change">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                    <span>No Major Violations</span>
+                </div>
+                <h4 style="margin-top: 20px; color: #555;">Recent Compliance Checks (Central Bank of Nepal):</h4>
+                <table class="compliance-table">
+                    <thead>
+                        <tr>
+                            <th>Regulation</th>
+                            <th>Status</th>
+                            <th>Last Check</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Central Bank - Data Privacy</td>
+                            <td><span class="status-badge approved">Compliant</span></td>
+                            <td>2024-02-15</td>
+                        </tr>
+                        <tr>
+                            <td>AML/KYC Guidelines</td>
+                            <td><span class="status-badge approved">Compliant</span></td>
+                            <td>2024-03-01</td>
+                        </tr>
+                        <tr>
+                            <td>Loan Product Transparency</td>
+                            <td><span class="status-badge in-progress">In Progress</span></td>
+                            <td>2024-03-08</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 class="section-header">Business Intelligence & Recommendations</h2>
+        <div class="card" style="margin-bottom: 25px;">
+            <h3>Actionable Insights for Loan Uptake Improvement</h3>
+            <ul>
+                <li style="margin-bottom: 10px;"><strong>Insight 1:</strong> Customers frequently engage with utility payments but rarely click on loan products. 
+                    <p style="margin-left: 20px; color: #555;"><strong>Recommendation:</strong> Integrate subtle loan recommendations post-utility payment confirmation or on bill payment reminder notifications.</p></li>
+                <li style="margin-bottom: 10px;"><strong>Insight 2:</strong> High conversion rate for pre-approved loan offers presented to consistent salary earners.
+                    <p style="margin-left: 20px; color: #555;"><strong>Recommendation:</strong> Expand AI model to identify more potential pre-approval candidates based on salary inflow patterns and account balance trends.</p></li>
+                <li style="margin-bottom: 10px;"><strong>Insight 3:</strong> Educational loan uptake is low despite active student segment.
+                    <p style="margin-left: 20px; color: #555;"><strong>Recommendation:</strong> Partner with educational institutions for targeted promotions. Offer personalized content highlighting study abroad or professional course financing.</p></li>
+                <li style="margin-bottom: 10px;"><strong>Insight 4:</strong> Data collection for "identified need" is limited.
+                    <p style="margin-left: 20px; color: #555;"><strong>Recommendation:</strong> Explore non-intrusive data sources (e.g., public property listings, app search history, chatbot interactions) and implement short in-app surveys for explicit intent gathering.</p></li>
+            </ul>
+        </div>
+
+        <div class="data-filter-controls" style="justify-content: flex-end;">
+            <button class="button primary">Generate New Report</button>
+            <button class="button secondary">Export All Dashboard Data</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Placeholder for interactive JavaScript
+        // This would typically involve:
+        // 1. Chart rendering logic (e.g., using Chart.js, D3.js)
+        // 2. Search and filter functionality
+        // 3. Dynamic content loading (e.g., clicking a customer to load their profile)
+        // 4. Navigation active states
+        // 5. Responsive sidebar toggles (if sidebar were collapsible)
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Example: Active navigation link logic
+            const navLinks = document.querySelectorAll('.sidebar nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // Prevent actual navigation for demo
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    // In a real app, this would load different dashboard sections or data
+                    console.log(`Navigated to: ${this.querySelector('span').textContent}`);
+                });
+            });
+
+            // Example: Search button click
+            const searchButton = document.querySelector('.search-bar button');
+            searchButton.addEventListener('click', () => {
+                const searchTerm = document.querySelector('.search-bar input').value;
+                console.log(`Searching for: ${searchTerm}`);
+                // Implement search logic here, e.g., filter customer profiles
+                alert(`Simulating search for: "${searchTerm}"`);
+            });
+
+            // Example: Filter button click
+            const applyFiltersButton = document.querySelector('.data-filter-controls .button.primary');
+            if (applyFiltersButton) {
+                applyFiltersButton.addEventListener('click', () => {
+                    const customerSearch = document.querySelector('.data-filter-controls input[type="text"]').value;
+                    const loanTypeFilter = document.querySelector('.data-filter-controls select').value;
+                    console.log(`Applying filters: Customer - "${customerSearch}", Loan Type - "${loanTypeFilter}"`);
+                    alert(`Simulating filter for Customer: "${customerSearch}", Loan Type: "${loanTypeFilter}"`);
+                    // Logic to re-render customer profiles or analytics based on filters
+                });
+            }
+
+            // Example: Export button click
+            const exportButton = document.querySelector('.data-filter-controls .button.secondary');
+            if (exportButton) {
+                exportButton.addEventListener('click', () => {
+                    console.log('Exporting data...');
+                    alert('Simulating data export...');
+                    // Logic to initiate data export (e.g., generate CSV, PDF)
+                });
+            }
+
+            // Example: Generate Report Button
+            const generateReportButton = document.querySelector('.main-content > .data-filter-controls .button.primary');
+            if (generateReportButton) {
+                generateReportButton.addEventListener('click', () => {
+                    console.log('Generating new report...');
+                    alert('Simulating new report generation...');
+                    // Logic for report generation
+                });
+            }
+
+            // All chart containers are just placeholders in this mockup.
+            // In a real application, you would initialize your chart libraries here:
+            // e.g., new Chart(document.getElementById('customerSegmentationChart'), {...});
+        });
+    </script>
+</body>
+</html>

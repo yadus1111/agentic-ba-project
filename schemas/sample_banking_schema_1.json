@@ -1,7 +1,7 @@
 [
   {
     "type": "frame",
-    "name": "Application Dashboard",
+    "name": "Banking Dashboard",
     "x": 0,
     "y": 0,
     "width": 1440,
@@ -14,7 +14,7 @@
     "y": 0,
     "width": 1440,
     "height": 60,
-    "parent": "Application Dashboard"
+    "parent": "Banking Dashboard"
   },
   {
     "type": "text",
@@ -23,56 +23,66 @@
     "y": 20,
     "width": 200,
     "height": 20,
-    "content": "Business Application",
+    "content": "Digital Banking",
     "parent": "Header"
   },
   {
     "type": "button",
-    "name": "Search",
+    "name": "Transfer",
     "x": 300,
     "y": 15,
     "width": 80,
     "height": 30,
-    "content": "Search",
+    "content": "Transfer",
     "parent": "Header"
   },
   {
     "type": "rectangle",
-    "name": "Main Card",
+    "name": "Account Card",
     "x": 20,
     "y": 80,
     "width": 400,
     "height": 200,
-    "parent": "Application Dashboard"
+    "parent": "Banking Dashboard"
   },
   {
     "type": "text",
-    "name": "Title",
+    "name": "Account Number",
     "x": 30,
     "y": 90,
     "width": 380,
     "height": 20,
-    "content": "Main Section",
-    "parent": "Main Card"
+    "content": "Account Number",
+    "parent": "Account Card"
+  },
+  {
+    "type": "text",
+    "name": "Balance",
+    "x": 30,
+    "y": 120,
+    "width": 380,
+    "height": 20,
+    "content": "Balance",
+    "parent": "Account Card"
   },
   {
     "type": "button",
-    "name": "Action 1",
+    "name": "Pay Bills",
     "x": 30,
     "y": 150,
     "width": 120,
     "height": 30,
-    "content": "Action 1",
-    "parent": "Main Card"
+    "content": "Pay Bills",
+    "parent": "Account Card"
   },
   {
     "type": "button",
-    "name": "Action 2",
+    "name": "Apply for Loan",
     "x": 160,
     "y": 150,
     "width": 120,
     "height": 30,
-    "content": "Action 2",
-    "parent": "Main Card"
+    "content": "Apply for Loan",
+    "parent": "Account Card"
   }
 ]
