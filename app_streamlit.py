@@ -32,10 +32,16 @@ try:
         st.info("To fix this in Streamlit Cloud:\n1. Go to your app settings\n2. Add GEMINI_API_KEY to the secrets\n3. Redeploy the app")
         st.stop()
     
+    # Debug: Show API key status (masked for security)
+    if api_key:
+        masked_key = api_key[:10] + "..." + api_key[-4:] if len(api_key) > 14 else "***"
+        st.info(f"🔑 API Key found: {masked_key}")
+    
     model = genai.GenerativeModel(MODEL_NAME)
     st.success("✅ Gemini AI model initialized successfully")
 except Exception as e:
     st.error(f"❌ Failed to initialize Gemini AI: {str(e)}")
+    st.info(f"🔍 Debug info: API key length = {len(api_key) if api_key else 0}")
     st.stop()
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -380,6 +386,16 @@ def main():
     st.set_page_config(page_title="Agentic BA Dashboard", layout="wide")
     st.title("Agentic BA Dashboard")
     st.markdown("Welcome to your AI-powered business analysis system!")
+    
+    # Debug: Show environment status
+    st.sidebar.markdown("### 🔧 Debug Info")
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if api_key:
+        st.sidebar.success("✅ API Key: Found")
+        st.sidebar.info(f"Length: {len(api_key)} characters")
+    else:
+        st.sidebar.error("❌ API Key: Missing")
+        st.sidebar.warning("Set GEMINI_API_KEY in Streamlit Cloud secrets")
 
     business_problem = st.text_area(
         "Business Problem / Objective",
