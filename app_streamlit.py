@@ -407,12 +407,45 @@ def main():
     # Add a test button for debugging
     if st.button("🔧 Test API Connection"):
         try:
-            st.info("Testing API connection...")
-            test_response = model.generate_content("Say 'Hello' in one word.")
-            if test_response and test_response.text:
-                st.success(f"✅ API working! Response: {test_response.text}")
-            else:
-                st.error("❌ API returned no response")
+            with st.spinner("Testing API connection..."):
+                # Add a simple timeout using a shorter prompt
+                import threading
+                import time
+                
+                result = {"response": None, "error": None, "completed": False}
+                
+                def api_call():
+                    try:
+                        result["response"] = model.generate_content("Hello")
+                        result["completed"] = True
+                    except Exception as e:
+                        result["error"] = str(e)
+                        result["completed"] = True
+                
+                # Start the API call in a separate thread
+                thread = threading.Thread(target=api_call)
+                thread.start()
+                
+                # Wait for up to 30 seconds
+                for i in range(30):
+                    if result["completed"]:
+                        break
+                    time.sleep(1)
+                    st.write(f"⏳ Waiting... ({i+1}/30 seconds)")
+                
+                if not result["completed"]:
+                    st.error("❌ API call timed out after 30 seconds")
+                    st.info("💡 This might be due to network issues or API rate limiting")
+                    return
+                
+                if result["error"]:
+                    st.error(f"❌ API test failed: {result['error']}")
+                    st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
+                elif result["response"] and result["response"].text:
+                    st.success(f"✅ API working! Response: {result['response'].text}")
+                else:
+                    st.error("❌ API returned no response")
+                    
         except Exception as e:
             st.error(f"❌ API test failed: {str(e)}")
             st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
@@ -439,8 +472,41 @@ def main():
             progress_bar.progress(20)
             
             try:
-                test_response = model.generate_content("Say 'Hello' in one word.")
-                if test_response and test_response.text:
+                # Add timeout for API test
+                import threading
+                import time
+                
+                test_result = {"response": None, "error": None, "completed": False}
+                
+                def test_api_call():
+                    try:
+                        test_result["response"] = model.generate_content("Hello")
+                        test_result["completed"] = True
+                    except Exception as e:
+                        test_result["error"] = str(e)
+                        test_result["completed"] = True
+                
+                # Start the API call in a separate thread
+                thread = threading.Thread(target=test_api_call)
+                thread.start()
+                
+                # Wait for up to 30 seconds
+                for i in range(30):
+                    if test_result["completed"]:
+                        break
+                    time.sleep(1)
+                    status_text.text(f"⏳ Testing API... ({i+1}/30 seconds)")
+                
+                if not test_result["completed"]:
+                    st.error("❌ API connection timed out after 30 seconds")
+                    st.info("💡 This might be due to network issues or API rate limiting")
+                    return
+                
+                if test_result["error"]:
+                    st.error(f"❌ API connection failed: {test_result['error']}")
+                    st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
+                    return
+                elif test_result["response"] and test_result["response"].text:
                     st.success("✅ API connection successful!")
                 else:
                     st.error("❌ API connection failed - no response")
