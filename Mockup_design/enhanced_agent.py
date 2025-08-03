@@ -27,6 +27,7 @@ class EnhancedBRDAgent:
         # Check for Gemini AI availability
         try:
             from google import genai
+            # The client automatically gets the API key from the environment variable GEMINI_API_KEY
             self.client = genai.Client()
             print("✓ Gemini AI client initialized")
         except ImportError:
