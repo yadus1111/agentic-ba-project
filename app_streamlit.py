@@ -23,14 +23,18 @@ sys.path.append("Mockup_design")
 from enhanced_agent import EnhancedBRDAgent
 
 # --- Gemini Model Setup (NEW SDK) ---
-# The client automatically gets the API key from the environment variable GEMINI_API_KEY
+# Set up Gemini model using environment variable
 try:
-    client = genai.Client()
+    # Check if API key is available
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        st.error("GEMINI_API_KEY not found in environment variables. Please set it in Streamlit Cloud secrets.")
+        st.stop()
+    
+    # Initialize the Gemini model
+    model = genai.GenerativeModel(MODEL_NAME)
     # Quick test to verify API key works
-    test_response = client.models.generate_content(
-        model="gemini-2.5-flash", 
-        contents="Hello"
-    )
+    test_response = model.generate_content("Hello")
     if not test_response or not test_response.text:
         st.error("API key test failed. Please check your API key.")
         st.stop()
@@ -188,10 +192,7 @@ Main Flow: {use_case['main_flow']}
 Generate a unique Mermaid diagram (flowchart TD) that visualizes the specific actors, steps, and interactions for this use case. Use only rectangles and arrows. No generic diagrams. No advanced formatting. Output only the Mermaid code, no extra text.
 """
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
+        response = model.generate_content(prompt)
         if response.text:
             code = response.text.strip().replace('```mermaid','').replace('```','').strip()
             code = sanitize_mermaid_code(code)
@@ -276,10 +277,7 @@ def generate_report_and_images(business_problem):
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=prompt
-                )
+                response = model.generate_content(prompt)
                 
                 if not response or not response.text:
                     return "No content generated from Gemini AI. Please try again.", []
