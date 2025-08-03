@@ -318,6 +318,65 @@ def generate_report_and_images(business_problem):
     except Exception as e:
         return f"❌ Unexpected error in report generation: {str(e)}", []
 
+def generate_fallback_report(business_problem):
+    """Generate a simple fallback report when API is not available"""
+    return f"""# Business Analysis Report
+
+## Business Problem
+{business_problem}
+
+## Stakeholder Map
+```mermaid
+flowchart TD
+    A[Business Stakeholders] --> B[Primary Users]
+    A --> C[Secondary Users]
+    A --> D[System Administrators]
+    B --> E[End Users]
+    C --> F[Managers]
+    D --> G[IT Team]
+```
+
+## Process Flow
+```mermaid
+flowchart TD
+    A[Start] --> B[Analyze Requirements]
+    B --> C[Design Solution]
+    C --> D[Implement]
+    D --> E[Test]
+    E --> F[Deploy]
+    F --> G[Monitor]
+```
+
+## Business Requirements Document (BRD)
+### Overview
+This document outlines the business requirements for addressing the identified problem.
+
+### Functional Requirements
+- Requirement 1: [To be defined based on business problem]
+- Requirement 2: [To be defined based on business problem]
+- Requirement 3: [To be defined based on business problem]
+
+### Non-Functional Requirements
+- Performance: System should respond within 3 seconds
+- Security: Implement proper authentication and authorization
+- Scalability: System should handle 1000+ concurrent users
+
+## Data Requirements
+| Data Element | Source System | Data Type | Purpose |
+|--------------|---------------|-----------|---------|
+| User Data | User Management System | String | User identification |
+| Transaction Data | Core System | Numeric | Business operations |
+| Audit Data | Logging System | Timestamp | Compliance |
+
+## Success Metrics
+- User satisfaction score > 4.0/5.0
+- System uptime > 99.5%
+- Response time < 3 seconds
+
+---
+*Note: This is a fallback report generated when the AI service is unavailable. For a comprehensive analysis, please try again when the service is restored.*
+""", []
+
 def remove_emojis(text):
     emoji_pattern = re.compile(
         "["
@@ -500,7 +559,20 @@ def main():
                 if not test_result["completed"]:
                     st.error("❌ API connection timed out after 30 seconds")
                     st.info("💡 This might be due to network issues or API rate limiting")
-                    return
+                    st.warning("🔄 Trying alternative approach...")
+                    
+                    # Try a simpler approach with a shorter timeout
+                    try:
+                        simple_response = model.generate_content("Hi")
+                        if simple_response and simple_response.text:
+                            st.success("✅ API working with simple call!")
+                        else:
+                            st.error("❌ Even simple API call failed")
+                            return
+                    except Exception as simple_error:
+                        st.error(f"❌ Simple API call also failed: {str(simple_error)}")
+                        st.info("💡 The Gemini API might be experiencing issues. Please try again later.")
+                        return
                 
                 if test_result["error"]:
                     st.error(f"❌ API connection failed: {test_result['error']}")
@@ -519,10 +591,17 @@ def main():
             progress_bar.progress(30)
             status_text.text("📝 Generating full report...")
             
-            report, images = generate_report_and_images(business_problem)
-            
-            progress_bar.progress(100)
-            status_text.text("✅ Report generation completed!")
+            try:
+                report, images = generate_report_and_images(business_problem)
+                
+                progress_bar.progress(100)
+                status_text.text("✅ Report generation completed!")
+                
+            except Exception as report_error:
+                st.warning("⚠️ AI report generation failed. Generating fallback report...")
+                report, images = generate_fallback_report(business_problem)
+                progress_bar.progress(100)
+                status_text.text("✅ Fallback report generated!")
             
         except Exception as e:
             st.error(f"❌ Error during report generation: {str(e)}")
@@ -531,6 +610,9 @@ def main():
             # Clear the progress indicators
             progress_bar.empty()
             status_text.empty()
+        
+        # Only process images if report generation was successful
+        if 'report' in locals() and 'images' in locals():
             for idx, img_path in enumerate(images, 1):
                 if os.path.exists(img_path):
                     with open(img_path, "rb") as img_file:
