@@ -32,23 +32,15 @@ try:
         st.info("To fix this in Streamlit Cloud:\n1. Go to your app settings\n2. Add GEMINI_API_KEY to the secrets\n3. Redeploy the app")
         st.stop()
     
-    # Debug: Show API key status (masked for security)
-    if api_key:
-        masked_key = api_key[:10] + "..." + api_key[-4:] if len(api_key) > 14 else "***"
-        st.info(f"🔑 API Key found: {masked_key}")
-    
-    # Try different model configurations for better compatibility
+    # Initialize the Gemini model
     try:
         model = genai.GenerativeModel(MODEL_NAME)
     except Exception as model_error:
-        st.error(f"❌ Failed to initialize model with {MODEL_NAME}: {str(model_error)}")
-        st.info("🔄 Trying alternative model...")
         try:
             model = genai.GenerativeModel("gemini-1.5-flash")
         except Exception as alt_error:
-            st.error(f"❌ Failed to initialize alternative model: {str(alt_error)}")
+            st.error("Failed to initialize AI model. Please check your API key.")
             st.stop()
-    st.success("✅ Gemini AI model initialized successfully")
 except Exception as e:
     st.error(f"❌ Failed to initialize Gemini AI: {str(e)}")
     st.info(f"🔍 Debug info: API key length = {len(api_key) if api_key else 0}")
@@ -285,48 +277,41 @@ def generate_report_and_images(business_problem):
     try:
         # Check if model is properly initialized
         if not model:
-            return "❌ Gemini AI model not initialized. Please check your API key.", []
+            return "Gemini AI model not initialized. Please check your API key.", []
         
-        st.info("📝 Preparing report prompt...")
         prompt = REPORT_PROMPT_TEMPLATE.format(business_problem=business_problem)
         
-        st.info("🤖 Sending request to Gemini AI...")
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                st.info(f"🔄 Attempt {attempt + 1} of {max_retries}...")
                 response = model.generate_content(prompt)
                 
                 if not response or not response.text:
-                    return "❌ No content generated from Gemini AI. Please try again.", []
+                    return "No content generated from Gemini AI. Please try again.", []
                 
-                st.info("📄 Processing generated content...")
                 report_text = response.text
                 report_text = insert_use_case_diagrams(report_text, business_problem)
                 image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
                 
-                st.success("✅ Report generated successfully!")
                 return report_text, image_paths
                 
             except Exception as e:
                 error_msg = str(e)
-                st.warning(f"⚠️ Attempt {attempt + 1} failed: {error_msg}")
                 
                 if "503" in error_msg or "overloaded" in error_msg.lower():
                     if attempt < max_retries - 1:
                         wait_time = (attempt + 1) * 2 + random.uniform(0, 1)
-                        st.info(f"⏳ Waiting {wait_time:.1f} seconds before retry...")
                         time.sleep(wait_time)
                         continue
                     else:
-                        return f"❌ API is currently overloaded. Please try again in a few minutes. Error: {error_msg}", []
+                        return f"API is currently overloaded. Please try again in a few minutes. Error: {error_msg}", []
                 else:
-                    return f"❌ Error generating report: {error_msg}", []
+                    return f"Error generating report: {error_msg}", []
         
-        return "❌ Failed to generate report after multiple attempts. Please try again later.", []
+        return "Failed to generate report after multiple attempts. Please try again later.", []
         
     except Exception as e:
-        return f"❌ Unexpected error in report generation: {str(e)}", []
+        return f"Unexpected error in report generation: {str(e)}", []
 
 
 
@@ -399,15 +384,7 @@ def main():
     st.title("Agentic BA Dashboard")
     st.markdown("Welcome to your AI-powered business analysis system!")
     
-    # Debug: Show environment status
-    st.sidebar.markdown("### 🔧 Debug Info")
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if api_key:
-        st.sidebar.success("✅ API Key: Found")
-        st.sidebar.info(f"Length: {len(api_key)} characters")
-    else:
-        st.sidebar.error("❌ API Key: Missing")
-        st.sidebar.warning("Set GEMINI_API_KEY in Streamlit Cloud secrets")
+
 
     business_problem = st.text_area(
         "Business Problem / Objective",
@@ -416,51 +393,7 @@ def main():
         placeholder="Paste your business case or objective here..."
     )
     
-    # Add a test button for debugging
-    if st.button("🔧 Test API Connection"):
-        try:
-            with st.spinner("Testing API connection..."):
-                # Add a simple timeout using a shorter prompt
-                import threading
-                import time
-                
-                result = {"response": None, "error": None, "completed": False}
-                
-                def api_call():
-                    try:
-                        result["response"] = model.generate_content("Hello")
-                        result["completed"] = True
-                    except Exception as e:
-                        result["error"] = str(e)
-                        result["completed"] = True
-                
-                # Start the API call in a separate thread
-                thread = threading.Thread(target=api_call)
-                thread.start()
-                
-                # Wait for up to 30 seconds
-                for i in range(30):
-                    if result["completed"]:
-                        break
-                    time.sleep(1)
-                    st.write(f"⏳ Waiting... ({i+1}/30 seconds)")
-                
-                if not result["completed"]:
-                    st.error("❌ API call timed out after 30 seconds")
-                    st.info("💡 This might be due to network issues or API rate limiting")
-                    return
-                
-                if result["error"]:
-                    st.error(f"❌ API test failed: {result['error']}")
-                    st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
-                elif result["response"] and result["response"].text:
-                    st.success(f"✅ API working! Response: {result['response'].text}")
-                else:
-                    st.error("❌ API returned no response")
-                    
-        except Exception as e:
-            st.error(f"❌ API test failed: {str(e)}")
-            st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
+
 
     if 'report_data' not in st.session_state:
         st.session_state['report_data'] = {"html": "", "business_problem": ""}
@@ -471,93 +404,12 @@ def main():
         st.session_state['ba_agent'] = EnhancedBRDAgent()
 
     if st.button("Generate Report", type="primary"):
-        # Create a progress bar
-        progress_bar = st.progress(0)
-        status_text = st.empty()
-        
-        try:
-            status_text.text("🔄 Starting report generation...")
-            progress_bar.progress(10)
-            
-            # First, test if the API key is working
-            status_text.text("🔑 Testing API connection...")
-            progress_bar.progress(20)
-            
+        with st.spinner("Generating report... (this may take a moment)"):
             try:
-                # Add timeout for API test
-                import threading
-                import time
-                
-                test_result = {"response": None, "error": None, "completed": False}
-                
-                def test_api_call():
-                    try:
-                        test_result["response"] = model.generate_content("Hello")
-                        test_result["completed"] = True
-                    except Exception as e:
-                        test_result["error"] = str(e)
-                        test_result["completed"] = True
-                
-                # Start the API call in a separate thread
-                thread = threading.Thread(target=test_api_call)
-                thread.start()
-                
-                # Wait for up to 30 seconds
-                for i in range(30):
-                    if test_result["completed"]:
-                        break
-                    time.sleep(1)
-                    status_text.text(f"⏳ Testing API... ({i+1}/30 seconds)")
-                
-                if not test_result["completed"]:
-                    st.error("❌ API connection timed out after 30 seconds")
-                    st.info("💡 This might be due to network issues or API rate limiting")
-                    st.warning("🔄 Trying alternative approach...")
-                    
-                                    # Try a simpler approach with a shorter timeout
-                try:
-                    st.info("🔄 Trying simple API call...")
-                    simple_response = model.generate_content("Hi")
-                    if simple_response and simple_response.text:
-                        st.success("✅ API working with simple call!")
-                    else:
-                        st.error("❌ Even simple API call failed")
-                        st.info("💡 Please check your API key and try again later.")
-                        return
-                except Exception as simple_error:
-                    st.error(f"❌ Simple API call also failed: {str(simple_error)}")
-                    st.info("💡 The Gemini API might be experiencing issues. Please try again later.")
-                    return
-                
-                if test_result["error"]:
-                    st.error(f"❌ API connection failed: {test_result['error']}")
-                    st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
-                    return
-                elif test_result["response"] and test_result["response"].text:
-                    st.success("✅ API connection successful!")
-                else:
-                    st.error("❌ API connection failed - no response")
-                    return
-            except Exception as api_error:
-                st.error(f"❌ API connection failed: {str(api_error)}")
-                st.info("💡 Please check your GEMINI_API_KEY in Streamlit Cloud secrets")
+                report, images = generate_report_and_images(business_problem)
+            except Exception as e:
+                st.error(f"Error generating report: {str(e)}")
                 return
-            
-            progress_bar.progress(30)
-            status_text.text("📝 Generating full report...")
-            
-            report, images = generate_report_and_images(business_problem)
-            
-            progress_bar.progress(100)
-            status_text.text("✅ Report generation completed!")
-            
-        except Exception as e:
-            st.error(f"❌ Error during report generation: {str(e)}")
-            return
-        finally:
-            # Clear the progress indicators
-            progress_bar.empty()
-            status_text.empty()
         
         # Only process images if report generation was successful
         if 'report' in locals() and 'images' in locals():
@@ -608,32 +460,26 @@ def main():
                     brd_text = st.session_state['report_data']['business_problem']
                     agent = st.session_state['ba_agent']
                     
-                    # Debug: Check if agent is properly initialized
                     if not agent.client:
-                        st.error("❌ Gemini AI client not available. Please check your API key.")
+                        st.error("Gemini AI client not available. Please check your API key.")
                         return
                     
-                    st.info(f"📝 Analyzing BRD content...")
                     app_type = agent.analyze_brd_content(brd_text)
-                    st.info(f"🎯 Detected app type: {app_type}")
-                    
-                    st.info(f"🎨 Generating UI schema...")
                     schema = agent.generate_ui_schema(brd_text, app_type)
                     if not schema:
-                        st.error("❌ Failed to generate UI schema")
+                        st.error("Failed to generate UI schema")
                         return
                     
-                    st.info(f"🌐 Converting to HTML mockup...")
                     html_content = agent.convert_schema_to_html(schema, app_type, brd_text)
                     if not html_content:
-                        st.error("❌ Failed to convert schema to HTML")
+                        st.error("Failed to convert schema to HTML")
                         return
                     
                     timestamp = time.strftime("%Y%m%d_%H%M%S")
                     outputs = agent.save_outputs(schema, html_content, app_type, timestamp)
                     
                     if outputs and outputs.get('html'):
-                        st.success(f"✅ Mockup generated successfully!")
+                        st.success("Mockup generated successfully!")
                         
                         # Display the HTML mockup directly in Streamlit
                         st.subheader("Generated HTML Mockup Preview")
@@ -647,7 +493,7 @@ def main():
                             mime="text/html"
                         )
                     else:
-                        st.error("❌ Failed to save mockup outputs")
+                        st.error("Failed to save mockup outputs")
                         
                 except Exception as e:
                     st.error(f"❌ Error generating mockup: {str(e)}")
