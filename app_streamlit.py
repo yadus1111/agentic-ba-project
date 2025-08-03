@@ -266,27 +266,51 @@ Business Problem:
 '''
 
 def generate_report_and_images(business_problem):
-    prompt = REPORT_PROMPT_TEMPLATE.format(business_problem=business_problem)
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            response = model.generate_content(prompt)
-            report_text = response.text if response.text else "No content generated."
-            report_text = insert_use_case_diagrams(report_text, business_problem)
-            image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
-            return report_text, image_paths
-        except Exception as e:
-            error_msg = str(e)
-            if "503" in error_msg or "overloaded" in error_msg.lower():
-                if attempt < max_retries - 1:
-                    wait_time = (attempt + 1) * 2 + random.uniform(0, 1)
-                    time.sleep(wait_time)
-                    continue
+    try:
+        # Check if model is properly initialized
+        if not model:
+            return "❌ Gemini AI model not initialized. Please check your API key.", []
+        
+        st.info("📝 Preparing report prompt...")
+        prompt = REPORT_PROMPT_TEMPLATE.format(business_problem=business_problem)
+        
+        st.info("🤖 Sending request to Gemini AI...")
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                st.info(f"🔄 Attempt {attempt + 1} of {max_retries}...")
+                response = model.generate_content(prompt)
+                
+                if not response or not response.text:
+                    return "❌ No content generated from Gemini AI. Please try again.", []
+                
+                st.info("📄 Processing generated content...")
+                report_text = response.text
+                report_text = insert_use_case_diagrams(report_text, business_problem)
+                image_paths, error_blocks, fixed_blocks = extract_and_render_mermaid(report_text, business_problem=business_problem)
+                
+                st.success("✅ Report generated successfully!")
+                return report_text, image_paths
+                
+            except Exception as e:
+                error_msg = str(e)
+                st.warning(f"⚠️ Attempt {attempt + 1} failed: {error_msg}")
+                
+                if "503" in error_msg or "overloaded" in error_msg.lower():
+                    if attempt < max_retries - 1:
+                        wait_time = (attempt + 1) * 2 + random.uniform(0, 1)
+                        st.info(f"⏳ Waiting {wait_time:.1f} seconds before retry...")
+                        time.sleep(wait_time)
+                        continue
+                    else:
+                        return f"❌ API is currently overloaded. Please try again in a few minutes. Error: {error_msg}", []
                 else:
-                    return f"API is currently overloaded. Please try again in a few minutes. Error: {error_msg}", []
-            else:
-                return f"Error generating report: {error_msg}", []
-    return "Failed to generate report after multiple attempts. Please try again later.", []
+                    return f"❌ Error generating report: {error_msg}", []
+        
+        return "❌ Failed to generate report after multiple attempts. Please try again later.", []
+        
+    except Exception as e:
+        return f"❌ Unexpected error in report generation: {str(e)}", []
 
 def remove_emojis(text):
     emoji_pattern = re.compile(
@@ -373,8 +397,26 @@ def main():
         st.session_state['ba_agent'] = EnhancedBRDAgent()
 
     if st.button("Generate Report", type="primary"):
-        with st.spinner("Generating report... (this may take a moment)"):
+        # Create a progress bar
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        
+        try:
+            status_text.text("🔄 Starting report generation...")
+            progress_bar.progress(10)
+            
             report, images = generate_report_and_images(business_problem)
+            
+            progress_bar.progress(100)
+            status_text.text("✅ Report generation completed!")
+            
+        except Exception as e:
+            st.error(f"❌ Error during report generation: {str(e)}")
+            return
+        finally:
+            # Clear the progress indicators
+            progress_bar.empty()
+            status_text.empty()
             for idx, img_path in enumerate(images, 1):
                 if os.path.exists(img_path):
                     with open(img_path, "rb") as img_file:
