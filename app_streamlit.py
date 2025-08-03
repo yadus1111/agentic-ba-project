@@ -24,7 +24,19 @@ from enhanced_agent import EnhancedBRDAgent
 
 # --- Gemini Model Setup (NEW SDK) ---
 # Set up Gemini model using environment variable
-model = genai.GenerativeModel(MODEL_NAME)
+try:
+    # Check if API key is available
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        st.error("⚠️ GEMINI_API_KEY not found in environment variables. Please set it in Streamlit Cloud secrets or your .env file.")
+        st.info("To fix this in Streamlit Cloud:\n1. Go to your app settings\n2. Add GEMINI_API_KEY to the secrets\n3. Redeploy the app")
+        st.stop()
+    
+    model = genai.GenerativeModel(MODEL_NAME)
+    st.success("✅ Gemini AI model initialized successfully")
+except Exception as e:
+    st.error(f"❌ Failed to initialize Gemini AI: {str(e)}")
+    st.stop()
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

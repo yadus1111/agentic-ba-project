@@ -27,6 +27,13 @@ class EnhancedBRDAgent:
         # Check for Gemini AI availability
         try:
             import google.generativeai as genai
+            # Check if API key is available
+            api_key = os.environ.get("GEMINI_API_KEY")
+            if not api_key:
+                print("⚠️ GEMINI_API_KEY not found in environment variables")
+                self.client = None
+                return
+            
             # Set up Gemini model using environment variable
             self.client = genai.GenerativeModel("gemini-2.5-flash")
             print("✓ Gemini AI client initialized")
