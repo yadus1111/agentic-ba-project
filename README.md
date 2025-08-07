@@ -169,8 +169,6 @@ The HTML mockup generation is an advanced feature that creates interactive UI de
 **This is a design sample and prototype only.** The generated HTML mockups are:
 - ✅ **Great for:** Design inspiration, stakeholder presentations, requirement visualization
 - ✅ **Perfect for:** Understanding UI requirements, getting stakeholder feedback
-- ❌ **Not for:** Production deployment (requires additional development)
-- ❌ **Not for:** Backend integration (frontend only)
 
 **Next Steps:** Use these mockups as a foundation for actual development with proper backend integration, database design, and production-ready code.
 
