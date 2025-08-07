@@ -360,7 +360,117 @@ def remove_llm_intro_paragraph(html_content):
     return str(soup)
 
 def wrap_html_with_css(html_content):
-    css = '''<style>\n.html-report h1, .html-report h2, .html-report h3 {\n    color: #22223b;\n    font-weight: bold;\n    font-family: 'Times New Roman', Times, serif;\n    margin-top: 1.5em;\n    margin-bottom: 0.5em;\n}\n.html-report h2 {\n    font-size: 2em;\n}\n.html-report h3 {\n    font-size: 1.3em;\n}\n.html-report ul, .html-report ol {\n    margin-left: 2.2em;\n    margin-bottom: 1.2em;\n    font-size: 0.97em;\n    font-family: 'Times New Roman', Times, serif;\n}\n.html-report li {\n    color: #22223b;\n    font-size: 0.97em;\n    margin-bottom: 0.25em;\n    font-family: 'Times New Roman', Times, serif;\n    padding-left: 0.2em;\n}\n.html-report p {\n    font-family: 'Times New Roman', Times, serif;\n    font-size: 1.01em;\n    margin-bottom: 0.7em;\n    color: #22223b;\n}\n.html-report table, .html-report th, .html-report td {\n    border: 1.5px solid #22223b !important;\n    border-collapse: collapse !important;\n    padding: 7px 8px !important;\n    font-size: 0.98em !important;\n    background: #fff !important;\n    word-break: break-word !important;\n    overflow-wrap: break-word !important;\n    max-width: 120px !important;\n    font-family: 'Times New Roman', Times, serif;\n}\n.html-report th, .html-report td {\n    word-break: break-word !important;\n    overflow-wrap: break-word !important;\n    max-width: 120px !important;\n}\n.html-report table {\n    display: block;\n    overflow-x: auto;\n    width: 100% !important;\n    max-width: 100% !important;\n    margin-left: auto;\n    margin-right: auto;\n}\n.html-report th {\n    background: #fff !important;\n    font-weight: bold !important;\n    color: #22223b !important;\n}\n.html-report tr:nth-child(even) {\n    background: #f3f4f6 !important;\n}\n.html-report tr:hover {\n    background: #e5e5e5 !important;\n}\n.html-report img {\n    border: 1.5px solid #22223b;\n    border-radius: 10px;\n    margin: 18px auto;\n    display: block;\n    max-width: 95vw;\n    max-height: 80vh;\n    min-width: 400px;\n    min-height: 200px;\n    object-fit: contain;\n    background: #fff;\n}\n.html-report code {\n    background-color: #f1f5f9;\n    padding: 2px 6px;\n    border-radius: 4px;\n    font-family: 'Courier New', monospace;\n    font-size: 0.9em;\n    color: #22223b;\n}\n.html-report pre {\n    background-color: #f8fafc;\n    border: 1px solid #e2e8f0;\n    border-radius: 8px;\n    padding: 15px;\n    overflow-x: auto;\n    margin: 15px 0;\n}\n.html-report pre code {\n    background: none;\n    padding: 0;\n    color: #22223b;\n}\n</style>'''
+    css = '''<style>
+    .html-report {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .html-report h1, .html-report h2, .html-report h3 {
+        color: #22223b;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif;
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+    }
+    .html-report h2 {
+        font-size: 2em;
+    }
+    .html-report h3 {
+        font-size: 1.3em;
+    }
+    .html-report ul, .html-report ol {
+        margin-left: 2.2em;
+        margin-bottom: 1.2em;
+        font-size: 0.97em;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    .html-report li {
+        color: #22223b;
+        font-size: 0.97em;
+        margin-bottom: 0.25em;
+        font-family: 'Times New Roman', Times, serif;
+        padding-left: 0.2em;
+    }
+    .html-report p {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 1.01em;
+        margin-bottom: 0.7em;
+        color: #22223b;
+        line-height: 1.6;
+    }
+    .html-report table, .html-report th, .html-report td {
+        border: 1.5px solid #22223b !important;
+        border-collapse: collapse !important;
+        padding: 7px 8px !important;
+        font-size: 0.98em !important;
+        background: #fff !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        max-width: 120px !important;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    .html-report th, .html-report td {
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        max-width: 120px !important;
+    }
+    .html-report table {
+        display: block;
+        overflow-x: auto;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .html-report th {
+        background: #fff !important;
+        font-weight: bold !important;
+        color: #22223b !important;
+    }
+    .html-report tr:nth-child(even) {
+        background: #f3f4f6 !important;
+    }
+    .html-report tr:hover {
+        background: #e5e5e5 !important;
+    }
+    .html-report img {
+        border: 1.5px solid #22223b;
+        border-radius: 10px;
+        margin: 18px auto;
+        display: block;
+        max-width: 100%;
+        max-height: 80vh;
+        min-width: 300px;
+        min-height: 150px;
+        object-fit: contain;
+        background: #fff;
+    }
+    .html-report code {
+        background-color: #f1f5f9;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+        color: #22223b;
+    }
+    .html-report pre {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 15px;
+        overflow-x: auto;
+        margin: 15px 0;
+    }
+    .html-report pre code {
+        background: none;
+        padding: 0;
+        color: #22223b;
+    }
+    </style>'''
     return f'<html><head>{css}</head><body>{html_content}</body></html>'
 
 def html_to_pdf_with_playwright(html_content, output_pdf_path):
@@ -374,20 +484,50 @@ def html_to_pdf_with_playwright(html_content, output_pdf_path):
 # --- Streamlit UI for Agentic BA Dashboard ---
 def main():
     st.set_page_config(page_title="Agentic BA Dashboard", layout="wide")
+    
+    # Header section
     st.title("Agentic BA Dashboard")
     st.markdown("Welcome to your AI-powered business analysis system!")
     
-
-
-    business_problem = st.text_area(
-        "Business Problem / Objective",
-        value="",
-        height=180,
-        placeholder="Paste your business case or objective here..."
-    )
+    # Create two columns for better layout
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        st.markdown("### Business Problem / Objective")
+        business_problem = st.text_area(
+            "Business Problem / Objective",
+            value="",
+            height=200,
+            placeholder="Paste your business case or objective here..."
+        )
+        
+        # Generate Report button
+        if st.button("Generate Report", type="primary", use_container_width=True):
+            with st.spinner("Generating report... (this may take a moment)"):
+                try:
+                    report, images = generate_report_and_images(business_problem)
+                except Exception as e:
+                    st.error(f"Error generating report: {str(e)}")
+                    return
+            
+            # Only process images if report generation was successful
+            if 'report' in locals() and 'images' in locals():
+                for idx, img_path in enumerate(images, 1):
+                    if os.path.exists(img_path):
+                        with open(img_path, "rb") as img_file:
+                            b64 = base64.b64encode(img_file.read()).decode("utf-8")
+                        img_tag = f'<img src="data:image/png;base64,{b64}" style="max-width:100%; margin: 20px 0;" />'
+                        report = re.sub(r"```mermaid[\s\S]*?```", img_tag, report, count=1)
+                html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
+                html_report = f'<div class="html-report">{html_report}</div>'
+                html_report = remove_emojis(html_report)
+                html_report = remove_llm_intro_paragraph(html_report)
+                st.session_state['report_data'] = {"html": html_report, "business_problem": business_problem}
+                st.session_state['pdf_path'] = None
     
 
 
+    # Initialize session state
     if 'report_data' not in st.session_state:
         st.session_state['report_data'] = {"html": "", "business_problem": ""}
     if 'pdf_path' not in st.session_state:
@@ -396,58 +536,49 @@ def main():
     if 'ba_agent' not in st.session_state:
         st.session_state['ba_agent'] = EnhancedBRDAgent()
 
-    if st.button("Generate Report", type="primary"):
-        with st.spinner("Generating report... (this may take a moment)"):
-            try:
-                report, images = generate_report_and_images(business_problem)
-            except Exception as e:
-                st.error(f"Error generating report: {str(e)}")
-                return
-        
-        # Only process images if report generation was successful
-        if 'report' in locals() and 'images' in locals():
-            for idx, img_path in enumerate(images, 1):
-                if os.path.exists(img_path):
-                    with open(img_path, "rb") as img_file:
-                        b64 = base64.b64encode(img_file.read()).decode("utf-8")
-                    img_tag = f'<img src="data:image/png;base64,{b64}" style="max-width:100%; margin: 20px 0;" />'
-                    report = re.sub(r"```mermaid[\s\S]*?```", img_tag, report, count=1)
-            html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
-            html_report = f'<div class="html-report">{html_report}</div>'
-            html_report = remove_emojis(html_report)
-            html_report = remove_llm_intro_paragraph(html_report)
-            st.session_state['report_data'] = {"html": html_report, "business_problem": business_problem}
-            st.session_state['pdf_path'] = None
-
-    # PDF buttons above the report
+    # Right column for report display
+    with col2:
+        if st.session_state['report_data']['html']:
+            st.markdown("### Generated Report")
+            
+            # PDF buttons
+            pdf_col1, pdf_col2 = st.columns([1, 1])
+            with pdf_col1:
+                if st.button("Download PDF", use_container_width=True):
+                    with st.spinner("Generating PDF..."):
+                        html_clean = remove_sticker_images(st.session_state['report_data']['html'])
+                        html_clean = remove_emojis(html_clean)
+                        html_clean = remove_llm_intro_paragraph(html_clean)
+                        html_final = wrap_html_with_css(html_clean)
+                        timestamp = time.strftime("%Y%m%d_%H%M%S")
+                        filename = f"business_analysis_report_{timestamp}.pdf"
+                        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+                        html_to_pdf_with_playwright(html_final, temp_file.name)
+                        st.session_state['pdf_path'] = temp_file.name
+            with pdf_col2:
+                if st.session_state['pdf_path']:
+                    with open(st.session_state['pdf_path'], "rb") as f:
+                        st.download_button(
+                            label="Download PDF File",
+                            data=f,
+                            file_name="business_analysis_report.pdf",
+                            mime="application/pdf",
+                            use_container_width=True
+                        )
+            
+            # Display report with full height
+            st.components.v1.html(st.session_state['report_data']['html'], height=800, scrolling=True)
+        else:
+            st.info("Enter a business problem/objective and click 'Generate Report' to see the analysis.")
+    
+    # Full-width section below columns for better report display
     if st.session_state['report_data']['html']:
-        col_pdf1, col_pdf2 = st.columns([1, 1])
-        with col_pdf1:
-            if st.button("Download PDF"):
-                with st.spinner("Generating PDF..."):
-                    html_clean = remove_sticker_images(st.session_state['report_data']['html'])
-                    html_clean = remove_emojis(html_clean)
-                    html_clean = remove_llm_intro_paragraph(html_clean)
-                    html_final = wrap_html_with_css(html_clean)
-                    timestamp = time.strftime("%Y%m%d_%H%M%S")
-                    filename = f"business_analysis_report_{timestamp}.pdf"
-                    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-                    html_to_pdf_with_playwright(html_final, temp_file.name)
-                    st.session_state['pdf_path'] = temp_file.name
-        with col_pdf2:
-            if st.session_state['pdf_path']:
-                with open(st.session_state['pdf_path'], "rb") as f:
-                    st.download_button(
-                        label="Download PDF File",
-                        data=f,
-                        file_name="business_analysis_report.pdf",
-                        mime="application/pdf"
-                    )
-        st.markdown("### Generated Report")
-        st.components.v1.html(st.session_state['report_data']['html'], height=900, scrolling=True)
+        st.markdown("---")
+        st.markdown("### Full Report View")
+        st.components.v1.html(st.session_state['report_data']['html'], height=1200, scrolling=True)
 
         # --- Mockup Generation Integration ---
-        if st.button("Generate Mockup"):
+        if st.button("Generate Mockup", use_container_width=True):
             with st.spinner("Generating HTML mockup..."):
                 try:
                     brd_text = st.session_state['report_data']['business_problem']
@@ -483,14 +614,15 @@ def main():
                             label="Download HTML Mockup",
                             data=html_content,
                             file_name=f"{app_type}_mockup_{timestamp}.html",
-                            mime="text/html"
+                            mime="text/html",
+                            use_container_width=True
                         )
                     else:
                         st.error("Failed to save mockup outputs")
                         
                 except Exception as e:
-                    st.error(f"❌ Error generating mockup: {str(e)}")
-                    st.info("💡 This might be due to API limitations on Streamlit Cloud. Try running locally for full functionality.")
+                    st.error(f"Error generating mockup: {str(e)}")
+                    st.info("This might be due to API limitations on Streamlit Cloud. Try running locally for full functionality.")
 
 if __name__ == "__main__":
     main() 
