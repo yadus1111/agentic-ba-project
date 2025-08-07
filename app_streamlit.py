@@ -539,7 +539,8 @@ def main():
     # Right column for report display
     with col2:
         if st.session_state['report_data']['html']:
-            st.markdown("### Generated Report")
+            st.markdown("### Report Status")
+            st.success("Report generated successfully!")
             
             # PDF buttons
             pdf_col1, pdf_col2 = st.columns([1, 1])
@@ -565,16 +566,13 @@ def main():
                             mime="application/pdf",
                             use_container_width=True
                         )
-            
-            # Display report with full height
-            st.components.v1.html(st.session_state['report_data']['html'], height=800, scrolling=True)
         else:
             st.info("Enter a business problem/objective and click 'Generate Report' to see the analysis.")
     
     # Full-width section below columns for better report display
     if st.session_state['report_data']['html']:
         st.markdown("---")
-        st.markdown("### Full Report View")
+        st.markdown("### Generated Report")
         st.components.v1.html(st.session_state['report_data']['html'], height=1200, scrolling=True)
 
         # --- Mockup Generation Integration ---
