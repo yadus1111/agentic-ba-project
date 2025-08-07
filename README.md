@@ -191,8 +191,6 @@ I created this project to:
 
 ---
 
-<<<<<<< HEAD
-*Built by Yadu Sharma using Agentic AI principles and Streamlit.*
-=======
+*Built by Yadu Sharma using Agentic AI principles and Streamlit.
 
 >>>>>>> e1887fbfb3172a6d0d98a26357446a144ad6d608
