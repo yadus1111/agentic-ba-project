@@ -487,7 +487,7 @@ def main():
     
     # Header section
     st.title("Agentic BA Dashboard")
-    st.markdown("Welcome to your AI-powered business analysis system!")
+    st.markdown("Welcome to your AI-powered business analysis system!")  # Updated for deployment
     
     # Initialize session state
     if 'report_data' not in st.session_state:
