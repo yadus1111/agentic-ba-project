@@ -567,13 +567,11 @@ def main():
                             use_container_width=True
                         )
         else:
-            st.info("Enter a business problem/objective and click 'Generate Report' to see the analysis.")
+            st.markdown("&nbsp;")  # Empty space
     
     # Full-width section below columns for better report display
     if st.session_state['report_data']['html']:
-        st.markdown("---")
-        st.markdown("### Generated Report")
-        st.components.v1.html(st.session_state['report_data']['html'], height=1200, scrolling=True)
+        st.components.v1.html(st.session_state['report_data']['html'], height=1000, scrolling=True)
 
         # --- Mockup Generation Integration ---
         if st.button("Generate Mockup", use_container_width=True):
