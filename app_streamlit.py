@@ -489,44 +489,6 @@ def main():
     st.title("Agentic BA Dashboard")
     st.markdown("Welcome to your AI-powered business analysis system!")
     
-    # Create two columns for better layout
-    col1, col2 = st.columns([1, 2])
-    
-    with col1:
-        st.markdown("### Business Problem / Objective")
-        business_problem = st.text_area(
-            "Business Problem / Objective",
-            value="",
-            height=200,
-            placeholder="Paste your business case or objective here..."
-        )
-        
-        # Generate Report button
-        if st.button("Generate Report", type="primary", use_container_width=True):
-            with st.spinner("Generating report... (this may take a moment)"):
-                try:
-                    report, images = generate_report_and_images(business_problem)
-                except Exception as e:
-                    st.error(f"Error generating report: {str(e)}")
-                    return
-            
-            # Only process images if report generation was successful
-            if 'report' in locals() and 'images' in locals():
-                for idx, img_path in enumerate(images, 1):
-                    if os.path.exists(img_path):
-                        with open(img_path, "rb") as img_file:
-                            b64 = base64.b64encode(img_file.read()).decode("utf-8")
-                        img_tag = f'<img src="data:image/png;base64,{b64}" style="max-width:100%; margin: 20px 0;" />'
-                        report = re.sub(r"```mermaid[\s\S]*?```", img_tag, report, count=1)
-                html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
-                html_report = f'<div class="html-report">{html_report}</div>'
-                html_report = remove_emojis(html_report)
-                html_report = remove_llm_intro_paragraph(html_report)
-                st.session_state['report_data'] = {"html": html_report, "business_problem": business_problem}
-                st.session_state['pdf_path'] = None
-    
-
-
     # Initialize session state
     if 'report_data' not in st.session_state:
         st.session_state['report_data'] = {"html": "", "business_problem": ""}
@@ -536,38 +498,64 @@ def main():
     if 'ba_agent' not in st.session_state:
         st.session_state['ba_agent'] = EnhancedBRDAgent()
 
-    # Right column for report display
-    with col2:
-        if st.session_state['report_data']['html']:
-            st.markdown("### Report Status")
-            st.success("Report generated successfully!")
-            
-            # PDF buttons
-            pdf_col1, pdf_col2 = st.columns([1, 1])
-            with pdf_col1:
-                if st.button("Download PDF", use_container_width=True):
-                    with st.spinner("Generating PDF..."):
-                        html_clean = remove_sticker_images(st.session_state['report_data']['html'])
-                        html_clean = remove_emojis(html_clean)
-                        html_clean = remove_llm_intro_paragraph(html_clean)
-                        html_final = wrap_html_with_css(html_clean)
-                        timestamp = time.strftime("%Y%m%d_%H%M%S")
-                        filename = f"business_analysis_report_{timestamp}.pdf"
-                        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-                        html_to_pdf_with_playwright(html_final, temp_file.name)
-                        st.session_state['pdf_path'] = temp_file.name
-            with pdf_col2:
-                if st.session_state['pdf_path']:
-                    with open(st.session_state['pdf_path'], "rb") as f:
-                        st.download_button(
-                            label="Download PDF File",
-                            data=f,
-                            file_name="business_analysis_report.pdf",
-                            mime="application/pdf",
-                            use_container_width=True
-                        )
-        else:
-            st.markdown("&nbsp;")  # Empty space
+    # Business Problem Input Section
+    st.markdown("### Business Problem / Objective")
+    business_problem = st.text_area(
+        "Business Problem / Objective",
+        value="",
+        height=200,
+        placeholder="Paste your business case or objective here..."
+    )
+    
+    # Generate Report button
+    if st.button("Generate Report", type="primary", use_container_width=True):
+        with st.spinner("Generating report... (this may take a moment)"):
+            try:
+                report, images = generate_report_and_images(business_problem)
+            except Exception as e:
+                st.error(f"Error generating report: {str(e)}")
+                return
+        
+        # Only process images if report generation was successful
+        if 'report' in locals() and 'images' in locals():
+            for idx, img_path in enumerate(images, 1):
+                if os.path.exists(img_path):
+                    with open(img_path, "rb") as img_file:
+                        b64 = base64.b64encode(img_file.read()).decode("utf-8")
+                    img_tag = f'<img src="data:image/png;base64,{b64}" style="max-width:100%; margin: 20px 0;" />'
+                    report = re.sub(r"```mermaid[\s\S]*?```", img_tag, report, count=1)
+            html_report = markdown.markdown(report, extensions=['tables', 'fenced_code'])
+            html_report = f'<div class="html-report">{html_report}</div>'
+            html_report = remove_emojis(html_report)
+            html_report = remove_llm_intro_paragraph(html_report)
+            st.session_state['report_data'] = {"html": html_report, "business_problem": business_problem}
+            st.session_state['pdf_path'] = None
+
+    # PDF buttons (when report exists)
+    if st.session_state['report_data']['html']:
+        pdf_col1, pdf_col2 = st.columns([1, 1])
+        with pdf_col1:
+            if st.button("Download PDF", use_container_width=True):
+                with st.spinner("Generating PDF..."):
+                    html_clean = remove_sticker_images(st.session_state['report_data']['html'])
+                    html_clean = remove_emojis(html_clean)
+                    html_clean = remove_llm_intro_paragraph(html_clean)
+                    html_final = wrap_html_with_css(html_clean)
+                    timestamp = time.strftime("%Y%m%d_%H%M%S")
+                    filename = f"business_analysis_report_{timestamp}.pdf"
+                    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+                    html_to_pdf_with_playwright(html_final, temp_file.name)
+                    st.session_state['pdf_path'] = temp_file.name
+        with pdf_col2:
+            if st.session_state['pdf_path']:
+                with open(st.session_state['pdf_path'], "rb") as f:
+                    st.download_button(
+                        label="Download PDF File",
+                        data=f,
+                        file_name="business_analysis_report.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
     
     # Full-width section below columns for better report display
     if st.session_state['report_data']['html']:
